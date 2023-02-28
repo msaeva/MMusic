@@ -8,7 +8,7 @@ spring:
       ddl-auto: update
     open-in-view: 'false'
   mvc:
-    hiddenmethod:
+    hidden-method:
       filter:
         enabled: 'true'
   datasource:

@@ -19,22 +19,28 @@
             <div class="form-group">
                 <label for="username" class="text-white font-weight-bold">username</label>
                 <input id="username"
+                       th:value="${username}"
                        name="username"
-                       type="text" min="2" max="50"
+                       type="text" min="2"
+                       max="50"
                        class="form-control"
-                       placeholder="Username"/>
+                       placeholder="Username"
+                />
             </div>
             <div class="form-group">
                 <label for="password" class="text-white font-weight-bold">Password</label>
                 <input
                         id="password"
                         name="password"
-                        type="password" min="2"
-                        max="20" class="form-control"
-                        placeholder="Password"/>
+                        type="password"
+                        min="2"
+                        max="20"
+                        class="form-control"
+                        placeholder="Password"
+                />
             </div>
 
-            <p class="errors alert alert-danger">
+            <p class="errors alert alert-danger" th:if="${badCredentials}">
                 Invalid username or password.
             </p>
 
@@ -47,7 +53,7 @@
             </div>
         </form>
     </div>
-    </div>
+</div>
 <div>
     <footer></footer>
 </div>

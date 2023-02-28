@@ -27,7 +27,6 @@ public class ApplicationUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found !"));
     }
 
-
     private UserDetails map(bg.softuni.mmusic.model.entities.User user) {
         return new User(
                 user.getUsername(),

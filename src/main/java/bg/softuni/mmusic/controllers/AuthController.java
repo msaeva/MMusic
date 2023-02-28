@@ -3,6 +3,9 @@ package bg.softuni.mmusic.controllers;
 import bg.softuni.mmusic.model.dtos.UserLoginDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.services.AuthService;
+import bg.softuni.mmusic.services.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -12,17 +15,25 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     @ModelAttribute(name = "registerDto")
-    public UserRegisterDto userRegisterDro() {
+    public UserRegisterDto userRegisterDto() {
         return new UserRegisterDto();
+    }
+
+    @ModelAttribute(name = "loginDto")
+    public UserLoginDto userLoginDto() {
+        return new UserLoginDto();
     }
 
     @GetMapping("/login")
@@ -30,34 +41,42 @@ public class AuthController {
         return "auth-login";
     }
 
-    @PostMapping("/login")
-    public String postLogin(@Valid UserLoginDto loginDto) {
-        authService.login(loginDto);
+    @PostMapping("/login-error")
+    public String failedLogin(@ModelAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
+                                  String username,
+                              RedirectAttributes redirectAttributes){
 
-        return "/index";
+        redirectAttributes.addFlashAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, username);
+        redirectAttributes.addFlashAttribute("badCredentials", true);
+
+        return "redirect:/users/login";
     }
 
     @GetMapping("/register")
-    public String getRegister() {
+    public String register() {
         return "/auth-register";
     }
 
+
     @PostMapping("/register")
-    public String postRegister(@Valid @ModelAttribute(name = "registerDto") UserRegisterDto registerDto,
+    public String register(@Valid @ModelAttribute UserRegisterDto registerDto,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("registerDto", registerDto);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto",
-                    bindingResult);
-
-            return "redirect:/users/register";
+        if (userService.findByEmail(registerDto.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", null, "There is already an account with the same email");
         }
 
-        authService.register(registerDto);
+        if (bindingResult.hasErrors() || !authService.register(registerDto)) {
+            redirectAttributes.addFlashAttribute("registerDto", registerDto);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto", bindingResult);
 
-        return "redirect:/login";
+            log.info("{}", bindingResult.getErrorCount() );
+
+            return "redirect:register";
+        }
+
+        return "redirect:login";
     }
 
 }

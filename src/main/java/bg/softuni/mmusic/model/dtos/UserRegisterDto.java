@@ -1,8 +1,6 @@
 package bg.softuni.mmusic.model.dtos;
 
 import bg.softuni.mmusic.model.enums.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,20 +25,21 @@ public class UserRegisterDto {
     private String firstName;
 
     @Size(min = 2, max = 15)
-    @NotNull
+    @NotNull(message = "LastName can not be empty")
     private String lastName;
 
     @Email
     @NotNull
     private String email;
 
+    @NotNull
     @Size(min = 5, max = 20)
     private String password;
 
+    @NotNull
     @Size(min = 5, max = 20)
     private String confirmPassword;
 
-//    @Enumerated(EnumType.STRING)
-//    @NotNull
-//    private Role role;
+    @NotNull
+    private Set<Role> roles;
 }

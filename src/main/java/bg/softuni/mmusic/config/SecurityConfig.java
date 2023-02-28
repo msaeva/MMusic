@@ -21,17 +21,27 @@ public class SecurityConfig {
         http
                 //// defines which pages will be authorized
                 .authorizeHttpRequests()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
-                .requestMatchers("/users/admin").hasRole(Role.ADMIN.name())
-                .anyRequest().authenticated()
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                    .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
+                    .requestMatchers("/users/admin").hasRole(Role.ADMIN.name())
+                // all any pages are available for logged users
+                     .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/users/login")
-                .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
-                .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
-                .defaultSuccessUrl("/",true)
-                .failureForwardUrl("/users/login-error");
+                    .formLogin()
+                    .loginPage("/users/login")
+                // the name in the username field
+                    .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
+                    .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
+                // where to go when login is successful, use true argument if you
+                // always want to go there, otherwise go to previous page
+                    .defaultSuccessUrl("/",true)
+                    .failureForwardUrl("/users/login-error")
+                .and()
+                    .logout()
+                    .logoutUrl("/users/logout")
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID");
 
         return http.build();
     }

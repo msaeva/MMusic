@@ -16,8 +16,6 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
-
-
     @Size(min = 4, max = 12)
     @Column(unique = true, nullable = false)
     private String username;
@@ -74,5 +72,15 @@ public class User extends BaseEntity {
                 ", favouriteSongs=" + favouriteSongs +
                 ", playlists=" + playlists +
                 '}';
+    }
+
+    public User(String username, String firstName, String lastName, String email, String password, LocalDate createdDate, Set<UserRole> roles) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.createdDate = createdDate;
+        this.roles = roles;
     }
 }
