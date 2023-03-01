@@ -4,14 +4,16 @@ import bg.softuni.mmusic.model.dtos.UserLoginDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.UserService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -59,15 +61,12 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute UserRegisterDto registerDto,
+    public String register(@Valid UserRegisterDto registerDto,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
 
-        if (userService.findByEmail(registerDto.getEmail()).isPresent()) {
-            bindingResult.rejectValue("email", null, "There is already an account with the same email");
-        }
 
-        if (bindingResult.hasErrors() || !authService.register(registerDto)) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerDto", registerDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto", bindingResult);
 
