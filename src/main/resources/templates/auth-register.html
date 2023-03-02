@@ -43,7 +43,7 @@
                             th:field="*{firstName}"
                             th:errorclass="is-invalid"/>
                     <small class="invalid-feedback text-danger">
-                        FirstName length must be between 4 and 12 symbols </small>
+                        First name length must be between 4 and 12 symbols </small>
                 </div>
 
                 <div class="form-group col-md-6 mb-3">
@@ -68,6 +68,8 @@
                            placeholder="Email"
                            th:field="*{email}"
                            th:errorclass="is-invalid"/>
+                    <small class="invalid-feedback text-danger">
+                        Email must contains '@' </small>
                 </div>
                 <div class="form-group col-md-6 mb-3">
                     <label for="password" class="text-white font-weight-bold">Password</label>
@@ -88,9 +90,12 @@
                        placeholder="Confirm your password"
                        th:field="*{confirmPassword}"
                        th:errorclass="is-invalid"/>
-                <small class="invalid-feedback errors alert alert-danger">
+                <small th:if="${#fields.hasErrors('confirmPassword')}"
+                       th:errors="*{confirmPassword}"
+                       class="invalid-feedback text-danger">
                     Confirmation password is required.
                 </small>
+
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label for="roles" class="text-black-50 font-weight-bold">Choose Roles</label>
@@ -100,10 +105,6 @@
                             th:text="${role}">role
                     </option>
                 </select>
-
-                <p class="invalid-feedback errors alert alert-danger">
-                    Confirmation password is required.
-                </p>
             </div>
 
             <div class="row">

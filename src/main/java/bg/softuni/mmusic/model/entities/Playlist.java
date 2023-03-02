@@ -1,21 +1,20 @@
 package bg.softuni.mmusic.model.entities;
 
+import bg.softuni.mmusic.model.enums.PlaylistStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "playlists")
-public class Playlist extends BaseEntity{
+public class Playlist extends BaseEntity {
 
     @Size(min = 4, max = 12)
     @Column(nullable = false)
@@ -26,4 +25,8 @@ public class Playlist extends BaseEntity{
 
     @ManyToOne
     private User owner;
+
+    @Enumerated
+    @Column(nullable = false)
+    private PlaylistStatus status;
 }

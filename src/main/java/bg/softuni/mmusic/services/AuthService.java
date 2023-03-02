@@ -25,7 +25,7 @@ public class AuthService {
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-   private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     public AuthService(UserRepository userRepository, UserMapper userMapper, UserRoleRepository roleRepository, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
         this.userRepository = userRepository;
@@ -73,5 +73,12 @@ public class AuthService {
         userRepository.save(userToSave);
 
         return true;
+    }
+
+    public User getAuthenticatedUser() {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails details) {
+            return userRepository.findByUsername(details.getUsername()).orElse(null);
+        }
+        return null;
     }
 }
