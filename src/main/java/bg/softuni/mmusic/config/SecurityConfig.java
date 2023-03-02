@@ -24,6 +24,7 @@ public class SecurityConfig {
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                     .requestMatchers("/users/admin").hasRole(Role.ADMIN.name())
+                    .requestMatchers("/song/add", "/playlist/create").hasRole(Role.MUSICIAN.name())
                 // all any pages are available for logged users
                      .anyRequest().authenticated()
                 .and()

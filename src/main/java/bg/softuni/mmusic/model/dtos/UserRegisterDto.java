@@ -25,7 +25,7 @@ public class UserRegisterDto {
     private String firstName;
 
     @Size(min = 2, max = 15)
-    @NotNull(message = "LastName can not be empty")
+    @NotNull
     private String lastName;
 
     @Email

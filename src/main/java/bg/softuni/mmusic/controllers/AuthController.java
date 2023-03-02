@@ -9,11 +9,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/users")
@@ -64,9 +67,13 @@ public class AuthController {
     public String register(@Valid UserRegisterDto registerDto,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
+        if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())){
+            bindingResult.addError(new FieldError("differentConfirmPassword",
+                    "confirmPassword", "Passwords must be the same"));
+        }
 
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || !authService.register(userRegisterDto())) {
             redirectAttributes.addFlashAttribute("registerDto", registerDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto", bindingResult);
 
@@ -77,5 +84,4 @@ public class AuthController {
 
         return "redirect:login";
     }
-
 }

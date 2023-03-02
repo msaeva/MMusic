@@ -39,7 +39,7 @@ public class Song extends BaseEntity{
     private User author;
 
     @Column(name = "created_date")
-    private LocalDate createdDate;
+    private LocalDate createdDate = LocalDate.now();
 
     @ManyToOne
     private Style Style;
