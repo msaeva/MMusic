@@ -7,6 +7,8 @@ import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.SongRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SongService {
     private final SongMapper songMapper;
@@ -27,6 +29,10 @@ public class SongService {
 
         songRepository.saveAndFlush(songToSave);
 
+    }
+
+    public Song findSongByUuid(String songUuid) {
+        return songRepository.findById(songUuid).get();
     }
 }
 
