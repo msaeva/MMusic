@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head::head}"></head>
+
+
+<body>
+
+<div class="content-wrapper">
+    <div th:replace="~{fragments/navbar :: navbar}">
+        Navbar
+    </div>
+
+    <div class="container">
+        <h2 class="text-center text-black-50">Add Song</h2>
+        <form class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
+              th:method="POST"
+              th:action="@{/song/add}"
+              th:object="${addSongDto}">
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label for="title" class="text-white font-weight-bold">Title</label>
+                    <input
+                            th:field="*{title}"
+                            th:errorclass="is-invalid"
+                            id="title"
+                            name="title"
+                            type="text"
+                            class="form-control"
+                            placeholder="Title"/>
+                    <small class="invalid-feedback errors alert text-danger">
+                        Title length must be between 5 and 12 symbols </small>
+                </div>
+
+                <div class="form-group col-md-6 mb-3">
+                    <label for="description" class="text-white font-weight-bold">Write small description of yor song</label>
+                    <input
+                            id="description"
+                            name="description"
+                            type="text"
+                            class="form-control"
+                            placeholder="Description"
+                            th:field="*{description}"
+                            th:errorclass="is-invalid"/>
+                    <small class="invalid-feedback text-danger">
+                        Description length must be to 100 symbols </small>
+                </div>
+
+                <div class="form-group col-md-6 mb-3">
+                    <label for="duration" class="text-white font-weight-bold">Duration</label>
+                    <input id="duration"
+                           name="duration"
+                           type="number" class="form-control"
+                           placeholder="Duration"
+                           th:field="*{duration}"
+                           th:errorclass="is-invalid"/>
+                    <small class="invalid-feedback text-danger">
+                        Duration must be positive number </small>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label for="imageUrl" class="text-white font-weight-bold">ImageUrl</label>
+                    <input id="imageUrl"
+                           name="imageUrl"
+                           type="text" min="2" max="20" class="form-control"
+                           placeholder="imageUrl"
+                           th:field="*{imageUrl}"
+                           th:errorclass="is-invalid"/>
+                    <small class="invalid-feedback text-danger"></small>
+                </div>
+
+            </div>
+
+            <div class="form-group col-md-6 mb-3">
+                <label for="style" class="text-black-50 font-weight-bold">Select Song Style</label>
+                <select id="style" name="style" multiple>
+                    <option th:each="style : ${T(bg.softuni.mmusic.model.enums.StyleType).values()}"
+                            th:value="${style}"
+                            th:text="${style}">style
+                    </option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-4">
+                    <div class="button-holder d-flex">
+                        <input type="submit" class="btn btn-info btn-lg" value="Add new Song"/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <footer></footer>
+</div>
+
+</body>
+</html>
