@@ -1,16 +1,11 @@
 package bg.softuni.mmusic.init;
 
-import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.entities.UserRole;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
 
 @Component
 public class RoleSeeder implements CommandLineRunner {

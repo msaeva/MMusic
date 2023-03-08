@@ -1,8 +1,5 @@
 package bg.softuni.mmusic.model.dtos;
 
-import bg.softuni.mmusic.model.enums.PlaylistStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,14 +9,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CreatePlaylistDto {
-
+@NoArgsConstructor
+public class UpdateSongDto {
+    @Size(min = 5, max = 12)
     @NotNull
-    @Size(min = 4, max = 20)
-    private String name;
+    private String title;
 
+    @Size(max = 100)
     @NotNull
-    private PlaylistStatus status;
+    private String description;
 }

@@ -36,20 +36,22 @@ public class User extends BaseEntity {
     private String email;
 
 
-    @Size(min = 5, max = 20)
+    @Size(min = 5)
     @Column
     private String password;
 
     @Transient
-    @Size(min = 5, max = 20)
+    @Size(min = 5)
     private String confirmPassword;
 
     @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();
 
-
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
+    private Set<Song> ownSongs;
 
     @ManyToMany
     private Set<Song> downloadSongs;

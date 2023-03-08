@@ -7,6 +7,8 @@ import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class PlaylistService {
     private final AuthService authService;
@@ -33,7 +35,7 @@ public class PlaylistService {
     public void addSongToPlaylist(String songUuid, String playlistUuid) {
         User authUser = getAuthUser();
         Playlist playlist = playlistRepository.findById(playlistUuid).orElse(null);
-        Song songToAdd = songService.findSongByUuid(songUuid);
+        Song songToAdd = songService.findSongByUuid(songUuid).orElseThrow(NoSuchElementException::new);
 
         if (playlist != null) {
             playlist.getSongs().add(songToAdd);
