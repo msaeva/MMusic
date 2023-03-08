@@ -73,15 +73,15 @@ public class AuthController {
         }
 
 
-        if (bindingResult.hasErrors() || !authService.register(userRegisterDto())) {
+        if (bindingResult.hasErrors() || !authService.register(registerDto)) {
             redirectAttributes.addFlashAttribute("registerDto", registerDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto", bindingResult);
 
             log.info("{}", bindingResult.getErrorCount() );
 
-            return "redirect:register";
+            return "redirect:/users/register";
         }
 
-        return "redirect:login";
+        return "redirect:/users/login";
     }
 }

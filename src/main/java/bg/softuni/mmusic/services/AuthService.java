@@ -68,8 +68,6 @@ public class AuthService {
         userToSave.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         userToSave.setRoles(userRoles);
 
-        System.out.println(userToSave.toString());
-
         userRepository.save(userToSave);
 
         return true;

@@ -19,12 +19,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                //// defines which pages will be authorized
+                // defines which pages will be authorized
                 .authorizeHttpRequests()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                     .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                     .requestMatchers("/users/admin").hasRole(Role.ADMIN.name())
-                    .requestMatchers("/song/add", "/playlist/create").hasRole(Role.MUSICIAN.name())
+                    .requestMatchers("/song/add", "/playlist/create", "song/{uuid}/update").hasRole(Role.MUSICIAN.name())
                 // all any pages are available for logged users
                      .anyRequest().authenticated()
                 .and()
@@ -35,7 +35,7 @@ public class SecurityConfig {
                     .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
                 // where to go when login is successful, use true argument if you
                 // always want to go there, otherwise go to previous page
-                    .defaultSuccessUrl("/",true)
+                    .defaultSuccessUrl("/", true)
                     .failureForwardUrl("/users/login-error")
                 .and()
                     .logout()

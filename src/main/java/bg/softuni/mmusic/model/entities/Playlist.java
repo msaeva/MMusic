@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name = "playlists")
 public class Playlist extends BaseEntity {
 
-    @Size(min = 4, max = 12)
+    @Size(min = 4, max = 20)
     @Column(nullable = false)
     private String name;
 
@@ -26,7 +26,7 @@ public class Playlist extends BaseEntity {
     @ManyToOne
     private User owner;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PlaylistStatus status;
 }
