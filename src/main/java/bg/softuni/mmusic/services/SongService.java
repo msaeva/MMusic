@@ -1,13 +1,18 @@
 package bg.softuni.mmusic.services;
 
+import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
 import bg.softuni.mmusic.model.dtos.AddSongDto;
 import bg.softuni.mmusic.model.dtos.SongDto;
 import bg.softuni.mmusic.model.dtos.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.SongRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -55,6 +60,31 @@ public class SongService {
         songToUpdate.setDescription(songDto.getDescription());
 
         songRepository.saveAndFlush(songToUpdate);
+    }
+    public void delete(String uuid) {
+        User authUser = authService.getAuthenticatedUser();
+        if (authUser == null){
+            throw new NoSuchElementException("User should be authenticated to delete song!");
+        }
+
+        Optional<Song> song = songRepository.findByUuid(uuid);
+        if (song.isEmpty()){
+            throw new NoSuchElementException("Song with that id does not exist!");
+        }
+
+        if (authUser.getOwnSongs().stream()
+                .noneMatch(s -> s.getUuid().equals(song.get().getUuid()))){
+            throw new NoSuchElementException("User should own the song!");
+        }
+
+        this.songRepository.delete(song.get());
+    }
+
+    public Page<Song> getAll(SearchSongValidation validation) {
+        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
+
+      return songRepository.findAllByStatus(SongStatus.PUBLIC, pageable);
+
     }
 }
 

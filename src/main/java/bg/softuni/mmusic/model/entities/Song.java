@@ -1,9 +1,7 @@
 package bg.softuni.mmusic.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import bg.softuni.mmusic.model.enums.SongStatus;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "songs")
-public class Song extends BaseEntity{
+public class Song extends BaseEntity {
 
     @Size(min = 5, max = 12)
     @Column(nullable = false)
@@ -43,6 +41,9 @@ public class Song extends BaseEntity{
 
     @ManyToOne
     private Style Style;
+
+    @Enumerated(EnumType.STRING)
+    private SongStatus status;
 
     @Column(name = "download_count")
     private Integer downloadCount = 0;

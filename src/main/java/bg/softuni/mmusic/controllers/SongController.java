@@ -94,4 +94,12 @@ public class SongController {
         return "/index";
     }
 
+
+    @DeleteMapping("/{uuid}/delete")
+    public String deleteSong(@PathVariable(name = "uuid") String uuid){
+        songService.delete(uuid);
+        return "/index";
+    }
+
+
 }
