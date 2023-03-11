@@ -1,5 +1,6 @@
 package bg.softuni.mmusic.model.dtos;
 
+import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.enums.StyleType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -26,6 +27,9 @@ public class AddSongDto {
     @Positive
     @NotNull
     private Long duration;
+
+    @NotNull
+    private SongStatus status;
 
     private String imageUrl;
 
