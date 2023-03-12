@@ -1,9 +1,9 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.model.dtos.UserLoginDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.entities.UserRole;
+import bg.softuni.mmusic.model.error.UserNotFoundException;
 import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
@@ -75,8 +75,9 @@ public class AuthService {
 
     public User getAuthenticatedUser() {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails details) {
-            return userRepository.findByUsername(details.getUsername()).orElse(null);
+            return userRepository.findByUsername(details.getUsername())
+                    .orElseThrow(() -> new UserNotFoundException(details.getUsername()));
         }
-        return null;
+       return null;
     }
 }

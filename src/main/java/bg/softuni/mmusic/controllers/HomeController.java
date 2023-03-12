@@ -36,12 +36,9 @@ public class HomeController {
 
         pageableDto.setData(songs.stream().map(songMapper::toPublicSimpleSongDto).toList());
 
-
-        modelAndView.setViewName("/index");
+        modelAndView.setViewName("index");
         modelAndView.addObject("songs", pageableDto);
 
         return modelAndView;
     }
-
-
 }

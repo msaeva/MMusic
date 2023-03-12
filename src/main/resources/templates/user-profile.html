@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+<div class="form-group col-md-6 mb-3">
+    <label for="songs" class="text-black-50 font-weight-bold">User songs</label>
+    <div id="songs">
+        <tr th:each="song : ${songs}">
+            <td th:text="${song.getTitle()}"/>
+            <td th:text="${song.getDescription()}"/>
+        </tr>
+    </div>
+</div>
+
+<div class="form-group col-md-6 mb-3">
+    <label for="playlists" class="text-black-50 font-weight-bold">User playlists</label>
+    <div id="playlists">
+        <tr th:each="playlist : ${playlists}">
+            <td th:text="${playlist.getTitle()}"/>
+            <td th:text="${playlist.getDescription()}"/>
+        </tr>
+    </div>
+</div>
+</body>
+</html>
