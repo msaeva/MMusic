@@ -7,9 +7,7 @@ import bg.softuni.mmusic.model.dtos.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.SongService;
-
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

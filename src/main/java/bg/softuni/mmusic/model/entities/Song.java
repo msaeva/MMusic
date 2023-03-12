@@ -2,7 +2,7 @@ package bg.softuni.mmusic.model.entities;
 
 import bg.softuni.mmusic.model.enums.SongStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,9 +45,15 @@ public class Song extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SongStatus status;
 
+    @PositiveOrZero
     @Column(name = "download_count")
     private Integer downloadCount = 0;
 
+    @PositiveOrZero
+    @Column
+    private Integer likes = 0;
+
     @Column(name = "favourite_count")
+    @PositiveOrZero
     private Integer favouriteCount = 0;
 }

@@ -8,6 +8,7 @@ import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.enums.SongStatus;
+import bg.softuni.mmusic.model.error.InvalidSongException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.SongRepository;
 import org.springframework.data.domain.Page;
@@ -83,8 +84,32 @@ public class SongService {
     public Page<Song> getAll(SearchSongValidation validation) {
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
 
-      return songRepository.findAllByStatus(SongStatus.PUBLIC, pageable);
+        return songRepository.findAllByStatus(SongStatus.PUBLIC, pageable);
 
+    }
+
+    public void like(String songUuid) {
+        User authUser = authService.getAuthenticatedUser();
+        Song songToLike = songRepository.findByUuid(songUuid).orElseThrow(RuntimeException::new);
+
+        if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
+            throw new InvalidSongException(songUuid, "User cannot like own song");
+        }
+
+        songToLike.setLikes(songToLike.getLikes() + 1);
+        songRepository.saveAndFlush(songToLike);
+    }
+
+    public void unlike(String songUuid) {
+        User authUser = authService.getAuthenticatedUser();
+        Song songToLike = songRepository.findByUuid(songUuid).orElseThrow(RuntimeException::new);
+
+        if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
+            throw new InvalidSongException(songUuid, "User cannot like own song");
+        }
+
+        songToLike.setLikes(songToLike.getLikes() + 1);
+        songRepository.saveAndFlush(songToLike);
     }
 }
 
