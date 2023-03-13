@@ -1,4 +1,4 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.song;
 
 import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.entities.User;

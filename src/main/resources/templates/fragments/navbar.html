@@ -3,15 +3,11 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-
-
 <header th:fragment="navbar" id="header" class="fixed-top d-flex align-items-center">
     <div class="container">
         <div class="header-container d-flex align-items-center justify-content-between">
             <div class="logo">
-                <h1 class="text-light"><a href="index.html"><span>Bethany</span></a></h1>
-                <!-- Uncomment below if you prefer to use an image logo -->
-                <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+                <h1 class="text-light"><a href="index.html"><span>Mmusic</span></a></h1>
             </div>
 
             <nav id="navbar" class="navbar">
@@ -30,7 +26,12 @@
                         <a class="nav-link scrollto active" th:href="@{/song/add}">Add Song</a>
                     </li>
                     <li sec:authorize="isAuthenticated()">
-                        <a class="nav-link scrollto active" th:href="@{/users/logout}">Logout</a>
+                        <form
+                                th:method="post"
+                                th:action="@{/users/logout}">
+                            <input class="nav-link scrollto active" type="submit" value="Logout">
+                        </form>
+                        <!--                        <a class="nav-link scrollto active" th:href="@{/user/logout}">Logout</a>-->
                     </li>
 
                     <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
@@ -51,59 +52,14 @@
                             <li><a href="#">Drop Down 4</a></li>
                         </ul>
                     </li>
-                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                    <li><a class="getstarted scrollto" href="#about">Get Started</a></li>
+                    <li sec:authorize="isAuthenticated()">
+                        <a class="getstarted scrollto" th:href="@{/user/profile}">Profile</a>
+                    </li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
-            </nav><!-- .navbar -->
-
-        </div><!-- End Header Container -->
+            </nav>
+        </div>
     </div>
-</header><!-- End Header -->
-
-
-<!--<div th:fragment="navbar">-->
-
-<!--    <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">-->
-
-<!--        <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
-<!--            <ul class="navbar-nav mr-auto col-12 justify-content-between">-->
-<!--                <ul class="navbar-nav mr-auto col-12 justify-content-between">-->
-<!--                    <li class="nav-item" sec:authorize="hasRole('MUSICIAN')">-->
-<!--                        <a class="nav-link" th:href="@{/playlist/create}">Create Playlist</a>-->
-<!--                    </li>-->
-<!--                    <li class="nav-item" sec:authorize="hasRole('MUSICIAN')">-->
-<!--                        <a class="nav-link" th:href="@{/song/add}">Add Song</a>-->
-<!--                    </li>-->
-
-<!--                    &lt;!&ndash; Logout start &ndash;&gt;-->
-<!--                    <li class="nav-item" sec:authorize="isAuthenticated()">-->
-<!--                        <div class="form-inline my-2 my-lg-0 px-3">-->
-<!--                            <div class="text-white">Welcome,-->
-<!--                                <th:block sec:authentication="name"></th:block>-->
-<!--                                !-->
-<!--                            </div>-->
-<!--                            <form-->
-<!--                                    th:method="post"-->
-<!--                                    th:action="@{/users/logout}">-->
-<!--                                <input class="btn btn-link nav-link" type="submit" value="Logout">-->
-<!--                            </form>-->
-<!--                        </div>-->
-<!--                    </li>-->
-<!--                    &lt;!&ndash; EO: Logout start &ndash;&gt;-->
-
-<!--                    <li class="nav-item" sec:authorize="!isAuthenticated()">-->
-<!--                        <a class="nav-link" th:href="@{/users/register}">Register</a>-->
-<!--                    </li>-->
-<!--                    <li class="nav-item" sec:authorize="!isAuthenticated()">-->
-<!--                        <a class="nav-link" th:href="@{/users/login}">Login</a>-->
-<!--                    </li>-->
-
-<!--                </ul>-->
-<!--        </div>-->
-<!--    </nav>-->
-
-<!--</div>-->
-
+</header>
 </body>
 </html>

@@ -1,9 +1,9 @@
 package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.constants.Authorities;
-import bg.softuni.mmusic.model.dtos.AddSongDto;
-import bg.softuni.mmusic.model.dtos.SongDto;
-import bg.softuni.mmusic.model.dtos.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
+import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.SongService;
@@ -68,6 +68,8 @@ public class SongController {
         if (authService.getAuthenticatedUser()
                 .getOwnSongs().stream()
                 .noneMatch(song -> song.getUuid().equals(songToUpdate.getUuid()))) {
+
+            // TODO return error
         }
 
         SongDto songDto = songService.toSongDto(songToUpdate);

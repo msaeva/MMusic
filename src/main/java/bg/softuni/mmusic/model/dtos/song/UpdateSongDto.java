@@ -1,4 +1,4 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.song;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

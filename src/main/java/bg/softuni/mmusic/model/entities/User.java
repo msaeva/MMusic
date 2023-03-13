@@ -56,10 +56,13 @@ public class User extends BaseEntity {
     @ManyToMany
     private Set<Song> downloadSongs;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Song> favouriteSongs;
 
     @ManyToMany
+    private Set<Song> likedSongs;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Playlist> playlists;
 
     @Override

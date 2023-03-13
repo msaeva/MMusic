@@ -1,12 +1,13 @@
 package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.AddSongDto;
-import bg.softuni.mmusic.model.dtos.SongDto;
-import bg.softuni.mmusic.model.dtos.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
+import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
@@ -35,6 +36,13 @@ public class SongService {
 
     public void addSong(AddSongDto addSongDto) {
         User authUser = authService.getAuthenticatedUser();
+
+        if (authUser == null){
+            throw new NoSuchElementException("User should be authenticated to update song!");
+        }
+        if (authUser.getRoles().stream().anyMatch(user -> user.getRole().equals(Role.MUSICIAN))){
+            throw new NoSuchElementException("You do not have permissions to add a song");
+        }
 
         Optional<Style> byStyle = styleService.findByStyle(addSongDto.getStyle());
         if (byStyle.isEmpty()) {
@@ -95,6 +103,9 @@ public class SongService {
         if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
             throw new InvalidSongException(songUuid, "User cannot like own song");
         }
+        if (authUser.getLikedSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))){
+            throw new InvalidSongException(songUuid, "You have already like this song!");
+        }
 
         songToLike.setLikes(songToLike.getLikes() + 1);
         songRepository.saveAndFlush(songToLike);
@@ -106,6 +117,9 @@ public class SongService {
 
         if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
             throw new InvalidSongException(songUuid, "User cannot like own song");
+        }
+        if (authUser.getLikedSongs().stream().noneMatch(song -> song.getUuid().equals(songToLike.getUuid()))){
+            throw new InvalidSongException(songUuid, "You did not like this song!");
         }
 
         songToLike.setLikes(songToLike.getLikes() + 1);
