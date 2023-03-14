@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class PublicSimpleSongDto {
 
+    private String uuid;
     private String title;
 
     private String description;

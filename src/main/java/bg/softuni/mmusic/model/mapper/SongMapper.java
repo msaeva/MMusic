@@ -15,4 +15,7 @@ public interface SongMapper {
     ProfileDetailedSongDto toProfileDetailedSongDto(Song song);
 
     FavouriteSongDto toFavouriteSongDto(Song song);
+
+    UpdateSongDto toUpdateSongDto(Song songToUpdate);
+
 }

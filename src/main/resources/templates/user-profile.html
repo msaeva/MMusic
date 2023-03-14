@@ -180,16 +180,13 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <!--                                        <a th:href="@{/user/{uuid}(uuid${user.uuid})/profile}">Save Changes</a>-->
-                                        <!--                                        <button type="submit" class="btn btn-primary">Save Changes</button>-->
                                         <input type="submit" class="btn btn-info btn-lg" value="Update"/>
                                     </div>
-                                </form><!-- End Profile Edit Form -->
+                                </form>
 
                             </div>
 
                             <div class="tab-pane fade pt-3" id="profile-change-password">
-                                <!-- Change Password Form -->
                                 <form>
 
                                     <div class="row mb-3">
@@ -222,7 +219,7 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Change Password</button>
                                     </div>
-                                </form><!-- End Change Password Form -->
+                                </form>
 
                             </div>
 
@@ -232,16 +229,19 @@
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
                                             <div class="col-md-4">
-                                                <img src="https://picsum.photos/200/240" class="img-fluid rounded-start"
+                                                <img src="https://picsum.photos/200/240"
+                                                     class="img-fluid rounded-start"
                                                      alt="...">
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="card-body">
                                                     <h5 class="card-title" th:text="${song.getTitle()}"></h5>
                                                     <p class="card-text" th:text="${song.getDescription()}"></p>
+
+                                                    <a th:href="@{|/song/${song.getUuid()}/delete|}">Delete</a>
+                                                    <a th:href="@{|/song/${song.getUuid()}/update|}">Update</a>
+
                                                     <button type="button">Get Detailed Information</button>
-                                                    <button type="button">Update</button>
-                                                    <button type="button">Delete</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -261,7 +261,7 @@
                                             <div class="col-md-8">
                                                 <div class="card-body">
                                                     <h5 class="card-title" th:text="${playlist.getName()}"></h5>
-                                                    <!--                                                    <p class="card-text" th:text="${song.getDescription()}"></p>-->
+                                                    <!--  <p class="card-text" th:text="${song.getDescription()}"></p>-->
 
                                                 </div>
                                             </div>

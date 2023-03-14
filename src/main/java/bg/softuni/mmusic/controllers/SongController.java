@@ -72,7 +72,7 @@ public class SongController {
             // TODO return error
         }
 
-        SongDto songDto = songService.toSongDto(songToUpdate);
+        UpdateSongDto songDto = songService.toUpdateSongDto(songToUpdate);
         model.addAttribute("songDto", songDto);
 
         return "update-song";
@@ -95,10 +95,10 @@ public class SongController {
     }
 
 
-    @DeleteMapping("/{uuid}/delete")
+    @GetMapping("/{uuid}/delete")
     public String deleteSong(@PathVariable(name = "uuid") String uuid){
         songService.delete(uuid);
-        return "/index";
+        return "redirect:/index";
     }
 
 

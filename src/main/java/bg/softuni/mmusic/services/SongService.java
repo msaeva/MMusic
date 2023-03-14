@@ -86,7 +86,7 @@ public class SongService {
             throw new NoSuchElementException("User should own the song!");
         }
 
-        this.songRepository.delete(song.get());
+        this.songRepository.deleteByUuid(song.get().getUuid());
     }
 
     public Page<Song> getAll(SearchSongValidation validation) {
@@ -124,6 +124,10 @@ public class SongService {
 
         songToLike.setLikes(songToLike.getLikes() + 1);
         songRepository.saveAndFlush(songToLike);
+    }
+
+    public UpdateSongDto toUpdateSongDto(Song songToUpdate) {
+       return songMapper.toUpdateSongDto(songToUpdate);
     }
 }
 

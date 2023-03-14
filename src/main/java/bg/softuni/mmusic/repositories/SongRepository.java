@@ -19,6 +19,8 @@ public interface SongRepository extends JpaRepository<Song, String> {
     Optional<List<Song>> findAllByAuthorUuid(String uuid);
 
     Optional<List<Song>> findAllByAuthorUuidAndStatus(String uuid, SongStatus status);
+
+    void deleteByUuid(String uuid);
 }
 
 

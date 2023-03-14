@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ProfileDetailedSongDto {
 
+    private String uuid;
+
     private String title;
 
     private String description;
