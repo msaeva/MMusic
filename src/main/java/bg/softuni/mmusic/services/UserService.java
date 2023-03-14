@@ -114,8 +114,8 @@ public class UserService {
     public void update(User userToUpdate, UserProfileDto userProfileDto) {
         String[] fullName = userProfileDto.getFullName().split("\\s+");
 
-        userToUpdate.setEmail(userToUpdate.getEmail());
-        userToUpdate.setUsername(userToUpdate.getUsername());
+        userToUpdate.setEmail(userProfileDto.getEmail());
+        userToUpdate.setUsername(userProfileDto.getUsername());
         userToUpdate.setFirstName(fullName[0]);
         userToUpdate.setLastName(fullName[1]);
 

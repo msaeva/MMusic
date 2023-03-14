@@ -40,7 +40,7 @@ public class SongService {
         if (authUser == null){
             throw new NoSuchElementException("User should be authenticated to update song!");
         }
-        if (authUser.getRoles().stream().anyMatch(user -> user.getRole().equals(Role.MUSICIAN))){
+        if (authUser.getRoles().stream().noneMatch(user -> user.getRole().equals(Role.MUSICIAN))){
             throw new NoSuchElementException("You do not have permissions to add a song");
         }
 
