@@ -1,5 +1,6 @@
 package bg.softuni.mmusic.model.mapper;
 
+import bg.softuni.mmusic.model.dtos.UserProfileDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.model.entities.User;
 import org.mapstruct.Mapper;
@@ -9,4 +10,5 @@ public interface UserMapper {
 
     User userRegisterDtoToUser(UserRegisterDto userRegisterDto);
 
+    UserProfileDto toUserProfileDetailsDto(User user);
 }

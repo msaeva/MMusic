@@ -1,9 +1,6 @@
 package bg.softuni.mmusic.model.mapper;
 
-import bg.softuni.mmusic.model.dtos.AddSongDto;
-import bg.softuni.mmusic.model.dtos.ProfileDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.PublicSimpleSongDto;
-import bg.softuni.mmusic.model.dtos.SongDto;
+import bg.softuni.mmusic.model.dtos.song.*;
 import bg.softuni.mmusic.model.entities.Song;
 import org.mapstruct.Mapper;
 
@@ -16,4 +13,9 @@ public interface SongMapper {
     PublicSimpleSongDto toPublicSimpleSongDto(Song song);
 
     ProfileDetailedSongDto toProfileDetailedSongDto(Song song);
+
+    FavouriteSongDto toFavouriteSongDto(Song song);
+
+    UpdateSongDto toUpdateSongDto(Song songToUpdate);
+
 }

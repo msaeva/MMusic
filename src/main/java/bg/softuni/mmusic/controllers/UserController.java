@@ -1,18 +1,20 @@
 package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.model.dtos.ProfileDetailedPlaylistDto;
-import bg.softuni.mmusic.model.dtos.ProfileDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.PublicSimplePlaylistDto;
-import bg.softuni.mmusic.model.dtos.PublicSimpleSongDto;
+import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
+import bg.softuni.mmusic.model.dtos.song.ProfileDetailedSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicSimplePlaylistDto;
+import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -22,38 +24,55 @@ import java.util.List;
 public class UserController {
     private final AuthService authService;
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public UserController(AuthService authService, UserService userService) {
+    public UserController(AuthService authService, UserService userService, UserMapper userMapper) {
         this.authService = authService;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/profile")
-    public ModelAndView getProfile(ModelAndView modelAndView) {
+    public String getProfile(Model model) {
         User authUser = authService.getAuthenticatedUser();
+        UserProfileDto userProfileInfo = userService.getUserProfileInfo(authUser.getUuid());
+
         List<ProfileDetailedSongDto> userSongs = userService.getUserSongs(authUser);
         List<ProfileDetailedPlaylistDto> userPlaylists = userService.getUserPlaylist(authUser);
+        List<FavouriteSongDto> favouriteSongs = userService.getFavouriteSongs(authUser);
 
-        modelAndView.setViewName("user-profile");
-        modelAndView.addObject("songs", userSongs);
-        modelAndView.addObject("playlists", userPlaylists);
+        model.addAttribute("user", userProfileInfo);
+        model.addAttribute("songs", userSongs);
+        model.addAttribute("playlists", userPlaylists);
+        model.addAttribute("favouriteSongs", favouriteSongs);
 
-        return modelAndView;
+        return "user-profile";
     }
 
+    @PutMapping("{uuid}/update")
+    public String update(@PathVariable(name = "uuid") String uuid,
+                         @Valid UserProfileDto userProfileDto) {
+
+        User userToUpdate = userService.getUserByUuid(uuid);
+        userService.update(userToUpdate, userProfileDto);
+
+        // TODO
+        return "redirect:/user/profile";
+    }
+
+
     @GetMapping("/{uuid}/profile")
-    public ModelAndView getUserProfile(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
+    public String getUserProfile(@PathVariable(name = "uuid") String uuid, Model model) {
         User user = userService.getUserByUuid(uuid);
 
         List<PublicSimpleSongDto> userSongs = userService.getUserPublicSongs(user);
         List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylists(user);
 
-        modelAndView.setViewName("user-profile");
-        modelAndView.addObject("songs", userSongs);
-        modelAndView.addObject("playlists", userPlaylists);
+        model.addAttribute("songs", userSongs);
+        model.addAttribute("playlists", userPlaylists);
 
         //TODO create view
-        return modelAndView;
+        return "user-profile";
 
     }
 
@@ -62,7 +81,6 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable(name = "uuid") String uuid) {
 
         return ResponseEntity.ok(userService.getUserByUuid(uuid));
-
     }
 
 

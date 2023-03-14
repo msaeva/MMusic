@@ -1,13 +1,15 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.song;
 
-import bg.softuni.mmusic.model.entities.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PublicSimpleSongDto {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class FavouriteSongDto {
     private String title;
 
     private String description;
@@ -16,9 +18,6 @@ public class PublicSimpleSongDto {
 
     private String imageUrl;
 
-    private User author;
-
     private bg.softuni.mmusic.model.entities.Style Style;
 
-    private Integer favouriteCount;
 }

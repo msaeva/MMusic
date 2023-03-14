@@ -20,7 +20,7 @@ public class Playlist extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Song> songs;
 
     @ManyToOne

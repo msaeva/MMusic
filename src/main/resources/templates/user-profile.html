@@ -1,29 +1,304 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Profile</title>
-</head>
-<body>
-<div class="form-group col-md-6 mb-3">
-    <label for="songs" class="text-black-50 font-weight-bold">User songs</label>
-    <div id="songs">
-        <tr th:each="song : ${songs}">
-            <td th:text="${song.getTitle()}"/>
-            <td th:text="${song.getDescription()}"/>
-        </tr>
-    </div>
-</div>
+<head th:include="~{fragments/head::head}">
+    <header th:replace="~{fragments/navbar::navbar}"></header>
 
-<div class="form-group col-md-6 mb-3">
-    <label for="playlists" class="text-black-50 font-weight-bold">User playlists</label>
-    <div id="playlists">
-        <tr th:each="playlist : ${playlists}">
-            <td th:text="${playlist.getTitle()}"/>
-            <td th:text="${playlist.getDescription()}"/>
-        </tr>
-    </div>
-</div>
+<body style="margin-top: 5.2rem">
+
 </body>
+<main id="main" class="main">
+    <section class="section profile">
+        <div class="row">
+            <div class="col-xl-4">
+
+                <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+                        <img src="/img/profile_photo.jpg" alt="Profile" class="rounded-circle">
+                        <h2 th:text="${user.getFullName()}"></h2>
+
+                        <!--                        TODO set user Role-->
+                        <!--                        <h3 th:text="${user.getRole().name()}"></h3>-->
+                        <div class="social-links mt-2">
+                            <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- Bordered Tabs -->
+                        <ul class="nav nav-tabs nav-tabs-bordered">
+
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">
+                                    Overview
+                                </button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit
+                                    Profile
+                                </button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#own-song"> Own Songs
+                                </button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#own-playlist"> Own
+                                    Playlists
+                                </button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#favourite"> Favourite
+                                </button>
+                            </li>
+
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">
+                                    Change Password
+                                </button>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content pt-2">
+
+                            <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                <h5 class="card-title">About</h5>
+                                <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores
+                                    cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure
+                                    rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at
+                                    unde.</p>
+
+                                <h5 class="card-title">Profile Details</h5>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
+                                    <div class="col-lg-9 col-md-8" th:text="${user.getFullName()}"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Username</div>
+                                    <div class="col-lg-9 col-md-8" th:text="${user.getUsername()}"></div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Address</div>
+                                    <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Email</div>
+                                    <div class="col-lg-9 col-md-8" th:text="${user.getEmail()}"></div>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                                <form th:object="${user}"
+                                      th:method="PUT"
+                                      th:action="@{|/user/${user.getUuid()}/update|}"
+                                >
+                                    <div class="row mb-3">
+                                        <label class="col-md-4 col-lg-3 col-form-label">Profile
+                                            Image</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <img src="/img/profile_photo.jpg" alt="Profile">
+                                            <div class="pt-2">
+                                                <a href="#" class="btn btn-primary btn-sm"
+                                                   title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                                                <a href="#" class="btn btn-danger btn-sm"
+                                                   title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-8 col-lg-9">
+                                            <input th:field="*{uuid}"
+                                                   type="hidden">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="fullName"
+                                                   th:field="*{fullName}"
+                                                   type="text"
+                                                   class="form-control"
+                                                   id="fullName"
+                                                   value="fullName">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="username" class="col-md-4 col-lg-3 col-form-label">Username</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="username"
+                                                   th:field="*{username}"
+                                                   type="text"
+                                                   class="form-control"
+                                                   id="username"
+                                                   value="username">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="country" type="text" class="form-control" id="Country"
+                                                   value="USA">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="address" type="text" class="form-control" id="Address"
+                                                   value="A108 Adam Street, New York, NY 535022">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input th:field="*{email}"
+                                                   name="email"
+                                                   type="email" class="form-control" id="Email"
+                                                   value="email">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <input type="submit" class="btn btn-info btn-lg" value="Update"/>
+                                    </div>
+                                </form>
+
+                            </div>
+
+                            <div class="tab-pane fade pt-3" id="profile-change-password">
+                                <form>
+
+                                    <div class="row mb-3">
+                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current
+                                            Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="password" type="password" class="form-control"
+                                                   id="currentPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New
+                                            Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="newpassword" type="password" class="form-control"
+                                                   id="newPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New
+                                            Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="renewpassword" type="password" class="form-control"
+                                                   id="renewPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                    </div>
+                                </form>
+
+                            </div>
+
+                            <div class="tab-pane fade pt-3" id="own-song">
+                                <div class="d-flex flex-wrap mx-auto w-100">
+                                    <div th:each="song : ${songs}"
+                                         class="card mb-3" style="max-width: 540px;">
+                                        <div class="row g-0">
+                                            <div class="col-md-4">
+                                                <img src="https://picsum.photos/200/240"
+                                                     class="img-fluid rounded-start"
+                                                     alt="...">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${song.getTitle()}"></h5>
+                                                    <p class="card-text" th:text="${song.getDescription()}"></p>
+
+                                                    <a th:href="@{|/song/${song.getUuid()}/delete|}">Delete</a>
+                                                    <a th:href="@{|/song/${song.getUuid()}/update|}">Update</a>
+
+                                                    <button type="button">Get Detailed Information</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade pt-3" id="own-playlist">
+                                <div class="d-flex flex-wrap mx-auto w-100">
+                                    <div th:each="playlist : ${playlists}"
+                                         class="card mb-3" style="max-width: 540px;">
+                                        <div class="row g-0">
+                                            <div class="col-md-4">
+                                                <img src="https://picsum.photos/200/240" class="img-fluid rounded-start"
+                                                     alt="...">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${playlist.getName()}"></h5>
+                                                    <!--  <p class="card-text" th:text="${song.getDescription()}"></p>-->
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade pt-3" id="favourite">
+                                <div class="d-flex flex-wrap mx-auto w-100">
+                                    <div th:each="favourite : ${favouriteSongs}"
+                                         class="card mb-3" style="max-width: 540px;">
+                                        <div class="row g-0">
+                                            <div class="col-md-4">
+                                                <img src="https://picsum.photos/200/240" class="img-fluid rounded-start"
+                                                     alt="...">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" th:text="${favourite.getTitle()}"></h5>
+                                                    <p class="card-text" th:text="${favourite.getDescription()}"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
 </html>

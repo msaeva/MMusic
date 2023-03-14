@@ -1,9 +1,11 @@
 package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.model.dtos.ProfileDetailedPlaylistDto;
-import bg.softuni.mmusic.model.dtos.ProfileDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.PublicSimplePlaylistDto;
-import bg.softuni.mmusic.model.dtos.PublicSimpleSongDto;
+import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
+import bg.softuni.mmusic.model.dtos.song.ProfileDetailedSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicSimplePlaylistDto;
+import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
@@ -12,6 +14,7 @@ import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.UserNotFoundException;
 import bg.softuni.mmusic.model.mapper.PlaylistMapper;
 import bg.softuni.mmusic.model.mapper.SongMapper;
+import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -28,18 +32,18 @@ public class UserService {
     private final PlaylistRepository playlistRepository;
     private final SongMapper songMapper;
     private final PlaylistMapper playlistMapper;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, SongRepository songRepository, PlaylistRepository playlistRepository, SongMapper songMapper, PlaylistMapper playlistMapper) {
+    public UserService(UserRepository userRepository, SongRepository songRepository, PlaylistRepository playlistRepository, SongMapper songMapper, PlaylistMapper playlistMapper, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.playlistRepository = playlistRepository;
         this.songMapper = songMapper;
         this.playlistMapper = playlistMapper;
+        this.userMapper = userMapper;
+
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
     public List<ProfileDetailedSongDto> getUserSongs(User authUser) {
         Optional<List<Song>> userSongs =
@@ -67,6 +71,16 @@ public class UserService {
         return userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException(uuid));
     }
 
+    public UserProfileDto getUserProfileInfo(String uuid) {
+        User user = getUserByUuid(uuid);
+        UserProfileDto userProfileDetailsDto = userMapper.toUserProfileDetailsDto(user);
+        userProfileDetailsDto.setFullName(user.getFirstName() + " " + user.getLastName());
+
+        // TODO set user role
+        return userProfileDetailsDto;
+    }
+
+
     public List<PublicSimpleSongDto> getUserPublicSongs(User user) {
         Optional<List<Song>> songs = songRepository.findAllByAuthorUuidAndStatus(user.getUuid(), SongStatus.PUBLIC);
         if (songs.isEmpty()) {
@@ -87,6 +101,25 @@ public class UserService {
         }
 
         return playlists.get().stream().map(playlistMapper::toPublicSimplePlaylistDto).toList();
+    }
+
+    public List<FavouriteSongDto> getFavouriteSongs(User authUser) {
+        Set<Song> favouriteSongs = authUser.getFavouriteSongs();
+        if (favouriteSongs.isEmpty()) {
+            //TODO return message like "you don't have any songs added to favorites list"
+        }
+        return favouriteSongs.stream().map(songMapper::toFavouriteSongDto).toList();
+    }
+
+    public void update(User userToUpdate, UserProfileDto userProfileDto) {
+        String[] fullName = userProfileDto.getFullName().split("\\s+");
+
+        userToUpdate.setEmail(userProfileDto.getEmail());
+        userToUpdate.setUsername(userProfileDto.getUsername());
+        userToUpdate.setFirstName(fullName[0]);
+        userToUpdate.setLastName(fullName[1]);
+
+        userRepository.saveAndFlush(userToUpdate);
     }
 }
 
