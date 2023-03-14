@@ -1,6 +1,6 @@
 package bg.softuni.mmusic.controllers;
 
-import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
+import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.mapper.SongMapper;
@@ -27,9 +27,9 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public ModelAndView getHome(ModelAndView modelAndView, @Valid SearchSongValidation validation) {
+    public ModelAndView getHome(ModelAndView modelAndView, @Valid PublicSongValidation validation) {
 
-        Page<Song> songs = songService.getAll(validation);
+        Page<Song> songs = songService.getAllPublic(validation);
 
         Pagination<List<PublicSimpleSongDto>> pageableDto =
                 new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
