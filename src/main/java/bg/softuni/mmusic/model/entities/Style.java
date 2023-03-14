@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +24,10 @@ public class Style extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private StyleType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Style parent;
+
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    private Set<Style> children;
 }
