@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserProfileDto {
 
-//    @NotNull
+    @NotNull
     private String uuid;
 
     @Size(min = 4, max = 12)
@@ -29,6 +29,9 @@ public class UserProfileDto {
     @Email
     @NotNull
     private String email;
+
+    @Size(max = 300)
+    private String about;
 
     private Role role;
 }

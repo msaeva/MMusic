@@ -44,6 +44,10 @@ public class User extends BaseEntity {
     @Size(min = 5)
     private String confirmPassword;
 
+    @Size(min = 5, max = 300)
+    @Column()
+    private String about;
+
     @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();
 

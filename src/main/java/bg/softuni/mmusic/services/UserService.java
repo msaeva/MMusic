@@ -118,6 +118,7 @@ public class UserService {
         userToUpdate.setUsername(userProfileDto.getUsername());
         userToUpdate.setFirstName(fullName[0]);
         userToUpdate.setLastName(fullName[1]);
+        userToUpdate.setAbout(userToUpdate.getAbout());
 
         userRepository.saveAndFlush(userToUpdate);
     }

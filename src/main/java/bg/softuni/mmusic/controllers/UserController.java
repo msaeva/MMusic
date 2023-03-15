@@ -11,6 +11,7 @@ import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,15 +50,17 @@ public class UserController {
         return "user-profile";
     }
 
-    @PutMapping("{uuid}/update")
-    public String update(@PathVariable(name = "uuid") String uuid,
-                         @Valid UserProfileDto userProfileDto) {
+    @PutMapping("/{uuid}/update")
+    public ModelAndView update(@PathVariable(name = "uuid") String uuid,
+                              @Valid UserProfileDto userProfileDto,
+                              ModelAndView modelAndView) {
+
+        modelAndView.setViewName("redirect:/user/profile");
 
         User userToUpdate = userService.getUserByUuid(uuid);
         userService.update(userToUpdate, userProfileDto);
 
-        // TODO
-        return "redirect:/user/profile";
+        return modelAndView;
     }
 
 
@@ -71,17 +74,8 @@ public class UserController {
         model.addAttribute("songs", userSongs);
         model.addAttribute("playlists", userPlaylists);
 
-        //TODO create view
         return "user-profile";
 
     }
-
-    @GetMapping("/{uuid}")
-    @ResponseBody
-    public ResponseEntity<User> getUser(@PathVariable(name = "uuid") String uuid) {
-
-        return ResponseEntity.ok(userService.getUserByUuid(uuid));
-    }
-
 
 }
