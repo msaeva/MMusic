@@ -11,7 +11,9 @@ import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.Pagination;
 import bg.softuni.mmusic.services.SongService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
+@Slf4j
 @RequestMapping("song")
 public class SongController {
 
@@ -105,10 +108,16 @@ public class SongController {
         return "/index";
     }
 
-    @GetMapping("/{uuid}/delete")
-    public String deleteSong(@PathVariable(name = "uuid") String uuid){
-        songService.delete(uuid);
-        return "redirect:/index";
+    @DeleteMapping("/{uuid}/delete")
+    @ResponseBody
+    public HttpStatus deleteSong(@PathVariable(name = "uuid") String uuid) {
+        try {
+            songService.delete(uuid);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
+        return HttpStatus.OK;
     }
 
     @GetMapping("/search")

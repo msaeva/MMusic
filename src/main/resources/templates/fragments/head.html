@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link href='https://fonts.googleapis.com/css?family=Archivo Narrow' rel='stylesheet'>
 <head th:fragment="head">
   <meta charset="UTF-8">
+  <meta
+          id="csrf"
+          type="hidden"
+          th:name="${_csrf.headerName}"
+          th:value="${_csrf.token}" />
+
   <title>Mmusic</title>
 <!--  <link rel="stylesheet" href="/css/reset-css.css"/>-->
 <!--  <link rel="stylesheet" href="/css/bootstrap.min.css"/>-->
-
 
   <link href="/vendor/aos/aos.css" rel="stylesheet">
   <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

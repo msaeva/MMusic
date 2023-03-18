@@ -13,6 +13,7 @@ import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.SongRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class SongService {
     private final SongMapper songMapper;
@@ -82,17 +84,14 @@ public class SongService {
             throw new NoSuchElementException("User should be authenticated to delete song!");
         }
 
-        Optional<Song> song = songRepository.findByUuid(uuid);
-        if (song.isEmpty()) {
-            throw new NoSuchElementException("Song with that id does not exist!");
-        }
+        Song song = songRepository.findByUuid(uuid)
+                                  .orElseThrow(() -> new NoSuchElementException("Song with that id does not exist!"));
 
         if (authUser.getOwnSongs().stream()
-                .noneMatch(s -> s.getUuid().equals(song.get().getUuid()))) {
+                .noneMatch(s -> s.getUuid().equals(song.getUuid()))) {
             throw new NoSuchElementException("User should own the song!");
         }
-
-        this.songRepository.deleteByUuid(song.get().getUuid());
+        this.songRepository.delete(song);
     }
 
     public Page<Song> getAllPublic(PublicSongValidation validation) {

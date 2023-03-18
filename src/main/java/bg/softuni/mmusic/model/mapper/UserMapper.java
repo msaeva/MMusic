@@ -4,11 +4,14 @@ import bg.softuni.mmusic.model.dtos.UserProfileDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.model.entities.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring") // Имплементацията на UserMapper ще бъде изложена като Bean
 public interface UserMapper {
 
     User userRegisterDtoToUser(UserRegisterDto userRegisterDto);
 
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "fullName", ignore = true)
     UserProfileDto toUserProfileDetailsDto(User user);
 }

@@ -22,7 +22,7 @@ logging:
       hibernate:
         type:
           descriptor: TRACE
-        SQL: DEBUG
+        SQL: INFO
       nodeValue: WARN
     blog: WARN
 server:

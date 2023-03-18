@@ -9,7 +9,9 @@ import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.entities.UserRole;
 import bg.softuni.mmusic.model.enums.PlaylistStatus;
+import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.UserNotFoundException;
 import bg.softuni.mmusic.model.mapper.PlaylistMapper;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -76,7 +79,9 @@ public class UserService {
         UserProfileDto userProfileDetailsDto = userMapper.toUserProfileDetailsDto(user);
         userProfileDetailsDto.setFullName(user.getFirstName() + " " + user.getLastName());
 
-        // TODO set user role
+        Set<Role> roles = user.getRoles().stream().map(UserRole::getRole).collect(Collectors.toSet());
+        userProfileDetailsDto.setRoles(roles);
+
         return userProfileDetailsDto;
     }
 
@@ -114,11 +119,9 @@ public class UserService {
     public void update(User userToUpdate, UserProfileDto userProfileDto) {
         String[] fullName = userProfileDto.getFullName().split("\\s+");
 
-        userToUpdate.setEmail(userProfileDto.getEmail());
-        userToUpdate.setUsername(userProfileDto.getUsername());
         userToUpdate.setFirstName(fullName[0]);
         userToUpdate.setLastName(fullName[1]);
-        userToUpdate.setAbout(userToUpdate.getAbout());
+        userToUpdate.setAbout(userProfileDto.getAbout());
 
         userRepository.saveAndFlush(userToUpdate);
     }
