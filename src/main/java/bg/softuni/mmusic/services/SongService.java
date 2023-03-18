@@ -1,5 +1,6 @@
 package bg.softuni.mmusic.services;
 
+import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
 import bg.softuni.mmusic.model.dtos.song.AddSongDto;
 import bg.softuni.mmusic.model.dtos.song.SongDto;
@@ -12,14 +13,18 @@ import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.SongRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class SongService {
     private final SongMapper songMapper;
@@ -37,10 +42,10 @@ public class SongService {
     public void addSong(AddSongDto addSongDto) {
         User authUser = authService.getAuthenticatedUser();
 
-        if (authUser == null){
+        if (authUser == null) {
             throw new NoSuchElementException("User should be authenticated to update song!");
         }
-        if (authUser.getRoles().stream().noneMatch(user -> user.getRole().equals(Role.MUSICIAN))){
+        if (authUser.getRoles().stream().noneMatch(user -> user.getRole().equals(Role.MUSICIAN))) {
             throw new NoSuchElementException("You do not have permissions to add a song");
         }
 
@@ -67,29 +72,29 @@ public class SongService {
     public void update(Song songToUpdate, UpdateSongDto songDto) {
         songToUpdate.setTitle(songDto.getTitle());
         songToUpdate.setDescription(songDto.getDescription());
+        songToUpdate.setStyle(songDto.getStyle());
+        songToUpdate.setStatus(songDto.getStatus());
 
         songRepository.saveAndFlush(songToUpdate);
     }
+
     public void delete(String uuid) {
         User authUser = authService.getAuthenticatedUser();
-        if (authUser == null){
+        if (authUser == null) {
             throw new NoSuchElementException("User should be authenticated to delete song!");
         }
 
-        Optional<Song> song = songRepository.findByUuid(uuid);
-        if (song.isEmpty()){
-            throw new NoSuchElementException("Song with that id does not exist!");
-        }
+        Song song = songRepository.findByUuid(uuid)
+                                  .orElseThrow(() -> new NoSuchElementException("Song with that id does not exist!"));
 
         if (authUser.getOwnSongs().stream()
-                .noneMatch(s -> s.getUuid().equals(song.get().getUuid()))){
+                .noneMatch(s -> s.getUuid().equals(song.getUuid()))) {
             throw new NoSuchElementException("User should own the song!");
         }
-
-        this.songRepository.deleteByUuid(song.get().getUuid());
+        this.songRepository.delete(song);
     }
 
-    public Page<Song> getAll(SearchSongValidation validation) {
+    public Page<Song> getAllPublic(PublicSongValidation validation) {
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
 
         return songRepository.findAllByStatus(SongStatus.PUBLIC, pageable);
@@ -103,7 +108,7 @@ public class SongService {
         if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
             throw new InvalidSongException(songUuid, "User cannot like own song");
         }
-        if (authUser.getLikedSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))){
+        if (authUser.getLikedSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
             throw new InvalidSongException(songUuid, "You have already like this song!");
         }
 
@@ -118,7 +123,7 @@ public class SongService {
         if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
             throw new InvalidSongException(songUuid, "User cannot like own song");
         }
-        if (authUser.getLikedSongs().stream().noneMatch(song -> song.getUuid().equals(songToLike.getUuid()))){
+        if (authUser.getLikedSongs().stream().noneMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
             throw new InvalidSongException(songUuid, "You did not like this song!");
         }
 
@@ -127,7 +132,22 @@ public class SongService {
     }
 
     public UpdateSongDto toUpdateSongDto(Song songToUpdate) {
-       return songMapper.toUpdateSongDto(songToUpdate);
+        return songMapper.toUpdateSongDto(songToUpdate);
+    }
+
+    public Page<Song> getAll(SearchSongValidation validation) {
+        List<String> sorts = validation.getSort() != null ? validation.getSort() : List.of();
+
+        List<Sort.Order> orders = sorts.stream()
+                .map(sort -> sort.split(":"))
+                .map(sort -> {
+                    Sort.Direction direction = Integer.parseInt(sort[1]) >= 0 ? Sort.Direction.DESC : Sort.Direction.ASC;
+                    return new Sort.Order(direction, sort[0]);
+                }).toList();
+
+        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount(), Sort.by(orders));
+        return songRepository.findAll(pageable);
+
     }
 }
 

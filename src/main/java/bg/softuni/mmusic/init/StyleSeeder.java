@@ -19,7 +19,7 @@ public class StyleSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (styleRepository.count() == 0){
             for(StyleType type : StyleType.values()){
-                styleRepository.saveAndFlush(new Style("description", type));
+                styleRepository.saveAndFlush(new Style("description", type, null, null));
             }
         }
     }

@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:include="~{fragments/head::head}">
     <header th:replace="~{fragments/navbar::navbar}"></header>
-
+</head>
 <body style="margin-top: 5.2rem">
 
 </body>
@@ -17,9 +17,9 @@
 
                         <img src="/img/profile_photo.jpg" alt="Profile" class="rounded-circle">
                         <h2 th:text="${user.getFullName()}"></h2>
-
-                        <!--                        TODO set user Role-->
-                        <!--                        <h3 th:text="${user.getRole().name()}"></h3>-->
+                        <h3 style="margin-top: 1rem" th:each="role : ${user.getRoles()}"
+                            th:text="${role}">
+                        </h3>
                         <div class="social-links mt-2">
                             <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                             <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
@@ -75,11 +75,7 @@
 
                             <div class="tab-pane fade show active profile-overview" id="profile-overview">
                                 <h5 class="card-title">About</h5>
-                                <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores
-                                    cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure
-                                    rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at
-                                    unde.</p>
-
+                                <p class="small fst-italic" th:text="${user.getAbout()}"></p>
                                 <h5 class="card-title">Profile Details</h5>
 
                                 <div class="row">
@@ -101,14 +97,13 @@
                                     <div class="col-lg-3 col-md-4 label">Email</div>
                                     <div class="col-lg-9 col-md-8" th:text="${user.getEmail()}"></div>
                                 </div>
-
                             </div>
 
                             <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
                                 <form th:object="${user}"
-                                      th:method="PUT"
-                                      th:action="@{|/user/${user.getUuid()}/update|}"
-                                >
+                                      th:method="put"
+                                      th:action="@{|/user/${user.getUuid()}/update|}">
+
                                     <div class="row mb-3">
                                         <label class="col-md-4 col-lg-3 col-form-label">Profile
                                             Image</label>
@@ -149,23 +144,22 @@
                                                    type="text"
                                                    class="form-control"
                                                    id="username"
-                                                   value="username">
+                                                   value="username"
+                                                   readonly
+                                            >
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                                        <label for="about" class="col-md-4 col-lg-3 col-form-label">About me</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="country" type="text" class="form-control" id="Country"
-                                                   value="USA">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="address" type="text" class="form-control" id="Address"
-                                                   value="A108 Adam Street, New York, NY 535022">
+                                            <textarea id="about"
+                                                      th:field="*{about}"
+                                                      name="about"
+                                                      aria-label="With textarea"
+                                                      class="form-control"
+                                                      placeholder="Write information about yourself">
+                                             </textarea>
                                         </div>
                                     </div>
 
@@ -174,8 +168,27 @@
                                         <div class="col-md-8 col-lg-9">
                                             <input th:field="*{email}"
                                                    name="email"
-                                                   type="email" class="form-control" id="Email"
-                                                   value="email">
+                                                   type="email"
+                                                   class="form-control"
+                                                   id="Email"
+                                                   value="email"
+                                                   readonly
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="roles" class="col-md-4 col-lg-3 col-form-label">Role</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input th:each="role : ${user.getRoles()}"
+                                                   th:value="${role}"
+                                                   name="role"
+                                                   type="text"
+                                                   class="form-control"
+                                                   id="roles"
+                                                   value="role"
+                                                   readonly
+                                            >
                                         </div>
                                     </div>
 
@@ -237,8 +250,10 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title" th:text="${song.getTitle()}"></h5>
                                                     <p class="card-text" th:text="${song.getDescription()}"></p>
-
-                                                    <a th:href="@{|/song/${song.getUuid()}/delete|}">Delete</a>
+                                                    <button type="button"
+                                                            th:attr="data-song-uuid=${song.getUuid()}"
+                                                            class="btn btn-danger delete-song-btn">Delete
+                                                    </button>
                                                     <a th:href="@{|/song/${song.getUuid()}/update|}">Update</a>
 
                                                     <button type="button">Get Detailed Information</button>
@@ -270,6 +285,7 @@
                                 </div>
                             </div>
 
+
                             <div class="tab-pane fade pt-3" id="favourite">
                                 <div class="d-flex flex-wrap mx-auto w-100">
                                     <div th:each="favourite : ${favouriteSongs}"
@@ -300,5 +316,5 @@
     </section>
 
 </main>
-
+<script src="/js/events.js"></script>
 </html>

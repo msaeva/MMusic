@@ -11,7 +11,7 @@
         Navbar
     </div>
 
-    <div class="container">
+    <div class="container" style="margin-top: 7rem">
         <h2 class="text-center text-black-50">Register User</h2>
         <form class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
               th:method="POST"
@@ -19,7 +19,7 @@
               th:object="${registerDto}">
             <div class="row">
                 <div class="form-group col-md-6 mb-3">
-                    <label for="username" class="text-white font-weight-bold">Username</label>
+                    <label for="username" class="text-black-50 font-weight-bold">Username</label>
                     <input
                             th:field="*{username}"
                             th:errorclass="is-invalid"
@@ -28,12 +28,12 @@
                             type="text"
                             class="form-control"
                             placeholder="Username"/>
-                    <small class="invalid-feedback errors alert text-danger">
-                        Username length must be between 4 and 12 symbols </small>
+                    <small th:each="err : ${#fields.errors('username')}" th:text="${err}"
+                           class="invalid-feedback text-danger" />
                 </div>
 
                 <div class="form-group col-md-6 mb-3">
-                    <label for="firstName" class="text-white font-weight-bold">First Name</label>
+                    <label for="firstName" class="text-black-50 font-weight-bold">First Name</label>
                     <input
                             id="firstName"
                             name="firstName"
@@ -43,11 +43,11 @@
                             th:field="*{firstName}"
                             th:errorclass="is-invalid"/>
                     <small class="invalid-feedback text-danger">
-                        First name length must be between 4 and 12 symbols </small>
+                        First name length must be between 4 and 12 symbols! </small>
                 </div>
 
                 <div class="form-group col-md-6 mb-3">
-                    <label for="lastName" class="text-white font-weight-bold">Last Name</label>
+                    <label for="lastName" class="text-black-50 font-weight-bold">Last Name</label>
                     <input id="lastName"
                            name="lastName"
                            type="text" min="2" max="20" class="form-control"
@@ -55,35 +55,36 @@
                            th:field="*{lastName}"
                            th:errorclass="is-invalid"/>
                     <small class="invalid-feedback text-danger">
-                        Last name length must be between 4 and 12 symbols </small>
+                        Last name length must be between 4 and 12 symbols! </small>
                 </div>
 
             </div>
             <div class="row">
                 <div class="form-group col-md-6 mb-3">
-                    <label for="email" class="text-white font-weight-bold">Email</label>
+                    <label for="email" class="text-black-50 font-weight-bold">Email</label>
                     <input id="email"
                            name="email"
                            type="text" min="2" max="20" class="form-control"
                            placeholder="Email"
                            th:field="*{email}"
                            th:errorclass="is-invalid"/>
-                    <small class="invalid-feedback text-danger">
-                        Email must contains '@' </small>
+
+                        <small th:each="err : ${#fields.errors('email')}" th:text="${err}"
+                            class="invalid-feedback text-danger" />
                 </div>
                 <div class="form-group col-md-6 mb-3">
-                    <label for="password" class="text-white font-weight-bold">Password</label>
+                    <label for="password" class="text-black-50 font-weight-bold">Password</label>
                     <input id="password"
                            name="password"
                            type="password" min="2" max="20" class="form-control"
                            placeholder="Password"
                            th:field="*{password}"
                            th:errorclass="is-invalid"/>
-                    <small class="invalid-feedback text-danger">Password length must be minimum 5 symbols </small>
+                    <small class="invalid-feedback text-danger">Password length must be minimum 5 symbols! </small>
                 </div>
             </div>
             <div class="form-group col-md-6 mb-3">
-                <label for="confirmPassword" class="text-white font-weight-bold">Confirm Password</label>
+                <label for="confirmPassword" class="text-black-50 font-weight-bold">Confirm Password</label>
                 <input id="confirmPassword"
                        name="confirmPassword"
                        type="password" min="2" max="20" class="form-control"
@@ -99,7 +100,8 @@
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label for="roles" class="text-black-50 font-weight-bold">Choose Roles</label>
-                <select id="roles" name="roles" multiple>
+                <select id="roles" name="roles" class="form-select" multiple aria-label="multiple select example">
+                    <option selected>Choose roles</option>
                     <option th:each="role : ${T(bg.softuni.mmusic.model.enums.Role).values()}"
                             th:value="${role}"
                             th:text="${role}">role

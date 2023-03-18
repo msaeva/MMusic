@@ -11,11 +11,12 @@ import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -49,14 +50,14 @@ public class UserController {
         return "user-profile";
     }
 
-    @PutMapping("{uuid}/update")
+
+    @PutMapping("/{uuid}/update")
     public String update(@PathVariable(name = "uuid") String uuid,
                          @Valid UserProfileDto userProfileDto) {
 
         User userToUpdate = userService.getUserByUuid(uuid);
         userService.update(userToUpdate, userProfileDto);
 
-        // TODO
         return "redirect:/user/profile";
     }
 
@@ -65,23 +66,15 @@ public class UserController {
     public String getUserProfile(@PathVariable(name = "uuid") String uuid, Model model) {
         User user = userService.getUserByUuid(uuid);
 
+
         List<PublicSimpleSongDto> userSongs = userService.getUserPublicSongs(user);
         List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylists(user);
 
         model.addAttribute("songs", userSongs);
         model.addAttribute("playlists", userPlaylists);
 
-        //TODO create view
         return "user-profile";
 
     }
-
-    @GetMapping("/{uuid}")
-    @ResponseBody
-    public ResponseEntity<User> getUser(@PathVariable(name = "uuid") String uuid) {
-
-        return ResponseEntity.ok(userService.getUserByUuid(uuid));
-    }
-
 
 }

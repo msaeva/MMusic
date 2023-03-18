@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head::head}"></head>
 <body>
-<div class="content-wrapper">
+<div class="content-wrapper" style="padding-top: 7rem">
     <div th:replace="~{fragments/navbar :: navbar}">
         Navbar
     </div>
@@ -15,8 +15,8 @@
                 th:action="@{|/song/${uuid}/update|}"
                 th:object="${songDto}"
                 class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center">
-            <div class="form-group">
-                <label for="title" class="text-black-50 font-weight-bold">write new title</label>
+            <div class="form-group" style="margin-bottom: 2rem">
+                <label for="title" class="text-black-50 font-weight-bold">Title</label>
                 <input id="title"
                        th:field="*{title}"
                        name="title"
@@ -26,21 +26,21 @@
                        placeholder="title"
                 />
             </div>
-            <div class="form-group">
-                <label for="description" class="text-black-50 font-weight-bold">write new description</label>
-                <input
-                        id="description"
+            <div class="input-group" style="margin-bottom: 2rem">
+                <span class="input-group-text">Description</span>
+                <textarea
                         th:field="*{description}"
                         name="description"
-                        type="text"
-                        min="2"
                         class="form-control"
-                        placeholder="Description"
-                />
+                        aria-label="With textarea">
+
+                </textarea>
             </div>
-            <div class="form-group col-md-6 mb-3">
-                <label id="style" for="style" class="text-black-50 font-weight-bold">Select Song Style</label>
-                <select name="style" multiple>
+            <div class="form-group" style="margin-bottom: 2rem">
+                <label for="style" class="text-black-50 font-weight-bold">Select Song Style</label>
+                <select id="style"
+                        th:field="*{style}"
+                        class="form-select">
 
                     <option th:each="style : ${T(bg.softuni.mmusic.model.enums.StyleType).values()}"
                             th:value="${style}"
@@ -49,17 +49,10 @@
                 </select>
             </div>
 
-            <div class="form-group col-md-6 mb-3">
-                <label  for="status" class="text-black-50 font-weight-bold">Select Song Status</label>
-                <input id="status"
-                       th:field="*{status}"
-                       name="status"
-                       type="text" min="2"
-                       max="50"
-                       class="form-control"
-                       placeholder="status"
-                />
-                <select name="status" multiple>
+            <div class="form-group" style="margin-bottom: 2rem">
+                <label  for="status"
+                        class="text-black-50 font-weight-bold">Select Song Status</label>
+                <select id="status"  th:field="*{status}" class="form-select" aria-label="Default select example">
                     <option th:each="status : ${T(bg.softuni.mmusic.model.enums.SongStatus).values()}"
                             th:value="${status}"
                             th:text="${status}">status

@@ -9,13 +9,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserProfileDto {
 
-//    @NotNull
+    @NotNull
     private String uuid;
 
     @Size(min = 4, max = 12)
@@ -30,5 +32,8 @@ public class UserProfileDto {
     @NotNull
     private String email;
 
-    private Role role;
+    @Size(max = 300)
+    private String about;
+
+    private Set<Role> roles;
 }
