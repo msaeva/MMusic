@@ -65,19 +65,29 @@ public class AuthController {
                            RedirectAttributes redirectAttributes) {
         if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
             bindingResult.addError(new FieldError("differentConfirmPassword",
-                    "confirmPassword", "Passwords must be the same"));
+                    "confirmPassword", "Passwords must be the same!"));
         }
 
+        if (authService.checkIfEmailExist(registerDto.getEmail())) {
+            bindingResult
+                    .addError(new FieldError("emailExist",
+                            "email", "Email is already taken!"));
+        }
+        if (authService.checkIfUsernameExist(registerDto.getUsername())) {
+            bindingResult
+                    .addError(new FieldError("usernameExist",
+                            "username", "Username is already taken. Choose another one!"));
+        }
 
-        if (bindingResult.hasErrors() || !authService.register(registerDto)) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerDto", registerDto);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto", bindingResult);
-
-            log.info("{}", bindingResult.getErrorCount());
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDto",
+                    bindingResult);
 
             return "redirect:/users/register";
         }
-
+        authService.register(registerDto);
         return "redirect:/users/login";
     }
+
 }

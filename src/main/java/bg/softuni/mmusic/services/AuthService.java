@@ -53,12 +53,8 @@ public class AuthService {
     }
 
 
-    public boolean register(UserRegisterDto registerDto) {
+    public void register(UserRegisterDto registerDto) {
 
-        if (userRepository.findByUsername(registerDto.getUsername()).isPresent()
-                || userRepository.findByEmail(registerDto.getUsername()).isPresent()) {
-            return false;
-        }
         Set<UserRole> userRoles = registerDto.getRoles().stream().map(roleRepository::findByRole)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -69,8 +65,6 @@ public class AuthService {
         userToSave.setRoles(userRoles);
 
         userRepository.save(userToSave);
-
-        return true;
     }
 
     public User getAuthenticatedUser() {
@@ -78,6 +72,14 @@ public class AuthService {
             return userRepository.findByUsername(details.getUsername())
                     .orElseThrow(() -> new UserNotFoundException(details.getUsername()));
         }
-       return null;
+        return null;
+    }
+
+    public boolean checkIfEmailExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean checkIfUsernameExist(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 }
