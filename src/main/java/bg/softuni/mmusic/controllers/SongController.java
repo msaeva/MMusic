@@ -31,12 +31,10 @@ public class SongController {
 
     private final SongService songService;
     private final AuthService authService;
-    private final SongMapper songMapper;
 
-    public SongController(SongService songService, AuthService authService, SongMapper songMapper) {
+    public SongController(SongService songService, AuthService authService) {
         this.songService = songService;
         this.authService = authService;
-        this.songMapper = songMapper;
     }
 
     @ModelAttribute(name = "addSongDto")
@@ -127,9 +125,8 @@ public class SongController {
         Pagination<List<PublicSimpleSongDto>> pageableDto =
                 new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
 
-        List<PublicSimpleSongDto> publicSimpleSongDtos
-                = songs.stream().map(songMapper::toPublicSimpleSongDto).toList();
-
+        List<PublicSimpleSongDto> publicSimpleSongDtos =
+                songService.toPublicSimpleSongDto(songs);
         pageableDto.setData(publicSimpleSongDtos);
 
         modelAndView.addObject("pagination", pageableDto);

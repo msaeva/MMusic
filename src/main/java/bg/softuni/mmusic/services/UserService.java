@@ -1,10 +1,8 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.model.dtos.ProfileDetailedPlaylistDto;
 import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
-import bg.softuni.mmusic.model.dtos.song.ProfileDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.Song;
@@ -22,6 +20,7 @@ import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +47,7 @@ public class UserService {
     }
 
 
-    public List<ProfileDetailedSongDto> getUserSongs(User authUser) {
+    public List<PublicSimpleSongDto> getUserSongs(User authUser) {
         Optional<List<Song>> userSongs =
                 songRepository.findAllByAuthorUuid(authUser.getUuid());
 
@@ -56,18 +55,30 @@ public class UserService {
             // TODO make exception for user with no songs yet
             return null;
         }
-        return userSongs.get().stream().map(songMapper::toProfileDetailedSongDto).toList();
 
+        List<PublicSimpleSongDto> songsDtos = new ArrayList<>();
+        for (Song song : userSongs.get()) {
+            PublicSimpleSongDto publicSimpleSongDto = songMapper.toPublicSimpleSongDto(song);
+            publicSimpleSongDto.setPictureUrl(song.getPicture().getUrl());
+            songsDtos.add(publicSimpleSongDto);
+        }
+        return songsDtos;
     }
 
-    public List<ProfileDetailedPlaylistDto> getUserPlaylist(User authUser) {
+    public List<PublicSimplePlaylistDto> getUserPlaylist(User authUser) {
         Optional<List<Playlist>> playlists = playlistRepository.findAllByOwnerUuid(authUser.getUuid());
         if (playlists.isEmpty()) {
             // TODO make exception for user with no playlists yet
             return null;
         }
+        List<PublicSimplePlaylistDto> publicSimplePlaylistDtos = new ArrayList<>();
 
-        return playlists.get().stream().map(playlistMapper::toProfileDetailedPlaylistDto).toList();
+        for (Playlist playlist : playlists.get()) {
+            PublicSimplePlaylistDto dto = playlistMapper.toPublicSimplePlaylistDto(playlist);
+            dto.setSongsCount(playlist.getSongs().size());
+            publicSimplePlaylistDtos.add(dto);
+        }
+        return publicSimplePlaylistDtos;
     }
 
     public User getUserByUuid(String uuid) {
@@ -92,7 +103,14 @@ public class UserService {
             //TODO return error
             return null;
         }
-        return songs.get().stream().map(songMapper::toPublicSimpleSongDto).toList();
+
+        List<PublicSimpleSongDto> songsDtos = new ArrayList<>();
+        for (Song song : songs.get()) {
+            PublicSimpleSongDto publicSimpleSongDto = songMapper.toPublicSimpleSongDto(song);
+            publicSimpleSongDto.setPictureUrl(song.getPicture().getUrl());
+            songsDtos.add(publicSimpleSongDto);
+        }
+        return songsDtos;
     }
 
 

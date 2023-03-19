@@ -238,11 +238,11 @@
 
                             <div class="tab-pane fade pt-3" id="own-song">
                                 <div class="d-flex flex-wrap mx-auto w-100">
-                                    <div th:each="song : ${songs}"
+                                    <div th:each="song : ${ownSongs}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
                                             <div class="col-md-4">
-                                                <img src="https://picsum.photos/200/240"
+                                                <img th:src="${song.getPictureUrl()}"
                                                      class="img-fluid rounded-start"
                                                      alt="...">
                                             </div>
@@ -266,7 +266,7 @@
 
                             <div class="tab-pane fade pt-3" id="own-playlist">
                                 <div class="d-flex flex-wrap mx-auto w-100">
-                                    <div th:each="playlist : ${playlists}"
+                                    <div th:each="playlist : ${ownPlaylists}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
                                             <div class="col-md-4">
@@ -276,7 +276,8 @@
                                             <div class="col-md-8">
                                                 <div class="card-body">
                                                     <h5 class="card-title" th:text="${playlist.getName()}"></h5>
-                                                    <!--  <p class="card-text" th:text="${song.getDescription()}"></p>-->
+                                                    <h5 class="card-title" th:text="${playlist.getSongsCount()}"></h5>
+                                                    <h5 class="card-title" th:text="${playlist.getStatus()}"></h5>
 
                                                 </div>
                                             </div>

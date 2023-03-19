@@ -1,8 +1,6 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.playlist;
 
 import bg.softuni.mmusic.model.enums.PlaylistStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

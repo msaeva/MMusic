@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -31,7 +32,7 @@ public class AddSongDto {
     @NotNull
     private SongStatus status;
 
-    private String imageUrl;
+    private MultipartFile image;
 
     @NotNull
     private StyleType Style;

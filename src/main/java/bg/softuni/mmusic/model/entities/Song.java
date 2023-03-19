@@ -30,17 +30,17 @@ public class Song extends BaseEntity {
     @Column(nullable = false)
     private Long duration;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
 
     @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Style Style;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Picture picture;
 
     @Enumerated(EnumType.STRING)
     private SongStatus status;

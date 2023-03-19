@@ -1,23 +1,19 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.playlist;
 
-import bg.softuni.mmusic.model.dtos.song.ProfileDetailedSongDto;
 import bg.softuni.mmusic.model.enums.PlaylistStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProfileDetailedPlaylistDto {
-
+@NoArgsConstructor
+public class PublicSimplePlaylistDto {
     private String name;
 
-    private Set<ProfileDetailedSongDto> songs;
+    private Integer songsCount;
 
     private PlaylistStatus status;
 }

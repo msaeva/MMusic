@@ -1,7 +1,7 @@
 package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.constants.Authorities;
-import bg.softuni.mmusic.model.dtos.CreatePlaylistDto;
+import bg.softuni.mmusic.model.dtos.playlist.CreatePlaylistDto;
 import bg.softuni.mmusic.services.PlaylistService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.annotation.Secured;
@@ -52,8 +52,6 @@ public class PlaylistController {
 
     public String addSongToPlaylist(@PathVariable String songUuid, String playlistUuid){
         playlistService.addSongToPlaylist(songUuid, playlistUuid);
-
-
         return  null;
     }
 }

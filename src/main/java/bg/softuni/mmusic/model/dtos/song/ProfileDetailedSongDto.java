@@ -22,7 +22,7 @@ public class ProfileDetailedSongDto {
 
     private Long duration;
 
-    private String imageUrl;
+    private String pictureUrl;
 
     private LocalDate createdDate;
 
