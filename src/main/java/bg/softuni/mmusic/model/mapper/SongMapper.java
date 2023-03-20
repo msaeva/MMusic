@@ -12,7 +12,7 @@ public interface SongMapper {
 
     PublicSimpleSongDto toPublicSimpleSongDto(Song song);
 
-    ProfileDetailedSongDto toProfileDetailedSongDto(Song song);
+    PublicDetailedSongDto toPublicDetailedSongDto(Song song);
 
     FavouriteSongDto toFavouriteSongDto(Song song);
 

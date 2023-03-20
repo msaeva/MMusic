@@ -34,7 +34,7 @@ public class PlaylistService {
     public void addSongToPlaylist(String songUuid, String playlistUuid) {
         User authUser = getAuthUser();
         Playlist playlist = playlistRepository.findById(playlistUuid).orElse(null);
-        Song songToAdd = songService.findSongByUuid(songUuid).orElseThrow(NoSuchElementException::new);
+        Song songToAdd = songService.findSongByUuid(songUuid);
 
         if (playlist != null) {
             playlist.getSongs().add(songToAdd);

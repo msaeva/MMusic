@@ -17,7 +17,7 @@
               th:object="${addSongDto}">
             <div class="row">
                 <div class="form-group col-md-6 mb-3">
-                    <label for="title" class="text-white font-weight-bold">Title</label>
+                    <label for="title" class="text-black-50 font-weight-bold">Title</label>
                     <input
                             th:field="*{title}"
                             th:errorclass="is-invalid"
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="form-group col-md-6 mb-3">
-                    <label for="description" class="text-white font-weight-bold">Write small description of yor
+                    <label for="description" class="text-black-50 font-weight-bold">Write small description of yor
                         song</label>
                     <input
                             id="description"
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-group col-md-6 mb-3">
-                    <label for="duration" class="text-white font-weight-bold">Duration</label>
+                    <label for="duration" class="text-black-50 font-weight-bold">Duration</label>
                     <input id="duration"
                            name="duration"
                            type="number" class="form-control"

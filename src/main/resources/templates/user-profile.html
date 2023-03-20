@@ -238,6 +238,7 @@
 
                             <div class="tab-pane fade pt-3" id="own-song">
                                 <div class="d-flex flex-wrap mx-auto w-100">
+                                    <h3 th:if="${ownSongs.isEmpty()}">You have no playlists created yet!</h3>
                                     <div th:each="song : ${ownSongs}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
@@ -266,6 +267,7 @@
 
                             <div class="tab-pane fade pt-3" id="own-playlist">
                                 <div class="d-flex flex-wrap mx-auto w-100">
+                                    <h3 th:if="${ownPlaylists.isEmpty()}">You have no playlists created yet!</h3>
                                     <div th:each="playlist : ${ownPlaylists}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
@@ -289,6 +291,7 @@
 
                             <div class="tab-pane fade pt-3" id="favourite">
                                 <div class="d-flex flex-wrap mx-auto w-100">
+                                    <h3 th:if="${favouriteSongs.isEmpty()}">No added favourite songs !</h3>
                                     <div th:each="favourite : ${favouriteSongs}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">

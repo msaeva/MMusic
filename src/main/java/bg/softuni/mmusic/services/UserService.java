@@ -36,14 +36,18 @@ public class UserService {
     private final PlaylistMapper playlistMapper;
     private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, SongRepository songRepository, PlaylistRepository playlistRepository, SongMapper songMapper, PlaylistMapper playlistMapper, UserMapper userMapper) {
+    public UserService(UserRepository userRepository,
+                       SongRepository songRepository,
+                       PlaylistRepository playlistRepository,
+                       SongMapper songMapper,
+                       PlaylistMapper playlistMapper,
+                       UserMapper userMapper) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.playlistRepository = playlistRepository;
         this.songMapper = songMapper;
         this.playlistMapper = playlistMapper;
         this.userMapper = userMapper;
-
     }
 
 

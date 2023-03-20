@@ -3,10 +3,10 @@ package bg.softuni.mmusic.controllers;
 import bg.softuni.mmusic.constants.Authorities;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
 import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
-import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.Pagination;
 import bg.softuni.mmusic.services.SongService;
@@ -22,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller
 @Slf4j
@@ -70,8 +69,7 @@ public class SongController {
 
     @GetMapping("/{uuid}/update")
     public ModelAndView update(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
-        Song songToUpdate = songService.findSongByUuid(uuid)
-                .orElseThrow(NoSuchElementException::new);
+        Song songToUpdate = songService.findSongByUuid(uuid);
 
         modelAndView.setViewName("update-song");
 
@@ -83,7 +81,7 @@ public class SongController {
         }
 
         UpdateSongDto songDto = songService.toUpdateSongDto(songToUpdate);
-        songService.update(songToUpdate,songDto);
+        songService.update(songToUpdate, songDto);
         modelAndView.addObject("songDto", songDto);
 
         return modelAndView;
@@ -92,8 +90,7 @@ public class SongController {
     @PutMapping("/{uuid}/update")
     public String putUpdate(@PathVariable(name = "uuid") String uuid, @Valid UpdateSongDto updateSongDto) {
 
-        Song songToUpdate = songService.findSongByUuid(uuid)
-                .orElseThrow(NoSuchElementException::new);
+        Song songToUpdate = songService.findSongByUuid(uuid);
 
         if (authService.getAuthenticatedUser()
                 .getOwnSongs().stream()
@@ -119,7 +116,7 @@ public class SongController {
     }
 
     @GetMapping("/search")
-    public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView){
+    public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView) {
         Page<Song> songs = songService.getAll(validation);
 
         Pagination<List<PublicSimpleSongDto>> pageableDto =
@@ -134,5 +131,17 @@ public class SongController {
 
         return modelAndView;
 
+    }
+
+    @GetMapping("/{uuid}/view")
+    public ModelAndView viewSong(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
+
+        Song song = songService.findSongByUuid(uuid);
+        PublicDetailedSongDto publicDetailedSongDto = songService.toDetailedSongDto(song);
+
+        modelAndView.setViewName("single-page-song");
+        modelAndView.addObject("song", publicDetailedSongDto);
+
+        return modelAndView;
     }
 }

@@ -2,10 +2,7 @@ package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.AddSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
-import bg.softuni.mmusic.model.dtos.song.SongDto;
-import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.*;
 import bg.softuni.mmusic.model.entities.Picture;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.Style;
@@ -78,8 +75,8 @@ public class SongService {
         songRepository.saveAndFlush(songToSave);
     }
 
-    public Optional<Song> findSongByUuid(String songUuid) {
-        return songRepository.findByUuid(songUuid);
+    public Song findSongByUuid(String songUuid) {
+        return songRepository.findByUuid(songUuid).orElseThrow(NoSuchElementException::new);
     }
 
     public SongDto toSongDto(Song song) {
@@ -175,6 +172,10 @@ public class SongService {
             publicSimpleSongDtos.add(dto);
         }
         return publicSimpleSongDtos;
+    }
+
+    public PublicDetailedSongDto toDetailedSongDto(Song song) {
+       return songMapper.toPublicDetailedSongDto(song);
     }
 }
 
