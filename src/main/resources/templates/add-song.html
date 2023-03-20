@@ -78,7 +78,7 @@
 
                 <div>
                     <div class="form-group col-md-6 mb-3">
-                        <label for="image" class="col-form-label ">Image</label>
+                        <label for="image" class="col-form-label ">Cover image</label>
                     </div>
                     <div class="form-group">
                         <input type="file" name="image"
@@ -91,6 +91,21 @@
                         <small class="invalid-feedback text-danger">Must be valid image.</small>
                     </div>
                 </div>
+
+                <div>
+
+                    <div class="form-group col-md-6 mb-3">
+                        <label for="videoUrl">Video Url (only last eleven characters from Youtube)</label>
+                        <input id="videoUrl"
+                               type="text"
+                               class="form-control"
+                               placeholder="Video url"
+                               th:field="*{videoUrl}"
+                               th:errorclass="is-invalid">
+                        <small class="invalid-feedback text-danger">Must be valid YouTube video.</small>
+                    </div>
+                </div>
+
                 <div>
                     <div class="row">
                         <div class="col col-md-4">

@@ -35,5 +35,8 @@ public class AddSongDto {
     private MultipartFile image;
 
     @NotNull
+    private String videoUrl;
+
+    @NotNull
     private StyleType Style;
 }

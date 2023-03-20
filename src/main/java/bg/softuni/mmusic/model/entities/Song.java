@@ -42,6 +42,9 @@ public class Song extends BaseEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Picture picture;
 
+    @Column
+    private String videoUrl;
+
     @Enumerated(EnumType.STRING)
     private SongStatus status;
 
