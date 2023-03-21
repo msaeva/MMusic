@@ -70,6 +70,7 @@ public class SongService {
         Picture picture = new Picture();
         picture.setSong(songToSave);
         picture.setUrl(pictureUrl);
+        picture.setTitle(addSongDto.getImage().getOriginalFilename());
         songToSave.setPicture(picture);
 
         songRepository.saveAndFlush(songToSave);
