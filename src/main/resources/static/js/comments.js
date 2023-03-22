@@ -3,15 +3,19 @@ const csrfHeaderValue = document.getElementById('csrf').getAttribute('value');
 
 let songUuid = document.getElementById("songUuid").getAttribute("value");
 let commentSection = document.getElementById("commentSection");
+let authUser = document.getElementById("authUser").value
 
 function addHtmlComment(body) {
-    for (comment of body) {
-        let commentHtml = '<div class="second py-2 px-2 mt-2">\n'
+    for (let comment of body) {
+        let commentHtml = `<div id="comment-container-${comment.uuid}" class="second py-2 px-2 mt-2">\n`
         commentHtml += '<div>'
-        commentHtml += '<h4>' + comment.authorName + '</h4>'
+        commentHtml += '<h4>' + comment.username + '</h4>'
         commentHtml += '<p>' + comment.text + '</p>'
         commentHtml += '<span>' + comment.createdDate + '</span>'
         commentHtml += '</div>\n'
+        if (comment.username === authUser) {
+            commentHtml += `<button id="comment-delete-btn-${comment.uuid}" class="btn btn-danger" onclick="deleteComment('${comment.uuid}')">Delete</button>`
+        }
         commentHtml += '</div>'
 
         commentSection.innerHTML += commentHtml
@@ -48,4 +52,16 @@ commentForm.addEventListener("submit", (event) => {
                 addHtmlComment([data])
             }
         )
-})
+});
+
+function deleteComment(commentUuid) {
+    fetch(`http://localhost:8080/song/${songUuid}/comments/${commentUuid}/delete`, {
+        method: 'DELETE',
+        headers: {
+            [csrfHeaderName]: csrfHeaderValue
+        }
+    }).then(res => {
+        console.log(res)
+        document.getElementById("comment-container-" + commentUuid).remove()
+    })
+}

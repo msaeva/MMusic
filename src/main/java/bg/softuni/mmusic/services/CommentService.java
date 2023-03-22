@@ -7,6 +7,7 @@ import bg.softuni.mmusic.repositories.CommentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -36,19 +37,31 @@ public class CommentService {
     }
 
     public CommentDto toCommentDto(Comment comment) {
-        return new CommentDto()
-                .setUuid(comment.getUuid())
-                .setText(comment.getText())
-                .setAuthorName(comment.getAuthor().getFirstName() + " " + comment.getAuthor().getLastName())
-                .setCreatedDate(comment.getCreated().toString());
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+        return CommentDto.builder()
+                .uuid(comment.getUuid())
+                .text(comment.getText())
+                .username(comment.getAuthor().getUsername())
+                .createdDate(comment.getCreated().format(format))
+                .build();
+
     }
 
     public List<Comment> getCommentsBySong(String songUuid) {
         return commentRepository.findAllBySong(songService.findSongByUuid(songUuid));
     }
 
-    public CommentDto getCommentByUuid(String commentUuid) {
+    public CommentDto getComment(String commentUuid) {
         Comment comment = commentRepository.findByUuid(commentUuid).orElseThrow(NoSuchElementException::new);
         return toCommentDto(comment);
+    }
+
+    public Comment getCommentByUuid(String commentUuid) {
+        return commentRepository.findByUuid(commentUuid).orElseThrow(NoSuchElementException::new);
+    }
+
+    public void deleteComment(Comment comment) {
+        commentRepository.delete(comment);
     }
 }

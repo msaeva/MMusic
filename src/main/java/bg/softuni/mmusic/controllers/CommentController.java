@@ -3,8 +3,12 @@ package bg.softuni.mmusic.controllers;
 import bg.softuni.mmusic.model.dtos.comment.CommentDto;
 import bg.softuni.mmusic.model.dtos.comment.CreateCommentDto;
 import bg.softuni.mmusic.model.entities.Comment;
+import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.enums.Role;
+import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.CommentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +20,11 @@ import java.util.stream.Collectors;
 @RestController
 public class CommentController {
     private final CommentService commentService;
+    private final AuthService authService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, AuthService authService) {
         this.commentService = commentService;
+        this.authService = authService;
     }
 
     @GetMapping("song/{songUuid}/comments")
@@ -34,10 +40,6 @@ public class CommentController {
     @PostMapping("song/{songUuid}/comments")
     public ResponseEntity<CommentDto> createComment(@RequestBody CreateCommentDto commentDto,
                                                     @PathVariable(name = "songUuid") String songUuid) {
-        log.info(songUuid);
-        log.info(String.valueOf(commentDto));
-        System.out.println(songUuid);
-        System.out.println(commentDto.getText());
 
         CommentDto comment = commentService.createComment(commentDto, songUuid);
 
@@ -46,6 +48,22 @@ public class CommentController {
 
     @GetMapping("song/{songUuid}/comments/{commentUuid}")
     public ResponseEntity<CommentDto> getComment(@PathVariable(name = "commentUuid") String commentUuid) {
-        return ResponseEntity.ok(commentService.getCommentByUuid(commentUuid));
+        return ResponseEntity.ok(commentService.getComment(commentUuid));
+    }
+
+    @DeleteMapping("song/{songUuid}/comments/{commentUuid}/delete")
+    public HttpStatus deleteComment(@PathVariable(name = "commentUuid") String commentUuid,
+                                    @PathVariable(name = "songUuid") String songUuid) {
+
+        User authUser = authService.getAuthenticatedUser();
+        Comment comment = commentService.getCommentByUuid(commentUuid);
+
+        if (comment.getAuthor().getUuid().equals(authUser.getUuid()) ||
+                authUser.getRoles().stream().anyMatch(r -> r.getRole().equals(Role.ADMIN))) {
+
+            commentService.deleteComment(comment);
+            return HttpStatus.OK;
+        }
+        return HttpStatus.valueOf(403);
     }
 }

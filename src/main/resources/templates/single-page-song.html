@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/head::head}"></head>
 <body>
 <div class="content-wrapper">
@@ -8,6 +9,9 @@
     </div>
     <main id="main">
         <input type="hidden" name="songUuid" id="songUuid" th:value="*{uuid}">
+        <input type="hidden" name="authUser" id="authUser" sec:authorize="isAuthenticated()"
+               th:value="${#authentication.getPrincipal().getUsername()}">
+
         <section id="breadcrumbs" class="breadcrumbs">
             <div class="container">
 
@@ -104,7 +108,6 @@
                 <span id="commentSection" class="comments"><!-- Comments section, filled in by script --></span>
             </div>
         </section>
-
 
     </main>
 </div>
