@@ -1,6 +1,6 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.model.dtos.CreatePlaylistDto;
+import bg.softuni.mmusic.model.dtos.playlist.CreatePlaylistDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
@@ -13,7 +13,6 @@ import java.util.NoSuchElementException;
 public class PlaylistService {
     private final AuthService authService;
     private final PlaylistRepository playlistRepository;
-
     private final SongService songService;
 
     public PlaylistService(AuthService authService, PlaylistRepository playlistRepository, SongService songService) {
@@ -35,7 +34,7 @@ public class PlaylistService {
     public void addSongToPlaylist(String songUuid, String playlistUuid) {
         User authUser = getAuthUser();
         Playlist playlist = playlistRepository.findById(playlistUuid).orElse(null);
-        Song songToAdd = songService.findSongByUuid(songUuid).orElseThrow(NoSuchElementException::new);
+        Song songToAdd = songService.findSongByUuid(songUuid);
 
         if (playlist != null) {
             playlist.getSongs().add(songToAdd);

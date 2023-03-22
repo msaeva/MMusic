@@ -2,9 +2,8 @@ package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.AddSongDto;
-import bg.softuni.mmusic.model.dtos.song.SongDto;
-import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.*;
+import bg.softuni.mmusic.model.entities.Picture;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.entities.User;
@@ -20,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -31,12 +31,19 @@ public class SongService {
     private final AuthService authService;
     private final SongRepository songRepository;
     private final StyleService styleService;
+    private final ImageCloudService imageCloudService;
 
-    public SongService(SongMapper songMapper, AuthService authService, SongRepository songRepository, StyleService styleService) {
+    public SongService(SongMapper songMapper,
+                       AuthService authService,
+                       SongRepository songRepository,
+                       StyleService styleService,
+                       ImageCloudService imageCloudService) {
+
         this.songMapper = songMapper;
         this.authService = authService;
         this.songRepository = songRepository;
         this.styleService = styleService;
+        this.imageCloudService = imageCloudService;
     }
 
     public void addSong(AddSongDto addSongDto) {
@@ -57,12 +64,20 @@ public class SongService {
         Song songToSave = songMapper.addSongDtoToSong(addSongDto);
         songToSave.setAuthor(authUser);
         songToSave.setStyle(byStyle.get());
-        songRepository.saveAndFlush(songToSave);
 
+        String pictureUrl = imageCloudService.saveImage(addSongDto.getImage());
+
+        Picture picture = new Picture();
+        picture.setSong(songToSave);
+        picture.setUrl(pictureUrl);
+        picture.setTitle(addSongDto.getImage().getOriginalFilename());
+        songToSave.setPicture(picture);
+
+        songRepository.saveAndFlush(songToSave);
     }
 
-    public Optional<Song> findSongByUuid(String songUuid) {
-        return songRepository.findByUuid(songUuid);
+    public Song findSongByUuid(String songUuid) {
+        return songRepository.findByUuid(songUuid).orElseThrow(NoSuchElementException::new);
     }
 
     public SongDto toSongDto(Song song) {
@@ -85,7 +100,7 @@ public class SongService {
         }
 
         Song song = songRepository.findByUuid(uuid)
-                                  .orElseThrow(() -> new NoSuchElementException("Song with that id does not exist!"));
+                .orElseThrow(() -> new NoSuchElementException("Song with that id does not exist!"));
 
         if (authUser.getOwnSongs().stream()
                 .noneMatch(s -> s.getUuid().equals(song.getUuid()))) {
@@ -148,6 +163,20 @@ public class SongService {
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount(), Sort.by(orders));
         return songRepository.findAll(pageable);
 
+    }
+
+    public List<PublicSimpleSongDto> toPublicSimpleSongDto(Page<Song> songs) {
+        List<PublicSimpleSongDto> publicSimpleSongDtos = new ArrayList<>();
+        for (Song song : songs) {
+            PublicSimpleSongDto dto = songMapper.toPublicSimpleSongDto(song);
+            dto.setPictureUrl(song.getPicture().getUrl());
+            publicSimpleSongDtos.add(dto);
+        }
+        return publicSimpleSongDtos;
+    }
+
+    public PublicDetailedSongDto toDetailedSongDto(Song song) {
+       return songMapper.toPublicDetailedSongDto(song);
     }
 }
 

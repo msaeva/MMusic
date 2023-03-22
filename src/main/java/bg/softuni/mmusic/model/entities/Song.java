@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,17 +31,23 @@ public class Song extends BaseEntity {
     @Column(nullable = false)
     private Long duration;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
 
     @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Style Style;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Picture picture;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL)
+    private Set<Comment> comments;
+
+    @Column
+    private String videoUrl;
 
     @Enumerated(EnumType.STRING)
     private SongStatus status;

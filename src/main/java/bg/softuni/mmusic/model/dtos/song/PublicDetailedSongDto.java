@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileDetailedSongDto {
+public class PublicDetailedSongDto {
 
     private String uuid;
 
@@ -22,7 +22,7 @@ public class ProfileDetailedSongDto {
 
     private Long duration;
 
-    private String imageUrl;
+    private String videoUrl;
 
     private LocalDate createdDate;
 

@@ -1,10 +1,8 @@
 package bg.softuni.mmusic.controllers;
 
-import bg.softuni.mmusic.model.dtos.ProfileDetailedPlaylistDto;
 import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
-import bg.softuni.mmusic.model.dtos.song.ProfileDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.mapper.UserMapper;
@@ -38,13 +36,13 @@ public class UserController {
         User authUser = authService.getAuthenticatedUser();
         UserProfileDto userProfileInfo = userService.getUserProfileInfo(authUser.getUuid());
 
-        List<ProfileDetailedSongDto> userSongs = userService.getUserSongs(authUser);
-        List<ProfileDetailedPlaylistDto> userPlaylists = userService.getUserPlaylist(authUser);
+        List<PublicSimpleSongDto> userSongs = userService.getUserSongs(authUser);
+        List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylist(authUser);
         List<FavouriteSongDto> favouriteSongs = userService.getFavouriteSongs(authUser);
 
         model.addAttribute("user", userProfileInfo);
-        model.addAttribute("songs", userSongs);
-        model.addAttribute("playlists", userPlaylists);
+        model.addAttribute("ownSongs", userSongs);
+        model.addAttribute("ownPlaylists", userPlaylists);
         model.addAttribute("favouriteSongs", favouriteSongs);
 
         return "user-profile";
@@ -65,7 +63,6 @@ public class UserController {
     @GetMapping("/{uuid}/profile")
     public String getUserProfile(@PathVariable(name = "uuid") String uuid, Model model) {
         User user = userService.getUserByUuid(uuid);
-
 
         List<PublicSimpleSongDto> userSongs = userService.getUserPublicSongs(user);
         List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylists(user);
