@@ -1,4 +1,4 @@
-const csrfHeaderName = document.getElementById('csrf').getAttribute('name')
+const csrfHeaderName = document.getElementById('csrf').getAttribute('name');
 const csrfHeaderValue = document.getElementById('csrf').getAttribute('value');
 
 let songUuid = document.getElementById("songUuid").getAttribute("value");

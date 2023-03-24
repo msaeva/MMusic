@@ -32,6 +32,7 @@ public class SecurityConfig {
                     .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                     .requestMatchers("/users/admin").hasRole(Role.ADMIN.name())
                     .requestMatchers("/song/add", "/playlist/create", "song/{uuid}/update").hasRole(Role.MUSICIAN.name())
+                    .requestMatchers("/playlist/{uuid}/add").hasRole(Role.MUSICIAN.name())
                 // all any pages are available for logged users
                      .anyRequest().authenticated()
                 .and()

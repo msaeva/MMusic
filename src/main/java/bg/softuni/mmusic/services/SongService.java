@@ -2,11 +2,9 @@ package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
+import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.*;
-import bg.softuni.mmusic.model.entities.Picture;
-import bg.softuni.mmusic.model.entities.Song;
-import bg.softuni.mmusic.model.entities.Style;
-import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
@@ -19,10 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -175,8 +171,31 @@ public class SongService {
         return publicSimpleSongDtos;
     }
 
+    public Set<PublicSimpleSongDto> toPublicSimpleSongDto(Set<Song> songs) {
+        Set<PublicSimpleSongDto> publicSimpleSongDtos = new HashSet<>();
+        for (Song song : songs) {
+            PublicSimpleSongDto dto = songMapper.toPublicSimpleSongDto(song);
+            dto.setPictureUrl(song.getPicture().getUrl());
+            publicSimpleSongDtos.add(dto);
+        }
+        return publicSimpleSongDtos;
+    }
+
     public PublicDetailedSongDto toDetailedSongDto(Song song) {
-       return songMapper.toPublicDetailedSongDto(song);
+        return songMapper.toPublicDetailedSongDto(song);
+    }
+
+    public List<PublicSimpleSongDto> findAllPublicToAddToPlaylist(PublicSimplePlaylistDto playlist) {
+        Set<Song> allPublicSongs = songRepository.findAllByStatus(SongStatus.PUBLIC);
+
+        Set<Song> songsToAdd = allPublicSongs.stream()
+                .filter(song -> playlist.getSongs()
+                        .stream()
+                        .noneMatch(playlistSong -> playlistSong.getUuid().equals(song.getUuid())))
+                .collect(Collectors.toSet());
+
+        return songsToAdd.stream().map(songMapper::toPublicSimpleSongDto).
+                collect(Collectors.toList());
     }
 }
 

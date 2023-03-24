@@ -5,7 +5,6 @@ import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.User;
-import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.UserService;
 import jakarta.validation.Valid;
@@ -23,12 +22,10 @@ import java.util.List;
 public class UserController {
     private final AuthService authService;
     private final UserService userService;
-    private final UserMapper userMapper;
 
-    public UserController(AuthService authService, UserService userService, UserMapper userMapper) {
+    public UserController(AuthService authService, UserService userService) {
         this.authService = authService;
         this.userService = userService;
-        this.userMapper = userMapper;
     }
 
     @GetMapping("/profile")
@@ -47,7 +44,6 @@ public class UserController {
 
         return "user-profile";
     }
-
 
     @PutMapping("/{uuid}/update")
     public String update(@PathVariable(name = "uuid") String uuid,
