@@ -17,7 +17,7 @@
               th:object="${createPlaylistDto}">
             <div class="row">
                 <div class="form-group col-md-6 mb-3">
-                    <label for="name" class="text-black font-weight-bold">Name</label>
+                    <label for="name" class="text-black-50 font-weight-bold"> Name </label>
                     <input
                             th:field="*{name}"
                             th:errorclass="is-invalid"
@@ -29,20 +29,20 @@
                     <small class="invalid-feedback errors alert text-danger">
                         Name length must be between 4 and 12 symbols </small>
                 </div>
-            </div>
-            <div class="form-group col-md-6 mb-3">
-                <label for="status" class="text-black-50 font-weight-bold">Select who can see your playlist(Public - everyone, Private - only you)</label>
-                <select id="status" name="status" multiple>
-                    <option th:each="status : ${T(bg.softuni.mmusic.model.enums.PlaylistStatus).values()}"
-                            th:value="${status}"
-                            th:text="${status}">
-                    </option>
-                </select>
+                <div class="form-group col-md-6 mb-3">
+                    <label for="status" class="text-black-50 font-weight-bold"> Select playlist visibility </label>
+                    <select id="status" class="form-select" name="status">
+                        <option th:each="status : ${T(bg.softuni.mmusic.model.enums.PlaylistStatus).values()}"
+                                th:value="${status}"
+                                th:text="${status}">
+                        </option>
+                    </select>
+                </div>
             </div>
             <div class="row">
                 <div class="col col-md-4">
                     <div class="button-holder d-flex">
-                        <input type="submit" class="btn btn-info btn-lg" value="Create playlist"/>
+                        <input type="submit" class="btn btn-primary btn-lg" value="Create playlist"/>
                     </div>
                 </div>
             </div>

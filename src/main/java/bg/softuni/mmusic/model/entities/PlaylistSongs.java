@@ -11,18 +11,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "playlists_songs")
-public class PlaylistSongs extends BaseEntity{
+public class PlaylistSongs extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "playlist_uuid")
+    @JoinColumn(name = "playlist_uuid", referencedColumnName = "uuid")
     private Playlist playlist;
 
-
     @ManyToOne
-    @JoinColumn(name = "songs_uuid")
+    @JoinColumn(name = "song_uuid", referencedColumnName = "uuid")
     private Song song;
 }

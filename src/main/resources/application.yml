@@ -12,7 +12,7 @@ spring:
       filter:
         enabled: 'true'
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     password: admin
     username: root
     url: jdbc:mysql://localhost:3306/m_music?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC

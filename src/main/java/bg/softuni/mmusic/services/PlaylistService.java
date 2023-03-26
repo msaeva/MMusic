@@ -6,7 +6,6 @@ import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.PlaylistSongs;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
-import bg.softuni.mmusic.model.mapper.PlaylistMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
 import org.springframework.stereotype.Service;
@@ -44,9 +43,8 @@ public class PlaylistService {
         Song songToAdd = songService.findSongByUuid(songUuid);
 
         if (playlist.getSongs().stream().noneMatch(song -> song.getUuid().equals(songToAdd.getUuid()))) {
-            playlist.getSongs().add(songToAdd);
             playlistSongsRepository.saveAndFlush(new PlaylistSongs(playlist, songToAdd));
-
+            playlist.getSongs().add(songToAdd);
         }
     }
 

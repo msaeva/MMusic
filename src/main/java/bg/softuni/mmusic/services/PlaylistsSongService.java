@@ -7,6 +7,7 @@ import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service

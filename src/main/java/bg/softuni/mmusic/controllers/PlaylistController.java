@@ -6,7 +6,6 @@ import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.User;
-import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.PlaylistService;
 import bg.softuni.mmusic.services.PlaylistsSongService;
@@ -34,7 +33,10 @@ public class PlaylistController {
     private final SongService songService;
     private final PlaylistsSongService playlistsSongService;
 
-    public PlaylistController(PlaylistService playlistService, AuthService authService, SongService songService, PlaylistsSongService playlistsSongService) {
+    public PlaylistController(PlaylistService playlistService,
+                              AuthService authService,
+                              SongService songService,
+                              PlaylistsSongService playlistsSongService) {
         this.playlistService = playlistService;
         this.authService = authService;
         this.songService = songService;
@@ -53,14 +55,11 @@ public class PlaylistController {
 
     @Secured(Authorities.MUSICIAN)
     @PostMapping("/create")
-    public String create(@Valid CreatePlaylistDto createPlaylistDto,
-                         BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes) {
+    public String create(@Valid CreatePlaylistDto createPlaylistDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasFieldErrors()) {
             redirectAttributes.addFlashAttribute("createPlaylistDto", createPlaylistDto);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createPlaylistDto",
-                    bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createPlaylistDto", bindingResult);
 
             System.out.println("before redirect");
             return "redirect:/playlist/create";
@@ -72,8 +71,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/{uuid}/view")
-    public ModelAndView viewSong(@PathVariable(name = "uuid") String playlistUuid,
-                                 ModelAndView modelAndView) {
+    public ModelAndView viewSongs(@PathVariable(name = "uuid") String playlistUuid, ModelAndView modelAndView) {
         User authUser = authService.getAuthenticatedUser();
 
         Playlist playlist = playlistService.findByUuid(playlistUuid);
@@ -82,23 +80,17 @@ public class PlaylistController {
             throw new RuntimeException();
         }
 
-        PublicSimplePlaylistDto playlistDto =
-                playlistService.publicSimplePlaylistDto(playlist);
-
-        List<PublicSimpleSongDto> songsToAddDto = songService.findAllPublicToAddToPlaylist(playlistDto);
+        PublicSimplePlaylistDto playlistDto = playlistService.publicSimplePlaylistDto(playlist);
+        List<PublicSimpleSongDto> songsToAddDto = songService.findAllPublicToAddToPlaylist(playlistUuid);
 
         modelAndView.setViewName("single-page-playlist");
         modelAndView.addObject("songsToAdd", songsToAddDto);
         modelAndView.addObject("playlist", playlistDto);
-
         return modelAndView;
     }
 
     @PostMapping("/{uuid}/add/{songUuid}")
-    public ModelAndView addSongToPlaylist(@PathVariable(name = "uuid") String playlistUuid,
-                                          @PathVariable(name = "songUuid") String songUuid,
-                                          ModelAndView modelAndView) {
-        log.info(playlistUuid);
+    public ModelAndView addSongToPlaylist(@PathVariable(name = "uuid") String playlistUuid, @PathVariable(name = "songUuid") String songUuid, ModelAndView modelAndView) {
 
         modelAndView.setViewName("redirect:/user/profile");
 
@@ -108,8 +100,7 @@ public class PlaylistController {
 
     @DeleteMapping("/{uuid}/song/{songUuid}")
     @ResponseBody
-    public HttpStatus deleteSongFromPlaylist(@PathVariable(name = "uuid") String playlistUuid,
-                                             @PathVariable(name = "songUuid") String songUuid) {
+    public HttpStatus deleteSongFromPlaylist(@PathVariable(name = "uuid") String playlistUuid, @PathVariable(name = "songUuid") String songUuid) {
         try {
             playlistsSongService.removeSong(playlistUuid, songUuid);
         } catch (Exception exception) {
