@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:include="~{fragments/head::head}">
-    <header th:replace="~{fragments/navbar::navbar}"></header>
 </head>
+<header th:replace="~{fragments/navbar::navbar}"></header>
 <body style="margin-top: 5.2rem">
 
 </body>
@@ -20,6 +21,13 @@
                         <h3 style="margin-top: 1rem" th:each="role : ${user.getRoles()}"
                             th:text="${role}">
                         </h3>
+                        <div sec:authorize="isAuthenticated()">
+                            <form
+                                    th:method="post"
+                                    th:action="@{/users/logout}">
+                                <input class="nav-link scrollto active" type="submit" value="Logout">
+                            </form>
+                        </div>
                         <div class="social-links mt-2">
                             <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                             <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
@@ -240,25 +248,22 @@
                                 <div class="d-flex flex-wrap mx-auto w-100">
                                     <h3 th:if="${ownSongs.isEmpty()}">You have no playlists created yet!</h3>
                                     <div th:each="song : ${ownSongs}"
-                                         class="card mb-3" style="max-width: 540px;">
-                                        <div class="row g-0">
-                                            <div class="col-md-4">
+                                         class="card" style="max-width: 540px;">
+                                        <div class="row g-0" >
+                                            <a th:href="@{|/song/${song.getUuid()}/view|}" class="col-md-12">
                                                 <img th:src="${song.getPictureUrl()}"
                                                      class="img-fluid rounded-start"
                                                      alt="...">
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" th:text="${song.getTitle()}"></h5>
-                                                    <p class="card-text" th:text="${song.getDescription()}"></p>
-                                                    <button type="button"
-                                                            th:attr="data-song-uuid=${song.getUuid()}"
-                                                            class="btn btn-danger delete-song-btn">Delete
-                                                    </button>
-                                                    <a th:href="@{|/song/${song.getUuid()}/update|}">Update</a>
-
-                                                    <button type="button">Get Detailed Information</button>
-                                                </div>
+                                            </a>
+                                            <div class="card-body">
+                                                <h5 class="card-title" th:text="${song.getTitle()}"></h5>
+                                                <p class="card-text" th:text="${song.getDescription()}"></p>
+                                                <button type="button"
+                                                        th:attr="data-song-uuid=${song.getUuid()}"
+                                                        class="btn btn-danger delete-song-btn">Delete
+                                                </button>
+                                                <a class="btn btn-info"
+                                                   th:href="@{|/song/${song.getUuid()}/update|}" role="button">Update</a>
                                             </div>
                                         </div>
                                     </div>
@@ -272,14 +277,20 @@
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
                                             <div class="col-md-4">
-                                                <img src="https://picsum.photos/200/240" class="img-fluid rounded-start"
+                                                <img src="https://picsum.photos/200/240"
+                                                     class="img-fluid rounded-start"
                                                      alt="...">
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="card-body">
-                                                    <h5 class="card-title" th:text="${playlist.getName()}"></h5>
-                                                    <h5 class="card-title" th:text="${playlist.getSongsCount()}"></h5>
-                                                    <h5 class="card-title" th:text="${playlist.getStatus()}"></h5>
+                                                    <h5 class="card-title"
+                                                        th:text="'Name: ' + ${playlist.getName()}"></h5>
+                                                    <h5 class="card-title"
+                                                        th:text="'Songs count: ' + ${playlist.getSongsCount()}"></h5>
+                                                    <a th:href="@{|/playlist/${playlist.getUuid()}/view|}">Detailed
+                                                        Information </a>
+                                                    <h5 class="card-title"
+                                                        th:text="'Status: ' + ${playlist.getStatus()}"></h5>
 
                                                 </div>
                                             </div>
@@ -287,7 +298,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="tab-pane fade pt-3" id="favourite">
                                 <div class="d-flex flex-wrap mx-auto w-100">
@@ -318,7 +328,6 @@
             </div>
         </div>
     </section>
-
 </main>
 <script src="/js/events.js"></script>
 </html>

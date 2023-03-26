@@ -1,8 +1,12 @@
 package bg.softuni.mmusic.model.mapper;
 
 import bg.softuni.mmusic.model.dtos.song.*;
+import bg.softuni.mmusic.model.entities.Picture;
 import bg.softuni.mmusic.model.entities.Song;
 import org.mapstruct.Mapper;
+import org.springframework.security.core.parameters.P;
+
+import java.util.Map;
 
 @Mapper(componentModel = "spring")
 public interface SongMapper {

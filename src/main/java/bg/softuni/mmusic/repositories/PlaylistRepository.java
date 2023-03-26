@@ -13,5 +13,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, String> {
     Optional<List<Playlist>> findAllByOwnerUuid(String uuid);
 
     Optional<List<Playlist>> findAllByOwnerUuidAndStatus(String uuid, PlaylistStatus aPublic);
+
+    Optional<Playlist> findByUuid(String playlistUuid);
 }
 

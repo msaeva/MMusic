@@ -25,12 +25,8 @@
                     <li sec:authorize="hasRole('MUSICIAN')">
                         <a class="nav-link scrollto active" th:href="@{/song/add}">Add Song</a>
                     </li>
-                    <li sec:authorize="isAuthenticated()">
-                        <form
-                                th:method="post"
-                                th:action="@{/users/logout}">
-                            <input class="nav-link scrollto active" type="submit" value="Logout">
-                        </form>
+                    <li sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link scrollto active" th:href="@{/admin}">Admin</a>
                     </li>
 
                     <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
@@ -62,3 +58,5 @@
 </header>
 </body>
 </html>
+
+

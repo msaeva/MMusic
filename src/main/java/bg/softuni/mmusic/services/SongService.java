@@ -3,14 +3,12 @@ package bg.softuni.mmusic.services;
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
 import bg.softuni.mmusic.model.dtos.song.*;
-import bg.softuni.mmusic.model.entities.Picture;
-import bg.softuni.mmusic.model.entities.Song;
-import bg.softuni.mmusic.model.entities.Style;
-import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
+import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,10 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,18 +28,21 @@ public class SongService {
     private final SongRepository songRepository;
     private final StyleService styleService;
     private final ImageCloudService imageCloudService;
+    private final PlaylistSongsRepository playlistSongsRepository;
 
     public SongService(SongMapper songMapper,
                        AuthService authService,
                        SongRepository songRepository,
                        StyleService styleService,
-                       ImageCloudService imageCloudService) {
+                       ImageCloudService imageCloudService,
+                       PlaylistSongsRepository playlistSongsRepository) {
 
         this.songMapper = songMapper;
         this.authService = authService;
         this.songRepository = songRepository;
         this.styleService = styleService;
         this.imageCloudService = imageCloudService;
+        this.playlistSongsRepository = playlistSongsRepository;
     }
 
     public void addSong(AddSongDto addSongDto) {
@@ -80,10 +79,6 @@ public class SongService {
         return songRepository.findByUuid(songUuid).orElseThrow(NoSuchElementException::new);
     }
 
-    public SongDto toSongDto(Song song) {
-        return songMapper.songEntityToSongDto(song);
-    }
-
     public void update(Song songToUpdate, UpdateSongDto songDto) {
         songToUpdate.setTitle(songDto.getTitle());
         songToUpdate.setDescription(songDto.getDescription());
@@ -106,6 +101,11 @@ public class SongService {
                 .noneMatch(s -> s.getUuid().equals(song.getUuid()))) {
             throw new NoSuchElementException("User should own the song!");
         }
+
+        List<PlaylistSongs> playlists = playlistSongsRepository.findBySongUuid(song.getUuid());
+        playlists.removeIf(playlist -> playlist.getSong().getUuid().equals(song.getUuid()));
+
+        this.playlistSongsRepository.saveAllAndFlush(playlists);
         this.songRepository.delete(song);
     }
 
@@ -175,8 +175,26 @@ public class SongService {
         return publicSimpleSongDtos;
     }
 
+    public Set<PublicSimpleSongDto> toPublicSimpleSongDto(Set<Song> songs) {
+        Set<PublicSimpleSongDto> publicSimpleSongDtos = new HashSet<>();
+        for (Song song : songs) {
+            PublicSimpleSongDto dto = songMapper.toPublicSimpleSongDto(song);
+            dto.setPictureUrl(song.getPicture().getUrl());
+            publicSimpleSongDtos.add(dto);
+        }
+        return publicSimpleSongDtos;
+    }
+
     public PublicDetailedSongDto toDetailedSongDto(Song song) {
-       return songMapper.toPublicDetailedSongDto(song);
+        return songMapper.toPublicDetailedSongDto(song);
+    }
+
+    public List<PublicSimpleSongDto> findAllPublicToAddToPlaylist(String playlistUuid) {
+
+        List<Song> songsToAdd = songRepository.findAllNotInPlaylist(playlistUuid, SongStatus.PUBLIC);
+
+        return songsToAdd.stream().map(songMapper::toPublicSimpleSongDto).
+                collect(Collectors.toList());
     }
 }
 

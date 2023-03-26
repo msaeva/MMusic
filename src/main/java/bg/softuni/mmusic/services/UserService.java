@@ -1,5 +1,6 @@
 package bg.softuni.mmusic.services;
 
+import bg.softuni.mmusic.model.dtos.ModifyRolesDto;
 import bg.softuni.mmusic.model.dtos.UserProfileDto;
 import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
@@ -18,12 +19,10 @@ import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
+import bg.softuni.mmusic.repositories.UserRoleRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,19 +34,22 @@ public class UserService {
     private final SongMapper songMapper;
     private final PlaylistMapper playlistMapper;
     private final UserMapper userMapper;
+    private final UserRoleRepository roleRepository;
+
 
     public UserService(UserRepository userRepository,
                        SongRepository songRepository,
                        PlaylistRepository playlistRepository,
                        SongMapper songMapper,
                        PlaylistMapper playlistMapper,
-                       UserMapper userMapper) {
+                       UserMapper userMapper, UserRoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.playlistRepository = playlistRepository;
         this.songMapper = songMapper;
         this.playlistMapper = playlistMapper;
         this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
     }
 
 
@@ -146,6 +148,35 @@ public class UserService {
         userToUpdate.setAbout(userProfileDto.getAbout());
 
         userRepository.saveAndFlush(userToUpdate);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void modifyRoles(String userUuid, ModifyRolesDto modifyRolesDto) {
+        User user = userRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new UserNotFoundException(userUuid));
+
+        Set<UserRole> roles = new HashSet<>(roleRepository
+                .findALlByUuidIn(modifyRolesDto.getRoles()));
+
+        Set<UserRole> rolesToAdd = new HashSet<>();
+
+        for (UserRole role : roles) {
+            if (!user.getRoles().contains(role)){
+                rolesToAdd.add(role);
+            }
+        }
+
+        for (UserRole role : user.getRoles()) {
+            if (!rolesToAdd.contains(role)) {
+                rolesToAdd.remove(role);
+            }
+        }
+
+        user.setRoles(rolesToAdd);
+        userRepository.saveAndFlush(user);
     }
 }
 

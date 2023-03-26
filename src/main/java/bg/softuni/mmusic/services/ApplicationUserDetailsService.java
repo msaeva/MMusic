@@ -1,7 +1,6 @@
 package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.model.entities.UserRole;
-import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.repositories.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

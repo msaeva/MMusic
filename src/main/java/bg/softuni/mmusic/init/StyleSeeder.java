@@ -6,6 +6,8 @@ import bg.softuni.mmusic.repositories.StyleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class StyleSeeder implements CommandLineRunner {
 
@@ -17,10 +19,40 @@ public class StyleSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
         if (styleRepository.count() == 0){
-            for(StyleType type : StyleType.values()){
-                styleRepository.saveAndFlush(new Style("description", type, null, null));
-            }
+            Style pop = Style.builder()
+                    .type(StyleType.POP)
+                    .parent(null)
+                    .description("description").build();
+
+            Style dancePop = Style.builder()
+                    .type(StyleType.DANCE_POP)
+                    .parent(pop)
+                    .description("description").build();
+
+            Style rock = Style.builder()
+                    .type(StyleType.ROCK)
+                    .parent(null)
+                    .description("description").build();
+
+            Style modernRock = Style.builder()
+                    .type(StyleType.MODERN_ROCK)
+                    .parent(rock)
+                    .description("description").build();
+
+            Style hiphop = Style.builder()
+                    .type(StyleType.HIPHOP)
+                    .parent(null)
+                    .description("description").build();
+
+            Style melodicRap = Style.builder()
+                    .type(StyleType.MELODIC_RAP)
+                    .parent(hiphop)
+                    .description("description").build();
+
+            styleRepository.saveAllAndFlush(List.of(pop, dancePop, rock, modernRock,
+                    hiphop, melodicRap));
         }
     }
 }
