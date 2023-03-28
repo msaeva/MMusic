@@ -7,11 +7,8 @@ import bg.softuni.mmusic.model.error.UserNotFoundException;
 import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,31 +22,15 @@ public class AuthService {
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
 
-    public AuthService(UserRepository userRepository, UserMapper userMapper, UserRoleRepository roleRepository, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+    public AuthService(UserRepository userRepository,
+                       UserMapper userMapper,
+                       UserRoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.userDetailsService = userDetailsService;
-    }
-
-    public void login(String username) {
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        Authentication auth =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        userDetails.getPassword(),
-                        userDetails.getAuthorities()
-                );
-
-        SecurityContextHolder
-                .getContext()
-                .setAuthentication(auth);
-
     }
 
 
