@@ -2,12 +2,12 @@ package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.constants.Authorities;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.AddSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
-import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.*;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.mapper.SongMapper;
+import bg.softuni.mmusic.repositories.PictureRepository;
+import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
 import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
 import bg.softuni.mmusic.services.AuthService;
@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -36,14 +37,18 @@ public class SongController {
     private final UserFavouriteSongsRepository favouriteSongsRepository;
     private final UserLikedSongsRepository userLikedSongsRepository;
 
+    private final SongMapper songMapper;
+
     public SongController(SongService songService,
                           AuthService authService,
                           UserFavouriteSongsRepository favouriteSongsRepository,
-                          UserLikedSongsRepository userLikedSongsRepository) {
+                          UserLikedSongsRepository userLikedSongsRepository,
+                          SongMapper songMapper) {
         this.songService = songService;
         this.authService = authService;
         this.favouriteSongsRepository = favouriteSongsRepository;
         this.userLikedSongsRepository = userLikedSongsRepository;
+        this.songMapper = songMapper;
     }
 
     @ModelAttribute(name = "addSongDto")
@@ -129,12 +134,13 @@ public class SongController {
     public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView) {
         Page<Song> songs = songService.getAll(validation);
 
-        Pagination<List<PublicSimpleSongDto>> pageableDto =
+        Pagination<List<SearchSongDto>> pageableDto =
                 new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
 
-        List<PublicSimpleSongDto> publicSimpleSongDtos =
-                songService.toPublicSimpleSongDto(songs);
-        pageableDto.setData(publicSimpleSongDtos);
+
+        List<SearchSongDto> searchSongDtos =
+                songs.stream().map(songMapper::toSearchSongDto).collect(Collectors.toList());
+        pageableDto.setData(searchSongDtos);
 
         modelAndView.addObject("pagination", pageableDto);
         modelAndView.setViewName("search");

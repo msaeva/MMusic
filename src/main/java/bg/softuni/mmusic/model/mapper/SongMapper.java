@@ -3,23 +3,36 @@ package bg.softuni.mmusic.model.mapper;
 import bg.softuni.mmusic.model.dtos.song.*;
 import bg.softuni.mmusic.model.entities.Picture;
 import bg.softuni.mmusic.model.entities.Song;
+import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.repositories.PictureRepository;
+import bg.softuni.mmusic.repositories.UserRepository;
 import org.mapstruct.Mapper;
-import org.springframework.security.core.parameters.P;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
+@Mapper(componentModel = "spring", imports = {Picture.class, User.class})
+public abstract class SongMapper {
 
-@Mapper(componentModel = "spring")
-public interface SongMapper {
-    Song addSongDtoToSong(AddSongDto addSongDto);
+    @Autowired
+    protected UserRepository userRepository;
 
-    SongDto songEntityToSongDto(Song song);
+    @Autowired
+    protected PictureRepository pictureRepository;
 
-    PublicSimpleSongDto toPublicSimpleSongDto(Song song);
+    public abstract Song addSongDtoToSong(AddSongDto addSongDto);
 
-    PublicDetailedSongDto toPublicDetailedSongDto(Song song);
+    @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
+    public abstract PublicSimpleSongDto toPublicSimpleSongDto(Song song);
 
-    FavouriteSongDto toFavouriteSongDto(Song song);
+    public abstract PublicDetailedSongDto toPublicDetailedSongDto(Song song);
 
-    UpdateSongDto toUpdateSongDto(Song songToUpdate);
+    @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
+    public abstract FavouriteSongDto toFavouriteSongDto(Song song);
+
+    public abstract UpdateSongDto toUpdateSongDto(Song songToUpdate);
+
+    @Mapping(target = "authorUsername", expression = "java(userRepository.getUsernameByUuid(song.getAuthor().getUuid()))")
+    @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
+    public abstract SearchSongDto toSearchSongDto(Song song);
 
 }

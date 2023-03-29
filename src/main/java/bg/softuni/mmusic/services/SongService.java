@@ -2,13 +2,19 @@ package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.*;
+import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
+import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
-import bg.softuni.mmusic.repositories.*;
+import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
+import bg.softuni.mmusic.repositories.SongRepository;
+import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
+import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +22,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -140,24 +149,8 @@ public class SongService {
 
     }
 
-    public List<PublicSimpleSongDto> toPublicSimpleSongDto(Page<Song> songs) {
-        List<PublicSimpleSongDto> publicSimpleSongDtos = new ArrayList<>();
-        for (Song song : songs) {
-            PublicSimpleSongDto dto = songMapper.toPublicSimpleSongDto(song);
-            dto.setPictureUrl(song.getPicture().getUrl());
-            publicSimpleSongDtos.add(dto);
-        }
-        return publicSimpleSongDtos;
-    }
-
     public Set<PublicSimpleSongDto> toPublicSimpleSongDto(Set<Song> songs) {
-        Set<PublicSimpleSongDto> publicSimpleSongDtos = new HashSet<>();
-        for (Song song : songs) {
-            PublicSimpleSongDto dto = songMapper.toPublicSimpleSongDto(song);
-            dto.setPictureUrl(song.getPicture().getUrl());
-            publicSimpleSongDtos.add(dto);
-        }
-        return publicSimpleSongDtos;
+        return songs.stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toSet());
     }
 
     public PublicDetailedSongDto toDetailedSongDto(Song song) {

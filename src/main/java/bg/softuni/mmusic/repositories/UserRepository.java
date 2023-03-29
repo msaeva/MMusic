@@ -18,6 +18,11 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByUuid(String uuid);
 
+
+    @Query("select u.username from User as u " +
+            "where u.uuid = :uuid")
+    String getUsernameByUuid(@Param("uuid") String uuid);
+
     @Query("select s from Song as s "+
             "join UserFavouriteSongs ufs on s.uuid = ufs.song_uuid " +
             "where ufs.user_uuid = :userUuid")

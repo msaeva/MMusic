@@ -61,13 +61,7 @@ public class UserService {
             return null;
         }
 
-        List<PublicSimpleSongDto> songsDtos = new ArrayList<>();
-        for (Song song : userSongs.get()) {
-            PublicSimpleSongDto publicSimpleSongDto = songMapper.toPublicSimpleSongDto(song);
-            publicSimpleSongDto.setPictureUrl(song.getPicture().getUrl());
-            songsDtos.add(publicSimpleSongDto);
-        }
-        return songsDtos;
+        return userSongs.get().stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toList());
     }
 
     public List<PublicSimplePlaylistDto> getUserPlaylist(User authUser) {
@@ -109,13 +103,7 @@ public class UserService {
             return null;
         }
 
-        List<PublicSimpleSongDto> songsDtos = new ArrayList<>();
-        for (Song song : songs.get()) {
-            PublicSimpleSongDto publicSimpleSongDto = songMapper.toPublicSimpleSongDto(song);
-            publicSimpleSongDto.setPictureUrl(song.getPicture().getUrl());
-            songsDtos.add(publicSimpleSongDto);
-        }
-        return songsDtos;
+        return songs.get().stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toList());
     }
 
 
@@ -139,14 +127,7 @@ public class UserService {
             //TODO return message like "you don't have any songs added to favorites list"
         }
 
-        List<FavouriteSongDto> songsDtos = new ArrayList<>();
-        for (Song song : favouriteSongs) {
-            FavouriteSongDto favouriteSongDto = songMapper.toFavouriteSongDto(song);
-            favouriteSongDto.setPictureUrl(song.getPicture().getUrl());
-            songsDtos.add(favouriteSongDto);
-        }
-        return songsDtos;
-
+        return favouriteSongs.stream().map(songMapper::toFavouriteSongDto).collect(Collectors.toList());
     }
 
     public void update(User userToUpdate, UserProfileDto userProfileDto) {
