@@ -29,16 +29,46 @@
 
                     <div class="col-lg-8">
                         <div class="portfolio-details-slider swiper">
-                                <section id="video">
-                                    <iframe id="frame"
-                                            th:src="@{https://www.youtube.com/embed/{videoUrl}(videoUrl = *{song.getVideoUrl()})}"
-                                            width="800" height="500">
-                                    </iframe>
-                                </section>
+                            <section id="video">
+                                <iframe id="frame"
+                                        th:src="@{https://www.youtube.com/embed/{videoUrl}(videoUrl = *{song.getVideoUrl()})}"
+                                        width="800" height="500">
+                                </iframe>
+                            </section>
                         </div>
                     </div>
 
                     <div class="col-lg-4">
+                        <div th:unless="${own}" class="portfolio-info">
+
+                            <button th:if="${favourite}" type="button"
+                                    id="remove-favourite-btn"
+                                    th:attr="data-song-uuid=${song.getUuid()}"
+                                    class="btn btn-danger"> Remove from Favourite
+                            </button>
+
+                            <button th:unless="${favourite}" type="button"
+                                    id="add-favourite-btn"
+                                    th:attr="data-song-uuid=${song.getUuid()}"
+                                    class="btn btn-primary"> Add to Favourite
+                            </button>
+
+                            <button th:unless="${liked}"
+                                    type="button"
+                                    id="like-song-btn"
+                                    th:attr="data-song-uuid=${song.getUuid()}"
+                                    class="btn btn-outline-danger">
+                                <i class="bi bi-heart"></i>
+                            </button>
+
+                            <button th:if="${liked}"
+                                    type="button"
+                                    id="unlike-song-btn"
+                                    th:attr="data-song-uuid=${song.getUuid()}"
+                                    class="btn btn-outline-danger">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                        </div>
                         <div class="portfolio-info">
                             <h3>Song information</h3>
                             <ul>
@@ -79,7 +109,7 @@
             <div>
                 <!-- Comments submission -->
                 <form th:method="post"
-                      th:action="@{song/{uuid}/view}"
+                      th:action="@{/song/{uuid}/view}"
                       id="commentForm" method="POST">
                     <div class="form-group">
                         <h4>Leave a comment</h4>
@@ -91,7 +121,7 @@
                                   rows="5"
                                   class="form-control"
                                   style="background-color: white;">
-                        </textarea>
+                            </textarea>
                         <small id="messageError" class="invalid-feedback">
                             Message should be at least 10 characters.
                         </small>
@@ -185,15 +215,9 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
 
-<script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="assets/vendor/aos/aos.js"></script>
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-<script src="assets/vendor/php-email-form/validate.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="/js/songs.js"></script>
 <script src="/js/comments.js"></script>
+
 </body>
 
 </html>

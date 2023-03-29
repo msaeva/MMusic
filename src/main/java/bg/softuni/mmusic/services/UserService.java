@@ -36,7 +36,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
 
-
     public UserService(UserRepository userRepository,
                        SongRepository songRepository,
                        PlaylistRepository playlistRepository,
@@ -133,11 +132,21 @@ public class UserService {
     }
 
     public List<FavouriteSongDto> getFavouriteSongs(User authUser) {
-        Set<Song> favouriteSongs = authUser.getFavouriteSongs();
+
+        List<Song> favouriteSongs = userRepository.getUserFavouriteSongs(authUser.getUuid());
+
         if (favouriteSongs.isEmpty()) {
             //TODO return message like "you don't have any songs added to favorites list"
         }
-        return favouriteSongs.stream().map(songMapper::toFavouriteSongDto).toList();
+
+        List<FavouriteSongDto> songsDtos = new ArrayList<>();
+        for (Song song : favouriteSongs) {
+            FavouriteSongDto favouriteSongDto = songMapper.toFavouriteSongDto(song);
+            favouriteSongDto.setPictureUrl(song.getPicture().getUrl());
+            songsDtos.add(favouriteSongDto);
+        }
+        return songsDtos;
+
     }
 
     public void update(User userToUpdate, UserProfileDto userProfileDto) {
@@ -164,7 +173,7 @@ public class UserService {
         Set<UserRole> rolesToAdd = new HashSet<>();
 
         for (UserRole role : roles) {
-            if (!user.getRoles().contains(role)){
+            if (!user.getRoles().contains(role)) {
                 rolesToAdd.add(role);
             }
         }
@@ -178,5 +187,6 @@ public class UserService {
         user.setRoles(rolesToAdd);
         userRepository.saveAndFlush(user);
     }
+
 }
 

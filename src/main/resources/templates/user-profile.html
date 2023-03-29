@@ -249,7 +249,7 @@
                                     <h3 th:if="${ownSongs.isEmpty()}">You have no playlists created yet!</h3>
                                     <div th:each="song : ${ownSongs}"
                                          class="card" style="max-width: 540px;">
-                                        <div class="row g-0" >
+                                        <div class="row g-0">
                                             <a th:href="@{|/song/${song.getUuid()}/view|}" class="col-md-12">
                                                 <img th:src="${song.getPictureUrl()}"
                                                      class="img-fluid rounded-start"
@@ -263,7 +263,8 @@
                                                         class="btn btn-danger delete-song-btn">Delete
                                                 </button>
                                                 <a class="btn btn-info"
-                                                   th:href="@{|/song/${song.getUuid()}/update|}" role="button">Update</a>
+                                                   th:href="@{|/song/${song.getUuid()}/update|}"
+                                                   role="button">Update</a>
                                             </div>
                                         </div>
                                     </div>
@@ -301,19 +302,23 @@
 
                             <div class="tab-pane fade pt-3" id="favourite">
                                 <div class="d-flex flex-wrap mx-auto w-100">
-                                    <h3 th:if="${favouriteSongs.isEmpty()}">No added favourite songs !</h3>
+                                    <h3 th:if="${favouriteSongs.isEmpty()}">You have no favourite songs!</h3>
                                     <div th:each="favourite : ${favouriteSongs}"
-                                         class="card mb-3" style="max-width: 540px;">
+                                         class="card" style="max-width: 540px;">
                                         <div class="row g-0">
-                                            <div class="col-md-4">
-                                                <img src="https://picsum.photos/200/240" class="img-fluid rounded-start"
+                                            <a th:href="@{|/song/${favourite.getUuid()}/view|}" class="col-md-12">
+                                                <img th:src="${favourite.getPictureUrl()}"
+                                                     class="img-fluid rounded-start"
                                                      alt="...">
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" th:text="${favourite.getTitle()}"></h5>
-                                                    <p class="card-text" th:text="${favourite.getDescription()}"></p>
-                                                </div>
+                                            </a>
+                                            <div class="card-body">
+                                                <h5 class="card-title" th:text="${favourite.getTitle()}"></h5>
+                                                <p class="card-text" th:text="${favourite.getDescription()}"></p>
+                                                <p class="card-text"
+                                                   th:text="'Likes: ' + ${favourite.getLikes()}"></p>
+                                                <p class="card-text"
+                                                   th:text="'Favourite count: ' + ${favourite.getFavouriteCount()}"></p>
+
                                             </div>
                                         </div>
                                     </div>

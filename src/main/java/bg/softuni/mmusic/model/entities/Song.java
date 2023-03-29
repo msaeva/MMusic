@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -63,4 +64,18 @@ public class Song extends BaseEntity {
     @Column(name = "favourite_count")
     @PositiveOrZero
     private Integer favouriteCount = 0;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Song song = (Song) o;
+        return Objects.equals(getUuid(), song.getUuid()) && Objects.equals(title, song.title);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUuid(), title);
+    }
 }

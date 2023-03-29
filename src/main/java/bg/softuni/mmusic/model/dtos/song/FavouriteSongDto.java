@@ -10,14 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FavouriteSongDto {
+    private String uuid;
     private String title;
 
     private String description;
 
-    private Long duration;
+    private String pictureUrl;
 
-    private String imageUrl;
+    private Integer likes;
+    private Integer favouriteCount;
 
-    private bg.softuni.mmusic.model.entities.Style Style;
 
 }
