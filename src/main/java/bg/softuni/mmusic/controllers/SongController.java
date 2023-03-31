@@ -2,12 +2,14 @@ package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.constants.Authorities;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.*;
+import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
+import bg.softuni.mmusic.model.dtos.song.SearchSongDto;
+import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.mapper.SongMapper;
-import bg.softuni.mmusic.repositories.PictureRepository;
-import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
 import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
 import bg.softuni.mmusic.services.AuthService;
@@ -77,9 +79,9 @@ public class SongController {
             return "redirect:/song/add";
         }
 
-        songService.addSong(addSongDto);
+        Song song = songService.addSong(addSongDto);
 
-        return "redirect:/";
+        return "redirect:/song/" + song.getUuid();
     }
 
     @GetMapping("/{uuid}/update")
@@ -149,7 +151,7 @@ public class SongController {
 
     }
 
-    @GetMapping("/{uuid}/view")
+    @GetMapping("/{uuid}")
     public ModelAndView viewSong(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
         User authUser = authService.getAuthenticatedUser();
 
@@ -157,10 +159,11 @@ public class SongController {
 
         boolean liked = false;
         boolean favourite = false;
-        boolean own = false;
+        boolean displayButtons = false;
         if (authUser != null) {
-            if (authUser.getOwnSongs().stream().anyMatch(s -> s.getUuid().equals(song.getUuid()))) {
-                own = true;
+            if (authUser.getOwnSongs().stream().anyMatch(s -> s.getUuid().equals(song.getUuid())) ||
+                    authUser.getRoles().stream().anyMatch(role -> role.getRole().equals(Role.ADMIN))) {
+                displayButtons = true;
             }
             List<String> userLikedSongsUuids = userLikedSongsRepository.getUserLikedSongs(authUser.getUuid());
             if (userLikedSongsUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {
@@ -175,7 +178,7 @@ public class SongController {
         PublicDetailedSongDto publicDetailedSongDto = songService.toDetailedSongDto(song);
 
         modelAndView.setViewName("single-page-song");
-        modelAndView.addObject("own", own);
+        modelAndView.addObject("displayButtons", displayButtons);
         modelAndView.addObject("liked", liked);
         modelAndView.addObject("favourite", favourite);
         modelAndView.addObject("song", publicDetailedSongDto);

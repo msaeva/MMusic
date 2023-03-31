@@ -39,8 +39,8 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div th:unless="${own}" class="portfolio-info">
-
+                        <div th:unless="${displayButtons}"
+                             class="portfolio-info d-flex align-items-center mb-2">
                             <button th:if="${favourite}" type="button"
                                     id="remove-favourite-btn"
                                     th:attr="data-song-uuid=${song.getUuid()}"
@@ -53,21 +53,19 @@
                                     class="btn btn-primary"> Add to Favourite
                             </button>
 
-                            <button th:unless="${liked}"
-                                    type="button"
-                                    id="like-song-btn"
-                                    th:attr="data-song-uuid=${song.getUuid()}"
-                                    class="btn btn-outline-danger">
-                                <i class="bi bi-heart"></i>
-                            </button>
+                            <i id="like-song-btn"
+                               th:unless="${liked}"
+                               th:attr="data-song-uuid=${song.getUuid()}"
+                               class="bi bi-heart text-danger ms-2"
+                               style="font-size: 1.8rem; font-weight: 800 !important; cursor: pointer">
+                            </i>
 
-                            <button th:if="${liked}"
-                                    type="button"
-                                    id="unlike-song-btn"
-                                    th:attr="data-song-uuid=${song.getUuid()}"
-                                    class="btn btn-outline-danger">
-                                <i class="bi bi-heart-fill"></i>
-                            </button>
+                            <i id="unlike-song-btn"
+                               th:if="${liked}"
+                               th:attr="data-song-uuid=${song.getUuid()}"
+                               class="bi bi-heart-fill text-danger ms-2"
+                               style="font-size: 1.8rem; font-weight: 800 !important; cursor: pointer">
+                            </i>
                         </div>
                         <div class="portfolio-info">
                             <h3>Song information</h3>
@@ -108,17 +106,15 @@
             <h1>Comments</h1>
             <div>
                 <!-- Comments submission -->
-                <form th:method="post"
-                      th:action="@{/song/{uuid}/view}"
-                      id="commentForm" method="POST">
+                <form id="commentForm" method="POST" style="max-width: 560px">
                     <div class="form-group">
                         <h4>Leave a comment</h4>
                         <label for="message">Message</label>
 
                         <textarea name="message"
                                   id="message"
-                                  cols="30"
-                                  rows="5"
+                                  cols="10"
+                                  rows="3"
                                   class="form-control"
                                   style="background-color: white;">
                             </textarea>
@@ -129,7 +125,7 @@
 
                     <div class="form-group">
                         <div class="button-holder d-flex">
-                            <input type="submit" class="btn btn-info btn-lg" value="Post Comment"/>
+                            <input type="submit" class="btn btn-primary btn-lg" value="Post Comment"/>
                         </div>
                     </div>
                 </form>
@@ -215,6 +211,7 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
 
+<script src="/js/common.js"></script>
 <script src="/js/songs.js"></script>
 <script src="/js/comments.js"></script>
 

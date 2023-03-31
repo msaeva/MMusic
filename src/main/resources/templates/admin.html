@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head th:replace="~{fragments/head::head}"></head>
 <body>
@@ -18,7 +17,7 @@
             <th>Username</th>
             <th>Email</th>
             <th>Current Roles</th>
-            <th>Add Role</th>
+            <th>Select new roles</th>
         </tr>
 
         <tr th:each="user : ${users}">
@@ -42,7 +41,9 @@
                                 th:text="${role.getRole().name()}">role
                         </option>
                     </select>
-                    <button type="submit">Add Role</button>
+                    <button type="submit" class="btn btn-info text-white"
+                            style="background-color:green">Change
+                    </button>
                 </td>
             </form>
         </tr>

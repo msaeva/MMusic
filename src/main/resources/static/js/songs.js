@@ -1,6 +1,3 @@
-const csrfHeaderName = document.getElementById('csrf').getAttribute('name')
-const csrfHeaderValue = document.getElementById('csrf').getAttribute('value');
-
 document.getElementById('add-favourite-btn')?.addEventListener('click', (event) => {
         console.log('clicked');
         const songUuid = event.target.dataset['songUuid'];

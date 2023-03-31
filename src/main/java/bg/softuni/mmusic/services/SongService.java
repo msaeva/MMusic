@@ -59,7 +59,7 @@ public class SongService {
         this.likedSongsRepository = userLikedSongsRepository;
     }
 
-    public void addSong(AddSongDto addSongDto) {
+    public Song addSong(AddSongDto addSongDto) {
         User authUser = authService.getAuthenticatedUser();
 
         if (authUser == null) {
@@ -87,6 +87,7 @@ public class SongService {
         songToSave.setPicture(picture);
 
         songRepository.saveAndFlush(songToSave);
+        return songToSave;
     }
 
     public Song findSongByUuid(String songUuid) {

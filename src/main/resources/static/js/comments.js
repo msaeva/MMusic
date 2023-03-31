@@ -1,6 +1,3 @@
-const csrfHeaderName = document.getElementById('csrf').getAttribute('name');
-const csrfHeaderValue = document.getElementById('csrf').getAttribute('value');
-
 let songUuid = document.getElementById("songUuid").getAttribute("value");
 let commentSection = document.getElementById("commentSection");
 let authUser = document.getElementById("authUser").value

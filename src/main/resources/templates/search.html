@@ -9,7 +9,7 @@
 
 <div th:object="${pagination}"
      th:each="song : ${pagination.getData()}" class="card" style="width: 18rem;">
-    <a th:href="@{|/song/${song.getUuid()}/view|}" class="col-md-12">
+    <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
         <img th:src="${song.getPictureUrl()}" class="card-img-top" alt="...">
     </a>
     <div class="card-body">

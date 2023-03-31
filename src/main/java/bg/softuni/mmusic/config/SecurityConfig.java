@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                 .requestMatchers("/admin").hasRole(Role.ADMIN.name())
-                .requestMatchers("/song/{uuid}/view", "/song/search").permitAll()
+                .requestMatchers("/song/{uuid}", "/song/search").permitAll()
                 .requestMatchers("/song/add", "/playlist/create", "song/{uuid}/update").hasRole(Role.MUSICIAN.name())
                 .requestMatchers("/playlist/{uuid}/add").hasRole(Role.MUSICIAN.name())
                 // all any pages are available for logged users
