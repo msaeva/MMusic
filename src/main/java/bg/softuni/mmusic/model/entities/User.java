@@ -3,10 +3,7 @@ package bg.softuni.mmusic.model.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -16,6 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -57,36 +55,29 @@ public class User extends BaseEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
     private Set<Song> ownSongs;
 
-    @ManyToMany
-    private Set<Song> downloadSongs;
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_favourite_songs",
+            joinColumns = {@JoinColumn(name = "user_uuid", referencedColumnName = "uuid")},
+            inverseJoinColumns = {@JoinColumn(name = "song_uuid", referencedColumnName = "uuid")})
     private Set<Song> favouriteSongs;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_liked_songs",
+            joinColumns = {@JoinColumn(name = "user_uuid", referencedColumnName = "uuid")},
+            inverseJoinColumns = {@JoinColumn(name = "song_uuid", referencedColumnName = "uuid")})
     private Set<Song> likedSongs;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Playlist> playlists;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", confirmedPassword='" + confirmPassword + '\'' +
-                ", createdDate=" + createdDate +
-                ", role=" + roles +
-                ", downloadSongs=" + downloadSongs +
-                ", favouriteSongs=" + favouriteSongs +
-                ", playlists=" + playlists +
-                '}';
-    }
-
-    public User(String username, String firstName, String lastName, String email, String password, LocalDate createdDate, Set<UserRole> roles) {
+    public User(String username,
+                String firstName,
+                String lastName,
+                String email,
+                String password,
+                LocalDate createdDate,
+                Set<UserRole> roles) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;

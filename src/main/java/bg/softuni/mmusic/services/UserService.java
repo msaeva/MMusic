@@ -36,7 +36,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
 
-
     public UserService(UserRepository userRepository,
                        SongRepository songRepository,
                        PlaylistRepository playlistRepository,
@@ -62,13 +61,7 @@ public class UserService {
             return null;
         }
 
-        List<PublicSimpleSongDto> songsDtos = new ArrayList<>();
-        for (Song song : userSongs.get()) {
-            PublicSimpleSongDto publicSimpleSongDto = songMapper.toPublicSimpleSongDto(song);
-            publicSimpleSongDto.setPictureUrl(song.getPicture().getUrl());
-            songsDtos.add(publicSimpleSongDto);
-        }
-        return songsDtos;
+        return userSongs.get().stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toList());
     }
 
     public List<PublicSimplePlaylistDto> getUserPlaylist(User authUser) {
@@ -110,13 +103,7 @@ public class UserService {
             return null;
         }
 
-        List<PublicSimpleSongDto> songsDtos = new ArrayList<>();
-        for (Song song : songs.get()) {
-            PublicSimpleSongDto publicSimpleSongDto = songMapper.toPublicSimpleSongDto(song);
-            publicSimpleSongDto.setPictureUrl(song.getPicture().getUrl());
-            songsDtos.add(publicSimpleSongDto);
-        }
-        return songsDtos;
+        return songs.get().stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toList());
     }
 
 
@@ -133,11 +120,14 @@ public class UserService {
     }
 
     public List<FavouriteSongDto> getFavouriteSongs(User authUser) {
-        Set<Song> favouriteSongs = authUser.getFavouriteSongs();
+
+        List<Song> favouriteSongs = userRepository.getUserFavouriteSongs(authUser.getUuid());
+
         if (favouriteSongs.isEmpty()) {
             //TODO return message like "you don't have any songs added to favorites list"
         }
-        return favouriteSongs.stream().map(songMapper::toFavouriteSongDto).toList();
+
+        return favouriteSongs.stream().map(songMapper::toFavouriteSongDto).collect(Collectors.toList());
     }
 
     public void update(User userToUpdate, UserProfileDto userProfileDto) {
@@ -164,7 +154,7 @@ public class UserService {
         Set<UserRole> rolesToAdd = new HashSet<>();
 
         for (UserRole role : roles) {
-            if (!user.getRoles().contains(role)){
+            if (!user.getRoles().contains(role)) {
                 rolesToAdd.add(role);
             }
         }
@@ -178,5 +168,6 @@ public class UserService {
         user.setRoles(rolesToAdd);
         userRepository.saveAndFlush(user);
     }
+
 }
 

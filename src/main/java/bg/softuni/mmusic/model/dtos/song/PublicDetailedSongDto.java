@@ -30,7 +30,5 @@ public class PublicDetailedSongDto {
 
     private SongStatus status;
 
-    private Integer downloadCount;
-
     private Integer favouriteCount;
 }

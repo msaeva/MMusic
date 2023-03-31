@@ -4,9 +4,14 @@ import bg.softuni.mmusic.constants.Authorities;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
 import bg.softuni.mmusic.model.dtos.song.AddSongDto;
 import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
+import bg.softuni.mmusic.model.dtos.song.SearchSongDto;
 import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
+import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.enums.Role;
+import bg.softuni.mmusic.model.mapper.SongMapper;
+import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
+import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.Pagination;
 import bg.softuni.mmusic.services.SongService;
@@ -22,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -30,10 +36,21 @@ public class SongController {
 
     private final SongService songService;
     private final AuthService authService;
+    private final UserFavouriteSongsRepository favouriteSongsRepository;
+    private final UserLikedSongsRepository userLikedSongsRepository;
 
-    public SongController(SongService songService, AuthService authService) {
+    private final SongMapper songMapper;
+
+    public SongController(SongService songService,
+                          AuthService authService,
+                          UserFavouriteSongsRepository favouriteSongsRepository,
+                          UserLikedSongsRepository userLikedSongsRepository,
+                          SongMapper songMapper) {
         this.songService = songService;
         this.authService = authService;
+        this.favouriteSongsRepository = favouriteSongsRepository;
+        this.userLikedSongsRepository = userLikedSongsRepository;
+        this.songMapper = songMapper;
     }
 
     @ModelAttribute(name = "addSongDto")
@@ -62,9 +79,9 @@ public class SongController {
             return "redirect:/song/add";
         }
 
-        songService.addSong(addSongDto);
+        Song song = songService.addSong(addSongDto);
 
-        return "redirect:/";
+        return "redirect:/song/" + song.getUuid();
     }
 
     @GetMapping("/{uuid}/update")
@@ -119,12 +136,13 @@ public class SongController {
     public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView) {
         Page<Song> songs = songService.getAll(validation);
 
-        Pagination<List<PublicSimpleSongDto>> pageableDto =
+        Pagination<List<SearchSongDto>> pageableDto =
                 new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
 
-        List<PublicSimpleSongDto> publicSimpleSongDtos =
-                songService.toPublicSimpleSongDto(songs);
-        pageableDto.setData(publicSimpleSongDtos);
+
+        List<SearchSongDto> searchSongDtos =
+                songs.stream().map(songMapper::toSearchSongDto).collect(Collectors.toList());
+        pageableDto.setData(searchSongDtos);
 
         modelAndView.addObject("pagination", pageableDto);
         modelAndView.setViewName("search");
@@ -133,15 +151,90 @@ public class SongController {
 
     }
 
-    @GetMapping("/{uuid}/view")
+    @GetMapping("/{uuid}")
     public ModelAndView viewSong(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
+        User authUser = authService.getAuthenticatedUser();
 
         Song song = songService.findSongByUuid(uuid);
+
+        boolean liked = false;
+        boolean favourite = false;
+        boolean displayButtons = false;
+        if (authUser != null) {
+            if (authUser.getOwnSongs().stream().anyMatch(s -> s.getUuid().equals(song.getUuid())) ||
+                    authUser.getRoles().stream().anyMatch(role -> role.getRole().equals(Role.ADMIN))) {
+                displayButtons = true;
+            }
+            List<String> userLikedSongsUuids = userLikedSongsRepository.getUserLikedSongs(authUser.getUuid());
+            if (userLikedSongsUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {
+                liked = true;
+            }
+            List<String> userFavouriteSongUuids = favouriteSongsRepository.getUserFavouriteSongs(authUser.getUuid());
+            if (userFavouriteSongUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {
+                favourite = true;
+            }
+        }
+
         PublicDetailedSongDto publicDetailedSongDto = songService.toDetailedSongDto(song);
 
         modelAndView.setViewName("single-page-song");
+        modelAndView.addObject("displayButtons", displayButtons);
+        modelAndView.addObject("liked", liked);
+        modelAndView.addObject("favourite", favourite);
         modelAndView.addObject("song", publicDetailedSongDto);
 
         return modelAndView;
+    }
+
+    @PostMapping("/{uuid}/like")
+    @ResponseBody
+    public HttpStatus likeSong(@PathVariable(name = "uuid") String uuid) {
+        try {
+            songService.like(uuid);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        return HttpStatus.OK;
+    }
+
+    @DeleteMapping("/{uuid}/unlike")
+    @ResponseBody
+    public HttpStatus unlikeSong(@PathVariable(name = "uuid") String uuid) {
+        try {
+            songService.unlike(uuid);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
+
+        return HttpStatus.OK;
+    }
+
+    @PostMapping("/{uuid}/addToFavourite")
+    @ResponseBody
+    public HttpStatus addToFavourite(@PathVariable(name = "uuid") String uuid) {
+        User authUser = authService.getAuthenticatedUser();
+        try {
+            songService.addToFavourite(uuid, authUser);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
+        return HttpStatus.OK;
+    }
+
+    @DeleteMapping("/{uuid}/removeFromFavourite")
+    @ResponseBody
+    public HttpStatus removeFromFavourite(@PathVariable(name = "uuid") String uuid) {
+        User authUser = authService.getAuthenticatedUser();
+        try {
+            songService.removeFromFavourite(uuid, authUser);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
+        return HttpStatus.OK;
     }
 }
