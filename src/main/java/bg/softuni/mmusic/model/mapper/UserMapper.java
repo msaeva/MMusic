@@ -12,6 +12,6 @@ public interface UserMapper {
     User userRegisterDtoToUser(UserRegisterDto userRegisterDto);
 
     @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "fullName", ignore = true)
+    @Mapping(target = "fullName", expression = "java(user.getFirstName() + \" \" + user.getLastName())")
     UserProfileDto toUserProfileDetailsDto(User user);
 }

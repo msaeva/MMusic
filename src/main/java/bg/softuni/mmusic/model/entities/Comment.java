@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Comment extends BaseEntity {
     private LocalDateTime created;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(nullable = false)
     private String text;
 
     @ManyToOne

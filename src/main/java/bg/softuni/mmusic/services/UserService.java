@@ -20,6 +20,7 @@ import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +37,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository,
                        SongRepository songRepository,
                        PlaylistRepository playlistRepository,
@@ -68,16 +70,9 @@ public class UserService {
         Optional<List<Playlist>> playlists = playlistRepository.findAllByOwnerUuid(authUser.getUuid());
         if (playlists.isEmpty()) {
             // TODO make exception for user with no playlists yet
-            return null;
         }
-        List<PublicSimplePlaylistDto> publicSimplePlaylistDtos = new ArrayList<>();
 
-        for (Playlist playlist : playlists.get()) {
-            PublicSimplePlaylistDto dto = playlistMapper.toPublicSimplePlaylistDto(playlist);
-            dto.setSongsCount(playlist.getSongs().size());
-            publicSimplePlaylistDtos.add(dto);
-        }
-        return publicSimplePlaylistDtos;
+       return playlists.get().stream().map(playlistMapper::toPublicSimplePlaylistDto).collect(Collectors.toList());
     }
 
     public User getUserByUuid(String uuid) {
@@ -86,18 +81,18 @@ public class UserService {
 
     public UserProfileDto getUserProfileInfo(String uuid) {
         User user = getUserByUuid(uuid);
-        UserProfileDto userProfileDetailsDto = userMapper.toUserProfileDetailsDto(user);
-        userProfileDetailsDto.setFullName(user.getFirstName() + " " + user.getLastName());
+        UserProfileDto userProfileDto = userMapper.toUserProfileDetailsDto(user);
 
         Set<Role> roles = user.getRoles().stream().map(UserRole::getRole).collect(Collectors.toSet());
-        userProfileDetailsDto.setRoles(roles);
+        userProfileDto.setRoles(roles);
 
-        return userProfileDetailsDto;
+        return userProfileDto;
     }
 
 
     public List<PublicSimpleSongDto> getUserPublicSongs(User user) {
-        Optional<List<Song>> songs = songRepository.findAllByAuthorUuidAndStatus(user.getUuid(), SongStatus.PUBLIC);
+        Optional<List<Song>> songs = songRepository
+                .findAllByAuthorUuidAndStatus(user.getUuid(), SongStatus.PUBLIC);
         if (songs.isEmpty()) {
             //TODO return error
             return null;
@@ -107,7 +102,7 @@ public class UserService {
     }
 
 
-    public List<PublicSimplePlaylistDto> getUserPlaylists(User user) {
+    public List<PublicSimplePlaylistDto> getUserPublicPlaylists(User user) {
         Optional<List<Playlist>> playlists =
                 playlistRepository.findAllByOwnerUuidAndStatus(user.getUuid(), PlaylistStatus.PUBLIC);
 

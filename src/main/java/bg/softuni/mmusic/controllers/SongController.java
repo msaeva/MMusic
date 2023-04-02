@@ -4,7 +4,7 @@ import bg.softuni.mmusic.constants.Authorities;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
 import bg.softuni.mmusic.model.dtos.song.AddSongDto;
 import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.SearchSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
 import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
@@ -136,13 +136,13 @@ public class SongController {
     public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView) {
         Page<Song> songs = songService.getAll(validation);
 
-        Pagination<List<SearchSongDto>> pageableDto =
+        Pagination<List<SongDto>> pageableDto =
                 new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
 
 
-        List<SearchSongDto> searchSongDtos =
-                songs.stream().map(songMapper::toSearchSongDto).collect(Collectors.toList());
-        pageableDto.setData(searchSongDtos);
+        List<SongDto> songDtos =
+                songs.stream().map(songMapper::toSongDto).collect(Collectors.toList());
+        pageableDto.setData(songDtos);
 
         modelAndView.addObject("pagination", pageableDto);
         modelAndView.setViewName("search");
@@ -152,7 +152,7 @@ public class SongController {
     }
 
     @GetMapping("/{uuid}")
-    public ModelAndView viewSong(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
+    public ModelAndView getSong(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
         User authUser = authService.getAuthenticatedUser();
 
         Song song = songService.findSongByUuid(uuid);

@@ -29,6 +29,7 @@ public class SecurityConfig {
                 // defines which pages will be authorized
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .requestMatchers("/vendor/**").permitAll()
                 .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                 .requestMatchers("/admin").hasRole(Role.ADMIN.name())
                 .requestMatchers("/song/{uuid}", "/song/search").permitAll()

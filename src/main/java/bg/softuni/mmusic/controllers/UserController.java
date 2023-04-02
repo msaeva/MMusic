@@ -8,6 +8,7 @@ import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -23,27 +25,48 @@ public class UserController {
     private final AuthService authService;
     private final UserService userService;
 
+    @Autowired
     public UserController(AuthService authService, UserService userService) {
         this.authService = authService;
         this.userService = userService;
     }
 
     @GetMapping("/profile")
-    public String getProfile(Model model) {
-        User authUser = authService.getAuthenticatedUser();
+    public String getProfile(Model model, Principal principal) {
+        User authUser = authService.getUserByPrincipal(principal);
+
+//        User authUser = authService.getAuthenticatedUser();
         UserProfileDto userProfileInfo = userService.getUserProfileInfo(authUser.getUuid());
 
         List<PublicSimpleSongDto> userSongs = userService.getUserSongs(authUser);
         List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylist(authUser);
         List<FavouriteSongDto> favouriteSongs = userService.getFavouriteSongs(authUser);
 
+
         model.addAttribute("user", userProfileInfo);
         model.addAttribute("ownSongs", userSongs);
         model.addAttribute("ownPlaylists", userPlaylists);
         model.addAttribute("favouriteSongs", favouriteSongs);
 
-        return "user-profile";
+        return "auth-user-profile";
     }
+
+    @GetMapping("/{uuid}/profile")
+    public String getUserProfile(@PathVariable(name = "uuid") String uuid, Model model) {
+        User user = userService.getUserByUuid(uuid);
+        UserProfileDto userProfileInfo = userService.getUserProfileInfo(user.getUuid());
+
+        List<PublicSimpleSongDto> userSongs = userService.getUserPublicSongs(user);
+        List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPublicPlaylists(user);
+
+        model.addAttribute("user", userProfileInfo);
+        model.addAttribute("songs", userSongs);
+        model.addAttribute("playlists", userPlaylists);
+
+        return "user-profile";
+
+    }
+
 
     @PutMapping("/{uuid}/update")
     public String update(@PathVariable(name = "uuid") String uuid,
@@ -53,21 +76,6 @@ public class UserController {
         userService.update(userToUpdate, userProfileDto);
 
         return "redirect:/user/profile";
-    }
-
-
-    @GetMapping("/{uuid}/profile")
-    public String getUserProfile(@PathVariable(name = "uuid") String uuid, Model model) {
-        User user = userService.getUserByUuid(uuid);
-
-        List<PublicSimpleSongDto> userSongs = userService.getUserPublicSongs(user);
-        List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylists(user);
-
-        model.addAttribute("songs", userSongs);
-        model.addAttribute("playlists", userPlaylists);
-
-        return "user-profile";
-
     }
 
 }

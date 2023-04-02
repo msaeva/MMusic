@@ -13,8 +13,12 @@
         <img th:src="${song.getPictureUrl()}" class="card-img-top" alt="...">
     </a>
     <div class="card-body">
-        <h5 class="card-title" th:text="${song.getTitle()}"></h5>
-        <p class="card-text" th:text="${song.getDescription()}"></p>
+        <h5 class="card-title" th:text="'Title: ' + ${song.getTitle()}"></h5>
+        <p class="card-text" th:text="'Description: ' + ${song.getDescription()}"></p>
+        <p class="card-text" th:text="'Style: ' + ${song.getStyle()}"></p>
+        <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
+            <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
+        </a>
     </div>
 </div>
 <nav aria-label="Page navigation example">

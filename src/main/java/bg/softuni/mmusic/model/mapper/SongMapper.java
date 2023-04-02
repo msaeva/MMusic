@@ -31,8 +31,10 @@ public abstract class SongMapper {
 
     public abstract UpdateSongDto toUpdateSongDto(Song songToUpdate);
 
+    @Mapping(target = "authorUuid", expression = "java(song.getAuthor().getUuid())")
     @Mapping(target = "authorUsername", expression = "java(userRepository.getUsernameByUuid(song.getAuthor().getUuid()))")
     @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
-    public abstract SearchSongDto toSearchSongDto(Song song);
+    @Mapping(target = "style", expression = "java(song.getStyle().getType().name())")
+    public abstract SongDto toSongDto(Song song);
 
 }

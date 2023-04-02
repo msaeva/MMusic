@@ -1,6 +1,6 @@
 package bg.softuni.mmusic.model.dtos.playlist;
 
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
 import bg.softuni.mmusic.model.enums.PlaylistStatus;
 import lombok.*;
 
@@ -13,11 +13,12 @@ import java.util.Set;
 @Builder
 public class PublicSimplePlaylistDto {
     private String uuid;
+
     private String name;
 
     private Integer songsCount;
 
     private PlaylistStatus status;
 
-    private Set<PublicSimpleSongDto> songs;
+    private Set<SongDto> songs;
 }

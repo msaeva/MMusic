@@ -37,6 +37,7 @@ dependencies {
     implementation group: 'com.cloudinary', name: 'cloudinary-core', version: '1.33.0'
     implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.33.0'
 
+    testRuntimeOnly 'org.hsqldb:hsqldb'
 
 }
 

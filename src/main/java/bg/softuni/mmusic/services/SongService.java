@@ -2,10 +2,7 @@ package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.AddSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
-import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.*;
 import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
@@ -146,6 +143,11 @@ public class SongService {
                 }).toList();
 
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount(), Sort.by(orders));
+
+        if (validation.getStyle() != null) {
+            Style style = styleService.findByUuid(validation.getStyle());
+            return songRepository.findAllByStyleUuid(style.getUuid(), pageable);
+        }
         return songRepository.findAll(pageable);
 
     }
@@ -158,11 +160,11 @@ public class SongService {
         return songMapper.toPublicDetailedSongDto(song);
     }
 
-    public List<PublicSimpleSongDto> findAllPublicToAddToPlaylist(String playlistUuid) {
+    public List<SongDto> findAllPublicToAddToPlaylist(String playlistUuid) {
 
         List<Song> songsToAdd = songRepository.findAllNotInPlaylist(playlistUuid, SongStatus.PUBLIC);
 
-        return songsToAdd.stream().map(songMapper::toPublicSimpleSongDto).
+        return songsToAdd.stream().map(songMapper::toSongDto).
                 collect(Collectors.toList());
     }
 
@@ -232,6 +234,13 @@ public class SongService {
         UserFavouriteSongs toDelete =
                 favouriteSongsRepository.getBySongAndUser(user.getUuid(), songUuid);
         favouriteSongsRepository.delete(toDelete);
+    }
+
+    public Page<Song> getMostLikedSongs(PublicSongValidation validation) {
+        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
+
+        return songRepository.getByStatusOrderByLikes(SongStatus.PUBLIC, pageable);
+
     }
 }
 

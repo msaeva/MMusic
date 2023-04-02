@@ -21,13 +21,6 @@
                         <h3 style="margin-top: 1rem" th:each="role : ${user.getRoles()}"
                             th:text="${role}">
                         </h3>
-                        <div sec:authorize="isAuthenticated()">
-                            <form
-                                    th:method="post"
-                                    th:action="@{/users/logout}">
-                                <input class="nav-link scrollto active text-white" style="background-color:green" type="submit" value="Logout">
-                            </form>
-                        </div>
                         <div class="social-links mt-2">
                             <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                             <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
@@ -51,30 +44,12 @@
                             </li>
 
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit
-                                    Profile
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#own-song"> Songs
                                 </button>
                             </li>
 
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#own-song"> Own Songs
-                                </button>
-                            </li>
-
-                            <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#own-playlist"> Own
-                                    Playlists
-                                </button>
-                            </li>
-
-                            <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#favourite"> Favourite
-                                </button>
-                            </li>
-
-                            <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">
-                                    Change Password
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#own-playlist"> Playlists
                                 </button>
                             </li>
 
@@ -107,147 +82,11 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
-                                <form th:object="${user}"
-                                      th:method="put"
-                                      th:action="@{|/user/${user.getUuid()}/update|}">
-
-                                    <div class="row mb-3">
-                                        <label class="col-md-4 col-lg-3 col-form-label">Profile
-                                            Image</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <img src="/images/profile_photo.jpg" alt="Profile">
-                                            <div class="pt-2">
-                                                <a href="#" class="btn btn-primary btn-sm"
-                                                   title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                                                <a href="#" class="btn btn-danger btn-sm"
-                                                   title="Remove my profile image"><i class="bi bi-trash"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-8 col-lg-9">
-                                            <input th:field="*{uuid}"
-                                                   type="hidden">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="fullName"
-                                                   th:field="*{fullName}"
-                                                   type="text"
-                                                   class="form-control"
-                                                   id="fullName"
-                                                   value="fullName">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="username" class="col-md-4 col-lg-3 col-form-label">Username</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="username"
-                                                   th:field="*{username}"
-                                                   type="text"
-                                                   class="form-control"
-                                                   id="username"
-                                                   value="username"
-                                                   readonly
-                                            >
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="about" class="col-md-4 col-lg-3 col-form-label">About me</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <textarea id="about"
-                                                      th:field="*{about}"
-                                                      name="about"
-                                                      aria-label="With textarea"
-                                                      class="form-control"
-                                                      placeholder="Write information about yourself">
-                                             </textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input th:field="*{email}"
-                                                   name="email"
-                                                   type="email"
-                                                   class="form-control"
-                                                   id="Email"
-                                                   value="email"
-                                                   readonly
-                                            >
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="roles" class="col-md-4 col-lg-3 col-form-label">Role</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input th:each="role : ${user.getRoles()}"
-                                                   th:value="${role}"
-                                                   name="role"
-                                                   type="text"
-                                                   class="form-control"
-                                                   id="roles"
-                                                   value="role"
-                                                   readonly
-                                            >
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center">
-                                        <input type="submit" class="btn btn-primary"  style="background-color:green" value="Update"/>
-                                    </div>
-                                </form>
-
-                            </div>
-
-                            <div class="tab-pane fade pt-3" id="profile-change-password">
-                                <form>
-
-                                    <div class="row mb-3">
-                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current
-                                            Password</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="password" type="password" class="form-control"
-                                                   id="currentPassword">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New
-                                            Password</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="newpassword" type="password" class="form-control"
-                                                   id="newPassword">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New
-                                            Password</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="renewpassword" type="password" class="form-control"
-                                                   id="renewPassword">
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Change Password</button>
-                                    </div>
-                                </form>
-
-                            </div>
 
                             <div class="tab-pane fade pt-3" id="own-song">
                                 <div class="d-flex flex-wrap mx-auto w-100">
-                                    <h3 th:if="${ownSongs.isEmpty()}">You have no playlists created yet!</h3>
-                                    <div th:each="song : ${ownSongs}"
+                                    <h3 th:if="${songs.isEmpty()}">You have no playlists created yet!</h3>
+                                    <div th:each="song : ${songs}"
                                          class="card" style="max-width: 540px;">
                                         <div class="row g-0">
                                             <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
@@ -258,13 +97,6 @@
                                             <div class="card-body">
                                                 <h5 class="card-title" th:text="${song.getTitle()}"></h5>
                                                 <p class="card-text" th:text="${song.getDescription()}"></p>
-                                                <button type="button"
-                                                        th:attr="data-song-uuid=${song.getUuid()}"
-                                                        class="btn btn-danger delete-song-btn">Delete
-                                                </button>
-                                                <a class="btn btn-info" style="background-color:green"
-                                                   th:href="@{|/song/${song.getUuid()}/update|}"
-                                                   role="button" >Update</a>
                                             </div>
                                         </div>
                                     </div>
@@ -273,58 +105,28 @@
 
                             <div class="tab-pane fade pt-3" id="own-playlist">
                                 <div class="d-flex flex-wrap mx-auto w-100">
-                                    <h3 th:if="${ownPlaylists.isEmpty()}">You have no playlists created yet!</h3>
-                                    <div th:each="playlist : ${ownPlaylists}"
+                                    <h3 th:if="${playlists.isEmpty()}">You have no playlists created yet!</h3>
+                                    <div th:each="playlist : ${playlists}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
-                                            <div class="col-md-4">
+
+                                            <a th:href="@{|/playlist/${playlist.getUuid()}|}" class="col-md-12">
                                                 <img src="https://picsum.photos/200/240"
                                                      class="img-fluid rounded-start"
                                                      alt="...">
-                                            </div>
+                                            </a>
                                             <div class="col-md-8">
                                                 <div class="card-body">
                                                     <h5 class="card-title"
                                                         th:text="'Name: ' + ${playlist.getName()}"></h5>
                                                     <h5 class="card-title"
                                                         th:text="'Songs count: ' + ${playlist.getSongsCount()}"></h5>
-                                                    <a th:href="@{|/playlist/${playlist.getUuid()}/view|}">Detailed
-                                                        Information </a>
-                                                    <h5 class="card-title"
-                                                        th:text="'Status: ' + ${playlist.getStatus()}"></h5>
-
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="tab-pane fade pt-3" id="favourite">
-                                <div class="d-flex flex-wrap mx-auto w-100">
-                                    <h3 th:if="${favouriteSongs.isEmpty()}">You have no favourite songs!</h3>
-                                    <div th:each="favourite : ${favouriteSongs}"
-                                         class="card" style="max-width: 540px;">
-                                        <div class="row g-0">
-                                            <a th:href="@{|/song/${favourite.getUuid()}|}" class="col-md-12">
-                                                <img th:src="${favourite.getPictureUrl()}"
-                                                     class="img-fluid rounded-start"
-                                                     alt="...">
-                                            </a>
-                                            <div class="card-body">
-                                                <h5 class="card-title" th:text="${favourite.getTitle()}"></h5>
-                                                <p class="card-text" th:text="${favourite.getDescription()}"></p>
-                                                <p class="card-text"
-                                                   th:text="'Likes: ' + ${favourite.getLikes()}"></p>
-                                                <p class="card-text"
-                                                   th:text="'Favourite count: ' + ${favourite.getFavouriteCount()}"></p>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
 
                     </div>

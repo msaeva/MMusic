@@ -32,7 +32,7 @@ public class AdminController {
 
     @Secured(Authorities.ADMIN)
     @GetMapping
-    public ModelAndView changeUserRole(ModelAndView modelAndView) {
+    public ModelAndView getAllUsers(ModelAndView modelAndView) {
 
         modelAndView.setViewName("admin");
         List<UserRole> allRoles = userRoleRepository.findAll();
@@ -45,7 +45,7 @@ public class AdminController {
     }
     @Secured(Authorities.ADMIN)
     @PutMapping("/add/{uuid}")
-    public String AddRole(@PathVariable(name = "uuid") String uuid, ModifyRolesDto modifyRolesDto) {
+    public String changeRole(@PathVariable(name = "uuid") String uuid, ModifyRolesDto modifyRolesDto) {
         userService.modifyRoles(uuid, modifyRolesDto);
         return "redirect:/admin";
     }
