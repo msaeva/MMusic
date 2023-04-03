@@ -2,6 +2,7 @@ package bg.softuni.mmusic.model.dtos.song;
 
 import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.enums.SongStatus;
+import bg.softuni.mmusic.model.enums.StyleType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class UpdateSongDto {
     @NotNull
     private String description;
 
-    private Style style;
+    private StyleType style;
 
     private SongStatus status;
 }

@@ -65,7 +65,6 @@ public class PlaylistController {
             redirectAttributes.addFlashAttribute("createPlaylistDto", createPlaylistDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createPlaylistDto", bindingResult);
 
-            System.out.println("before redirect");
             return "redirect:/playlist/create";
         }
 
@@ -86,7 +85,6 @@ public class PlaylistController {
         if (playlist.getOwner().getUuid().equals(authUser.getUuid())) {
             isOwner = true;
         }
-
 
         modelAndView.setViewName("single-page-playlist");
         modelAndView.addObject("isOwner", isOwner);

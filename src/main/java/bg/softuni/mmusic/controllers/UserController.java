@@ -1,5 +1,6 @@
 package bg.softuni.mmusic.controllers;
 
+import bg.softuni.mmusic.model.dtos.ChangePasswordDto;
 import bg.softuni.mmusic.model.dtos.UserProfileDto;
 import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
@@ -11,12 +12,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -32,16 +31,15 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String getProfile(Model model, Principal principal) {
-        User authUser = authService.getUserByPrincipal(principal);
-
-//        User authUser = authService.getAuthenticatedUser();
+    public String getProfile(Model model) {
+//        User authUser = authService.getUserByPrincipal(principal);
+//
+        User authUser = authService.getAuthenticatedUser();
         UserProfileDto userProfileInfo = userService.getUserProfileInfo(authUser.getUuid());
 
         List<PublicSimpleSongDto> userSongs = userService.getUserSongs(authUser);
         List<PublicSimplePlaylistDto> userPlaylists = userService.getUserPlaylist(authUser);
         List<FavouriteSongDto> favouriteSongs = userService.getFavouriteSongs(authUser);
-
 
         model.addAttribute("user", userProfileInfo);
         model.addAttribute("ownSongs", userSongs);
@@ -78,4 +76,15 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
+    @PutMapping("/change-password")
+    public String changePassword(@Valid ChangePasswordDto validation,
+                                 BindingResult bindingResult) {
+        if (!validation.getNewPassword().equals(validation.getReEnterPassword())) {
+             bindingResult.addError(new FieldError("differentPasswords",
+                    "reEnterPassword", "Passwords does not match!"));
+        }
+
+        userService.changePassword(validation.getOldPassword(), validation.getNewPassword());
+        return "redirect:/user/profile";
+    }
 }

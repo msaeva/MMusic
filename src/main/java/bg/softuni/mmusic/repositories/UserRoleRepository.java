@@ -13,5 +13,6 @@ import java.util.Set;
 public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
     Optional<UserRole> findByRole(Role role);
 
+
     List<UserRole> findALlByUuidIn(Set<String> uuids);
 }

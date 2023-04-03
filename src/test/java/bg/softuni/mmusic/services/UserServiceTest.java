@@ -21,6 +21,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +38,8 @@ public class UserServiceTest {
     private SongRepository mockSongRepository;
 
     @Mock
+    private AuthService authService;
+    @Mock
     private PlaylistRepository mockPlaylistRepository;
     @Mock
     private SongMapper mockSongMapper;
@@ -47,6 +50,8 @@ public class UserServiceTest {
     @Mock
     private UserRoleRepository mockRoleRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
     private UserService toTest;
@@ -60,7 +65,7 @@ public class UserServiceTest {
                 mockSongMapper,
                 mockPlaylistMapper,
                 mockUserMapper,
-                mockRoleRepository);
+                mockRoleRepository, authService, passwordEncoder);
 
         String encodedPassword = "encoded_password";
         String email = "test@example.com";

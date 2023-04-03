@@ -16,8 +16,9 @@ public class StyleService {
         this.styleRepository = styleRepository;
     }
 
-    public Optional<Style> findByStyle(StyleType type) {
-        return styleRepository.findByType(type);
+    public Style findByStyle(StyleType type) {
+        return styleRepository.findByType(type).orElseThrow(NoSuchElementException::new);
+
     }
 
     public Style findByUuid(String uuid) {

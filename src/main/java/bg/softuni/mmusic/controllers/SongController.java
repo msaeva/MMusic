@@ -10,6 +10,8 @@ import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.mapper.SongMapper;
+import bg.softuni.mmusic.repositories.SongRepository;
+import bg.softuni.mmusic.repositories.StyleRepository;
 import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
 import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
 import bg.softuni.mmusic.services.AuthService;
@@ -40,17 +42,22 @@ public class SongController {
     private final UserLikedSongsRepository userLikedSongsRepository;
 
     private final SongMapper songMapper;
+    private final SongRepository songRepository;
+
+    private final StyleRepository styleRepository;
 
     public SongController(SongService songService,
                           AuthService authService,
                           UserFavouriteSongsRepository favouriteSongsRepository,
                           UserLikedSongsRepository userLikedSongsRepository,
-                          SongMapper songMapper) {
+                          SongMapper songMapper, SongRepository songRepository, StyleRepository styleRepository) {
         this.songService = songService;
         this.authService = authService;
         this.favouriteSongsRepository = favouriteSongsRepository;
         this.userLikedSongsRepository = userLikedSongsRepository;
         this.songMapper = songMapper;
+        this.songRepository = songRepository;
+        this.styleRepository = styleRepository;
     }
 
     @ModelAttribute(name = "addSongDto")
@@ -58,7 +65,6 @@ public class SongController {
         return new AddSongDto();
     }
 
-    //  @PreAuthorize("hasRole('MUSICIAN')")
     @Secured(Authorities.MUSICIAN)
     @GetMapping("/add")
     public String addSong() {
@@ -98,7 +104,6 @@ public class SongController {
         }
 
         UpdateSongDto songDto = songService.toUpdateSongDto(songToUpdate);
-        songService.update(songToUpdate, songDto);
         modelAndView.addObject("songDto", songDto);
 
         return modelAndView;
@@ -117,7 +122,7 @@ public class SongController {
         }
         songService.update(songToUpdate, updateSongDto);
 
-        return "/index";
+        return "redirect:/song/" + uuid;
     }
 
     @DeleteMapping("/{uuid}/delete")
@@ -134,6 +139,7 @@ public class SongController {
 
     @GetMapping("/search")
     public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView) {
+        User authUser = authService.getAuthenticatedUser();
         Page<Song> songs = songService.getAll(validation);
 
         Pagination<List<SongDto>> pageableDto =

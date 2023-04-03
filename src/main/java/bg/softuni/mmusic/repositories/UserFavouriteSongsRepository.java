@@ -18,5 +18,9 @@ public interface UserFavouriteSongsRepository extends JpaRepository<UserFavourit
     @Query("select u  from UserFavouriteSongs as u " +
             "where u.user_uuid = :userUuid and u.song_uuid= :songUuid")
     UserFavouriteSongs getBySongAndUser(@Param("userUuid") String userUuid,
-                                                  @Param("songUuid") String songUuid);
+                                        @Param("songUuid") String songUuid);
+
+    @Query("select f from UserFavouriteSongs as f " +
+            "where f.song_uuid = :uuid")
+    List<UserFavouriteSongs> findBySong(@Param("uuid") String uuid);
 }

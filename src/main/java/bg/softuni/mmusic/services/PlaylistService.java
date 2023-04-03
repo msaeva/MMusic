@@ -9,6 +9,7 @@ import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
+import bg.softuni.mmusic.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -21,15 +22,17 @@ public class PlaylistService {
     private final SongService songService;
     private final PlaylistSongsRepository playlistSongsRepository;
     private final SongMapper songMapper;
+    private final UserRepository userRepository;
 
 
     public PlaylistService(AuthService authService, PlaylistRepository playlistRepository,
-                           SongService songService, PlaylistSongsRepository playlistSongsRepository, SongMapper songMapper) {
+                           SongService songService, PlaylistSongsRepository playlistSongsRepository, SongMapper songMapper, UserRepository userRepository) {
         this.authService = authService;
         this.playlistRepository = playlistRepository;
         this.songService = songService;
         this.playlistSongsRepository = playlistSongsRepository;
         this.songMapper = songMapper;
+        this.userRepository = userRepository;
     }
 
     public Playlist create(CreatePlaylistDto createPlaylistDto) {
@@ -38,8 +41,11 @@ public class PlaylistService {
         newPlaylist.setName(createPlaylistDto.getName());
         newPlaylist.setOwner(authUser);
         newPlaylist.setStatus(createPlaylistDto.getStatus());
+        authUser.getPlaylists().add(newPlaylist);
 
         playlistRepository.saveAndFlush(newPlaylist);
+        userRepository.saveAndFlush(authUser);
+
         return newPlaylist;
     }
 

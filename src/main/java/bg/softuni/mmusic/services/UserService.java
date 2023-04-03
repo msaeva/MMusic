@@ -20,13 +20,16 @@ import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -36,6 +39,9 @@ public class UserService {
     private final PlaylistMapper playlistMapper;
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
+    private final AuthService authService;
+    //    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
@@ -43,7 +49,9 @@ public class UserService {
                        PlaylistRepository playlistRepository,
                        SongMapper songMapper,
                        PlaylistMapper playlistMapper,
-                       UserMapper userMapper, UserRoleRepository roleRepository) {
+                       UserMapper userMapper,
+                       UserRoleRepository roleRepository,
+                       AuthService authService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.playlistRepository = playlistRepository;
@@ -51,6 +59,8 @@ public class UserService {
         this.playlistMapper = playlistMapper;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
+        this.authService = authService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -59,20 +69,17 @@ public class UserService {
                 songRepository.findAllByAuthorUuid(authUser.getUuid());
 
         if (userSongs.isEmpty()) {
-            // TODO make exception for user with no songs yet
-            return null;
+            return Collections.emptyList();
         }
-
         return userSongs.get().stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toList());
     }
 
     public List<PublicSimplePlaylistDto> getUserPlaylist(User authUser) {
         Optional<List<Playlist>> playlists = playlistRepository.findAllByOwnerUuid(authUser.getUuid());
         if (playlists.isEmpty()) {
-            // TODO make exception for user with no playlists yet
+            return Collections.emptyList();
         }
-
-       return playlists.get().stream().map(playlistMapper::toPublicSimplePlaylistDto).collect(Collectors.toList());
+        return playlists.get().stream().map(playlistMapper::toPublicSimplePlaylistDto).collect(Collectors.toList());
     }
 
     public User getUserByUuid(String uuid) {
@@ -89,15 +96,13 @@ public class UserService {
         return userProfileDto;
     }
 
-
     public List<PublicSimpleSongDto> getUserPublicSongs(User user) {
         Optional<List<Song>> songs = songRepository
                 .findAllByAuthorUuidAndStatus(user.getUuid(), SongStatus.PUBLIC);
-        if (songs.isEmpty()) {
-            //TODO return error
-            return null;
-        }
 
+        if (songs.isEmpty()) {
+            return Collections.emptyList();
+        }
         return songs.get().stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toList());
     }
 
@@ -107,10 +112,8 @@ public class UserService {
                 playlistRepository.findAllByOwnerUuidAndStatus(user.getUuid(), PlaylistStatus.PUBLIC);
 
         if (playlists.isEmpty()) {
-            //TODO return error
-            return null;
+            return Collections.emptyList();
         }
-
         return playlists.get().stream().map(playlistMapper::toPublicSimplePlaylistDto).toList();
     }
 
@@ -119,7 +122,7 @@ public class UserService {
         List<Song> favouriteSongs = userRepository.getUserFavouriteSongs(authUser.getUuid());
 
         if (favouriteSongs.isEmpty()) {
-            //TODO return message like "you don't have any songs added to favorites list"
+            return Collections.emptyList();
         }
 
         return favouriteSongs.stream().map(songMapper::toFavouriteSongDto).collect(Collectors.toList());
@@ -130,8 +133,9 @@ public class UserService {
 
         userToUpdate.setFirstName(fullName[0]);
         userToUpdate.setLastName(fullName[1]);
-        userToUpdate.setAbout(userProfileDto.getAbout());
-
+        if (!userToUpdate.getAbout().isEmpty()) {
+            userToUpdate.setAbout(userProfileDto.getAbout());
+        }
         userRepository.saveAndFlush(userToUpdate);
     }
 
@@ -164,5 +168,16 @@ public class UserService {
         userRepository.saveAndFlush(user);
     }
 
+    public void changePassword(String oldPassword, String newPassword) {
+        User user = authService.getAuthenticatedUser();
+
+        if (passwordEncoder.matches(oldPassword, newPassword)) {
+            throw new RuntimeException("Old and new paswwords are the same");
+        }
+        String encryptedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encryptedPassword);
+        userRepository.saveAndFlush(user);
+        log.info("Changed password for User: {}", user);
+    }
 }
 
