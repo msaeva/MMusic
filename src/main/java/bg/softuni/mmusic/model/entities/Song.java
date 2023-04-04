@@ -19,11 +19,11 @@ import java.util.Set;
 @Table(name = "songs")
 public class Song extends BaseEntity {
 
-    @Size(min = 5, max = 12)
+    @Size(min = 3, max = 30)
     @Column(nullable = false)
     private String title;
 
-    @Size(max = 100)
+    @Size(max = 500)
     @Column()
     private String description;
 

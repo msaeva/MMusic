@@ -12,7 +12,7 @@ import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,6 +76,24 @@ public class PlaylistService {
         playlistDto.setSongs(playlist.getSongs().stream().map(songMapper::toSongDto).collect(Collectors.toSet()));
 
         return playlistDto;
+    }
+
+    public HashMap<Playlist, Integer> getTopPlaylists() {
+        HashMap<Playlist, Integer> hashMap = new HashMap<>();
+        List<Playlist> all = playlistRepository.findAll();
+        for (Playlist playlist : all) {
+            int totalLikes = 0;
+            for (Song song : playlist.getSongs()) {
+                totalLikes += song.getLikes();
+            }
+            hashMap.put(playlist, totalLikes);
+        }
+        hashMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(3)
+                .forEachOrdered(entry -> hashMap.put(entry.getKey(), entry.getValue()));
+
+        return hashMap;
     }
 
 }

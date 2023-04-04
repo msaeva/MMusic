@@ -71,6 +71,8 @@ public class SongService {
         Song songToSave = songMapper.addSongDtoToSong(addSongDto);
         songToSave.setAuthor(authUser);
         songToSave.setStyle(byStyle);
+        songToSave.setFavouriteCount(0);
+        songToSave.setLikes(0);
 
         String pictureUrl = imageCloudService.saveImage(addSongDto.getImage());
         Picture picture = new Picture();
