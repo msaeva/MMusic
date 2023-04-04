@@ -49,6 +49,12 @@ public class User extends BaseEntity {
     @Column(name = "created_date")
     private LocalDate createdDate;
 
+    @Column
+    private String verifyCode;
+
+    @Column
+    private boolean isActivated = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new HashSet<>();
 

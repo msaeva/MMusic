@@ -79,12 +79,14 @@ public class UserController {
     @PutMapping("/change-password")
     public String changePassword(@Valid ChangePasswordDto validation,
                                  BindingResult bindingResult) {
+
+        User authUser = authService.getAuthenticatedUser();
         if (!validation.getNewPassword().equals(validation.getReEnterPassword())) {
              bindingResult.addError(new FieldError("differentPasswords",
                     "reEnterPassword", "Passwords does not match!"));
         }
 
-        userService.changePassword(validation.getOldPassword(), validation.getNewPassword());
+        userService.changePassword(validation.getOldPassword(), validation.getNewPassword(), authUser);
         return "redirect:/user/profile";
     }
 }

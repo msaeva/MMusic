@@ -30,7 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/vendor/**").permitAll()
-                .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
+                .requestMatchers("/", "/users/login", "/users/register", "/users/login-error",
+                        "/users/{userUuid}/verify-code/{code}").permitAll()
                 .requestMatchers("/user/change-password").authenticated()
                 .requestMatchers("/admin").hasRole(Role.ADMIN.name())
                 .requestMatchers("/song/{uuid}", "/song/search").permitAll()

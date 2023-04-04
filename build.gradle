@@ -18,6 +18,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -38,6 +39,8 @@ dependencies {
     implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.33.0'
 
     testRuntimeOnly 'org.hsqldb:hsqldb'
+
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
 }
 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:rh="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+Dear
+<th:block th:text="${username}"></th:block> ,
+
+Thank you for your registration on mmucic.com
+
+Please verify your email <a th:href="${request}"> here </a> to complete your registration process.
+
+Best regards,
+Mmusic
+
+</body>
+</html>

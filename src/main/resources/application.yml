@@ -14,6 +14,7 @@ spring:
 #  sql:
 #    init:
 #      mode: always
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: admin
@@ -30,4 +31,9 @@ logging:
     blog: WARN
 server:
   port: 8080
+mail:
+  host: localhost
+  port: 1025
+  username: "admin"
+  password: ""
 

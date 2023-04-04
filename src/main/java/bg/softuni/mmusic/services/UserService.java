@@ -39,8 +39,6 @@ public class UserService {
     private final PlaylistMapper playlistMapper;
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
-    private final AuthService authService;
-    //    private final PasswordEncoder passwordEncoder;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -51,7 +49,7 @@ public class UserService {
                        PlaylistMapper playlistMapper,
                        UserMapper userMapper,
                        UserRoleRepository roleRepository,
-                       AuthService authService, PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.playlistRepository = playlistRepository;
@@ -59,7 +57,6 @@ public class UserService {
         this.playlistMapper = playlistMapper;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
-        this.authService = authService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -168,8 +165,7 @@ public class UserService {
         userRepository.saveAndFlush(user);
     }
 
-    public void changePassword(String oldPassword, String newPassword) {
-        User user = authService.getAuthenticatedUser();
+    public void changePassword(String oldPassword, String newPassword, User user) {
 
         if (passwordEncoder.matches(oldPassword, newPassword)) {
             throw new RuntimeException("Old and new paswwords are the same");
