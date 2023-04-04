@@ -4,10 +4,7 @@ import bg.softuni.mmusic.model.enums.SongStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -17,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "songs")
 public class Song extends BaseEntity {
@@ -52,10 +50,6 @@ public class Song extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private SongStatus status;
-
-    @PositiveOrZero
-    @Column(name = "download_count")
-    private Integer downloadCount = 0;
 
     @PositiveOrZero
     @Column

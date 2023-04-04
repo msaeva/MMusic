@@ -4,7 +4,6 @@ import bg.softuni.mmusic.model.dtos.UserLoginDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.services.AuthService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/users")
-@Slf4j
 public class AuthController {
 
     private final AuthService authService;

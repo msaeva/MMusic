@@ -29,22 +29,40 @@
                         <a class="nav-link scrollto active" th:href="@{/admin}">Admin</a>
                     </li>
 
-                    <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown"><span class="nav-link scrollto active">STYLES</span>
+                        <!--                        <i class="bi bi-chevron-down"></i>-->
                         <ul>
-                            <li><a href="#">Drop Down 1</a></li>
-                            <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i
-                                    class="bi bi-chevron-right"></i></a>
+                            <li class="dropdown"><a
+                                    href="/song/search?style=16509ba0-1ca6-407f-88be-9059d8043e2b">POP
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
                                 <ul>
-                                    <li><a href="#">Deep Drop Down 1</a></li>
-                                    <li><a href="#">Deep Drop Down 2</a></li>
-                                    <li><a href="#">Deep Drop Down 3</a></li>
-                                    <li><a href="#">Deep Drop Down 4</a></li>
-                                    <li><a href="#">Deep Drop Down 5</a></li>
+                                    <li><a
+                                            href="/song/search?style=e892a4e4-baae-4ff6-be99-ac123643bf44">DANCE POP</a>
+                                    </li>
                                 </ul>
                             </li>
-                            <li><a href="#">Drop Down 2</a></li>
-                            <li><a href="#">Drop Down 3</a></li>
-                            <li><a href="#">Drop Down 4</a></li>
+
+                            <li class="dropdown"><a
+                                    href="/song/search?style=dfce6394-e9ca-4384-a9ee-f8f369b5b6aa">ROCK
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                                <ul>
+                                    <li><a href="/song/search?style=f6572acf-ce82-4157-8bb6-740f730d55cd"> MODERN
+                                        ROCK</a></li>
+                                </ul>
+                            </li>
+
+
+                            <li class="dropdown"><a href="/song/search?style=e8f5e575-a40e-4e27-a0e8-ebc1feaa882f">HIP POP
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                                <ul>
+                                    <li><a href="/song/search?style=e621cc04-cbad-474b-9654-faf4eae09512"> MELODIC
+                                        RAP</a></li>
+                                </ul>
+
+                            </li>
                         </ul>
                     </li>
                     <li sec:authorize="isAuthenticated()">

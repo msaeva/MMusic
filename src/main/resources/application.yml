@@ -11,6 +11,9 @@ spring:
     hidden-method:
       filter:
         enabled: 'true'
+#  sql:
+#    init:
+#      mode: always
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: admin

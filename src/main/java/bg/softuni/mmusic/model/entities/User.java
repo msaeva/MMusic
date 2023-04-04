@@ -47,7 +47,7 @@ public class User extends BaseEntity {
     private String about;
 
     @Column(name = "created_date")
-    private LocalDate createdDate = LocalDate.now();
+    private LocalDate createdDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new HashSet<>();

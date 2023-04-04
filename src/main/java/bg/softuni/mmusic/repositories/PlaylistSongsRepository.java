@@ -2,6 +2,8 @@ package bg.softuni.mmusic.repositories;
 
 import bg.softuni.mmusic.model.entities.PlaylistSongs;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +13,9 @@ public interface PlaylistSongsRepository extends JpaRepository<PlaylistSongs, St
 
     PlaylistSongs getByPlaylistUuidAndSongUuid(String uuid, String uuid1);
 
-    List<PlaylistSongs> findBySongUuid(String uuid);
+
+    @Query("select ps from  PlaylistSongs as ps " +
+            "where ps.song.uuid = :uuid")
+    List<PlaylistSongs> findBySongUuid(@Param("uuid") String uuid);
 }
 

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SearchSongDto {
+public class SongDto {
     private String uuid;
 
     private String title;
@@ -14,5 +14,11 @@ public class SearchSongDto {
 
     private String pictureUrl;
 
+    private String style;
+
+    private String authorUuid;
+
     private String authorUsername;
+
+    private int likes;
 }

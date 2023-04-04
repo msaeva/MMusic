@@ -15,7 +15,12 @@ public interface UserLikedSongsRepository extends JpaRepository<UserLikedSongs, 
     UserLikedSongs getBySongAndUser(@Param("userUuid") String userUuid,
                                     @Param("songUuid") String songUuid);
 
+
     @Query("select song_uuid from UserLikedSongs " +
             "where user_uuid = :userUuid")
     List<String> getUserLikedSongs(@Param("userUuid") String uuid);
+
+    @Query("select u from UserLikedSongs  as u " +
+            "where u.song_uuid= :songUuid")
+    List<UserLikedSongs> getAllBySong(@Param("songUuid") String songUuid);
 }

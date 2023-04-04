@@ -6,11 +6,14 @@ import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.PlaylistSongs;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
+import bg.softuni.mmusic.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaylistService {
@@ -18,24 +21,32 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final SongService songService;
     private final PlaylistSongsRepository playlistSongsRepository;
+    private final SongMapper songMapper;
+    private final UserRepository userRepository;
 
 
     public PlaylistService(AuthService authService, PlaylistRepository playlistRepository,
-                           SongService songService, PlaylistSongsRepository playlistSongsRepository) {
+                           SongService songService, PlaylistSongsRepository playlistSongsRepository, SongMapper songMapper, UserRepository userRepository) {
         this.authService = authService;
         this.playlistRepository = playlistRepository;
         this.songService = songService;
         this.playlistSongsRepository = playlistSongsRepository;
+        this.songMapper = songMapper;
+        this.userRepository = userRepository;
     }
 
-    public void create(CreatePlaylistDto createPlaylistDto) {
+    public Playlist create(CreatePlaylistDto createPlaylistDto) {
         User authUser = getAuthUser();
         Playlist newPlaylist = new Playlist();
         newPlaylist.setName(createPlaylistDto.getName());
         newPlaylist.setOwner(authUser);
         newPlaylist.setStatus(createPlaylistDto.getStatus());
+        authUser.getPlaylists().add(newPlaylist);
 
         playlistRepository.saveAndFlush(newPlaylist);
+        userRepository.saveAndFlush(authUser);
+
+        return newPlaylist;
     }
 
     public void addSongToPlaylist(String songUuid, String playlistUuid) {
@@ -62,7 +73,7 @@ public class PlaylistService {
         playlistDto.setStatus(playlist.getStatus());
         playlistDto.setUuid(playlist.getUuid());
         playlistDto.setName(playlist.getName());
-        playlistDto.setSongs(songService.toPublicSimpleSongDto(playlist.getSongs()));
+        playlistDto.setSongs(playlist.getSongs().stream().map(songMapper::toSongDto).collect(Collectors.toSet()));
 
         return playlistDto;
     }

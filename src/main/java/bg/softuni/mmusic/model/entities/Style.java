@@ -16,7 +16,7 @@ import java.util.Set;
 @Table(name = "styles")
 public class Style extends BaseEntity{
 
-    @Size(max = 50)
+    @Size(max = 200)
     @Column()
     private String description;
 

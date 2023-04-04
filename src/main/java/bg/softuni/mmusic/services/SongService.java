@@ -2,14 +2,14 @@ package bg.softuni.mmusic.services;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.AddSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
-import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
+import bg.softuni.mmusic.model.dtos.song.*;
 import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.error.InvalidSongException;
+import bg.softuni.mmusic.model.error.InvalidUserException;
+import bg.softuni.mmusic.model.error.SongNotFoundException;
+import bg.softuni.mmusic.model.error.UserNotFoundException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
@@ -23,8 +23,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,23 +61,18 @@ public class SongService {
         User authUser = authService.getAuthenticatedUser();
 
         if (authUser == null) {
-            throw new NoSuchElementException("User should be authenticated to update song!");
+            throw new InvalidUserException("You should be authenticated to update song!");
         }
         if (authUser.getRoles().stream().noneMatch(user -> user.getRole().equals(Role.MUSICIAN))) {
-            throw new NoSuchElementException("You do not have permissions to add a song");
+            throw new InvalidUserException("You do not have permissions to add a song");
         }
 
-        Optional<Style> byStyle = styleService.findByStyle(addSongDto.getStyle());
-        if (byStyle.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-
+        Style byStyle = styleService.findByStyle(addSongDto.getStyle());
         Song songToSave = songMapper.addSongDtoToSong(addSongDto);
         songToSave.setAuthor(authUser);
-        songToSave.setStyle(byStyle.get());
+        songToSave.setStyle(byStyle);
 
         String pictureUrl = imageCloudService.saveImage(addSongDto.getImage());
-
         Picture picture = new Picture();
         picture.setSong(songToSave);
         picture.setUrl(pictureUrl);
@@ -91,13 +84,13 @@ public class SongService {
     }
 
     public Song findSongByUuid(String songUuid) {
-        return songRepository.findByUuid(songUuid).orElseThrow(NoSuchElementException::new);
+        return songRepository.findByUuid(songUuid).orElseThrow(() -> new SongNotFoundException(songUuid));
     }
 
     public void update(Song songToUpdate, UpdateSongDto songDto) {
         songToUpdate.setTitle(songDto.getTitle());
         songToUpdate.setDescription(songDto.getDescription());
-        songToUpdate.setStyle(songDto.getStyle());
+        songToUpdate.setStyle(styleService.findByStyle(songDto.getStyle()));
         songToUpdate.setStatus(songDto.getStatus());
 
         songRepository.saveAndFlush(songToUpdate);
@@ -106,21 +99,24 @@ public class SongService {
     public void delete(String uuid) {
         User authUser = authService.getAuthenticatedUser();
         if (authUser == null) {
-            throw new NoSuchElementException("User should be authenticated to delete song!");
+            throw new UserNotFoundException("User should be authenticated to delete song!");
         }
 
         Song song = songRepository.findByUuid(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Song with that id does not exist!"));
+                .orElseThrow(() -> new SongNotFoundException(uuid));
 
         if (authUser.getOwnSongs().stream()
                 .noneMatch(s -> s.getUuid().equals(song.getUuid()))) {
-            throw new NoSuchElementException("User should own the song!");
+            throw new InvalidUserException("You should own the song if you want to delete it!");
         }
 
-        List<PlaylistSongs> playlists = playlistSongsRepository.findBySongUuid(song.getUuid());
-        playlists.removeIf(playlist -> playlist.getSong().getUuid().equals(song.getUuid()));
+        List<PlaylistSongs> playlistsSongs = playlistSongsRepository.findBySongUuid(song.getUuid());
+        List<UserLikedSongs> likedSongs = likedSongsRepository.getAllBySong(song.getUuid());
+        List<UserFavouriteSongs> favourite = favouriteSongsRepository.findBySong(song.getUuid());
 
-        this.playlistSongsRepository.saveAllAndFlush(playlists);
+        this.likedSongsRepository.deleteAll(likedSongs);
+        this.playlistSongsRepository.deleteAll(playlistsSongs);
+        this.favouriteSongsRepository.deleteAll(favourite);
         this.songRepository.delete(song);
     }
 
@@ -146,6 +142,11 @@ public class SongService {
                 }).toList();
 
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount(), Sort.by(orders));
+
+        if (validation.getStyle() != null) {
+            Style style = styleService.findByUuid(validation.getStyle());
+            return songRepository.findAllByStyleUuid(style.getUuid(), pageable);
+        }
         return songRepository.findAll(pageable);
 
     }
@@ -158,20 +159,20 @@ public class SongService {
         return songMapper.toPublicDetailedSongDto(song);
     }
 
-    public List<PublicSimpleSongDto> findAllPublicToAddToPlaylist(String playlistUuid) {
+    public List<SongDto> findAllPublicToAddToPlaylist(String playlistUuid) {
 
         List<Song> songsToAdd = songRepository.findAllNotInPlaylist(playlistUuid, SongStatus.PUBLIC);
 
-        return songsToAdd.stream().map(songMapper::toPublicSimpleSongDto).
+        return songsToAdd.stream().map(songMapper::toSongDto).
                 collect(Collectors.toList());
     }
 
     public void like(String songUuid) {
         User authUser = authService.getAuthenticatedUser();
-        Song songToLike = songRepository.findByUuid(songUuid).orElseThrow(NoSuchElementException::new);
+        Song songToLike = songRepository.findByUuid(songUuid).orElseThrow(() -> new SongNotFoundException(songUuid));
 
         if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToLike.getUuid()))) {
-            throw new InvalidSongException("User cannot like own song");
+            throw new InvalidUserException("Cannot like own song");
         }
 
         List<String> userLikedSongsUuids = likedSongsRepository.getUserLikedSongs(authUser.getUuid());
@@ -190,7 +191,7 @@ public class SongService {
         Song songToUnlike = songRepository.findByUuid(songUuid).orElseThrow(RuntimeException::new);
 
         if (authUser.getOwnSongs().stream().anyMatch(song -> song.getUuid().equals(songToUnlike.getUuid()))) {
-            throw new InvalidSongException("User cannot like own song");
+            throw new InvalidUserException("Cannot unlike own song");
         }
         List<String> userLikedSongsUuids = likedSongsRepository.getUserLikedSongs(authUser.getUuid());
         if (userLikedSongsUuids.stream().noneMatch(uuid -> uuid.equals(songToUnlike.getUuid()))) {
@@ -232,6 +233,13 @@ public class SongService {
         UserFavouriteSongs toDelete =
                 favouriteSongsRepository.getBySongAndUser(user.getUuid(), songUuid);
         favouriteSongsRepository.delete(toDelete);
+    }
+
+    public Page<Song> getMostLikedSongs(PublicSongValidation validation) {
+        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
+
+        return songRepository.getByStatusOrderByLikes(SongStatus.PUBLIC, pageable);
+
     }
 }
 

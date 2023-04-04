@@ -9,19 +9,21 @@
         <h4 th:text="'Playlist name: ' + ${playlist.getName()}"></h4>
         <form id="add-song-playlist-form">
             <h4 th:if="${playlist.getSongs().isEmpty()}">
-                There is no added songs to this playlist! You can add from here.</h4>
+                There is no added songs to this playlist!</h4>
             <input type="hidden" name="playlist-uuid" th:value="${playlist.getUuid()}">
-            <label>
-                Select song to add
-                <select name="selected-song"
-                        class="form-select">
-                    <option th:each="song : ${songsToAdd}"
-                            th:value="${song.getUuid()}"
-                            th:text="${song.getTitle()}">
-                    </option>
-                </select>
-            </label>
-            <button type="submit" class="btn btn-primary"> Add song</button>
+            <div th:if="${isOwner}">
+                <label>
+                    Select song to add
+                    <select name="selected-song"
+                            class="form-select">
+                        <option th:each="song : ${songsToAdd}"
+                                th:value="${song.getUuid()}"
+                                th:text="${song.getTitle()}">
+                        </option>
+                    </select>
+                </label>
+                <button type="submit" class="btn btn-primary"> Add song</button>
+            </div>
         </form>
 
         <div class="d-flex flex-wrap justify-content-between">
@@ -31,6 +33,9 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${song.getTitle()}"></h5>
                     <p class="card-text" th:text="${song.getDescription()}"></p>
+                    <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
+                        <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
+                    </a>
                     <button type="button"
                             th:attr="data-song-uuid=${song.getUuid()}, data-playlist-uuid=${playlist.getUuid()}"
                             class="btn btn-dark remove-song-playlist-btn"> Remove Song from Playlist

@@ -5,6 +5,7 @@ import bg.softuni.mmusic.model.enums.StyleType;
 import bg.softuni.mmusic.repositories.StyleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -15,7 +16,12 @@ public class StyleService {
         this.styleRepository = styleRepository;
     }
 
-    public Optional<Style> findByStyle(StyleType type) {
-        return styleRepository.findByType(type);
+    public Style findByStyle(StyleType type) {
+        return styleRepository.findByType(type).orElseThrow(NoSuchElementException::new);
+
+    }
+
+    public Style findByUuid(String uuid) {
+        return styleRepository.findByUuid(uuid).orElseThrow(NoSuchElementException::new);
     }
 }

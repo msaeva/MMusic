@@ -11,11 +11,19 @@ import org.springframework.web.servlet.ModelAndView;
 public class InvalidUserException {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
-    public ModelAndView onProductNotFound(UserNotFoundException onfe) {
+    public ModelAndView onUserNotFound(UserNotFoundException onfe) {
 
-        ModelAndView modelAndView = new ModelAndView("user-not-found");
-        modelAndView.addObject("userId", onfe.getUserId());
+        ModelAndView modelAndView = new ModelAndView("user-error");
+        modelAndView.addObject("message", onfe.getMessage());
+        return modelAndView;
+    }
 
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(bg.softuni.mmusic.model.error.InvalidUserException.class)
+    public ModelAndView onInvalidUser(UserNotFoundException onfe) {
+
+        ModelAndView modelAndView = new ModelAndView("user-error");
+        modelAndView.addObject("message", onfe.getMessage());
         return modelAndView;
     }
 

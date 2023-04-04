@@ -3,9 +3,11 @@ package bg.softuni.mmusic.controllers;
 import bg.softuni.mmusic.constants.Authorities;
 import bg.softuni.mmusic.model.dtos.playlist.CreatePlaylistDto;
 import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
-import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.mapper.SongMapper;
+import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.PlaylistService;
 import bg.softuni.mmusic.services.PlaylistsSongService;
@@ -37,10 +39,12 @@ public class PlaylistController {
                               AuthService authService,
                               SongService songService,
                               PlaylistsSongService playlistsSongService) {
+
         this.playlistService = playlistService;
         this.authService = authService;
         this.songService = songService;
         this.playlistsSongService = playlistsSongService;
+
     }
 
     @ModelAttribute(name = "createPlaylistDto")
@@ -61,40 +65,43 @@ public class PlaylistController {
             redirectAttributes.addFlashAttribute("createPlaylistDto", createPlaylistDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createPlaylistDto", bindingResult);
 
-            System.out.println("before redirect");
             return "redirect:/playlist/create";
         }
 
-        playlistService.create(createPlaylistDto);
+        Playlist playlist = playlistService.create(createPlaylistDto);
 
-        return "/index";
+        return "redirect:/playlist/" + playlist.getUuid();
     }
 
-    @GetMapping("/{uuid}/view")
-    public ModelAndView viewSongs(@PathVariable(name = "uuid") String playlistUuid, ModelAndView modelAndView) {
+    @GetMapping("/{uuid}")
+    public ModelAndView getPlaylist(@PathVariable(name = "uuid") String playlistUuid, ModelAndView modelAndView) {
         User authUser = authService.getAuthenticatedUser();
 
         Playlist playlist = playlistService.findByUuid(playlistUuid);
+        PublicSimplePlaylistDto playlistDto = playlistService.publicSimplePlaylistDto(playlist);
+        List<SongDto> songsToAddDto = songService.findAllPublicToAddToPlaylist(playlistUuid);
 
-        if (authUser.getPlaylists().stream().anyMatch(p -> p.getUuid().equals(playlist.getUuid()))) {
-            throw new RuntimeException();
+        boolean isOwner = false;
+        if (playlist.getOwner().getUuid().equals(authUser.getUuid())) {
+            isOwner = true;
         }
 
-        PublicSimplePlaylistDto playlistDto = playlistService.publicSimplePlaylistDto(playlist);
-        List<PublicSimpleSongDto> songsToAddDto = songService.findAllPublicToAddToPlaylist(playlistUuid);
-
         modelAndView.setViewName("single-page-playlist");
+        modelAndView.addObject("isOwner", isOwner);
         modelAndView.addObject("songsToAdd", songsToAddDto);
         modelAndView.addObject("playlist", playlistDto);
         return modelAndView;
     }
 
     @PostMapping("/{uuid}/add/{songUuid}")
-    public ModelAndView addSongToPlaylist(@PathVariable(name = "uuid") String playlistUuid, @PathVariable(name = "songUuid") String songUuid, ModelAndView modelAndView) {
+    public ModelAndView addSongToPlaylist(@PathVariable(name = "uuid") String playlistUuid,
+                                          @PathVariable(name = "songUuid") String songUuid,
+                                          ModelAndView modelAndView) {
+
+        playlistService.addSongToPlaylist(songUuid, playlistUuid);
 
         modelAndView.setViewName("redirect:/user/profile");
 
-        playlistService.addSongToPlaylist(songUuid, playlistUuid);
         return modelAndView;
     }
 

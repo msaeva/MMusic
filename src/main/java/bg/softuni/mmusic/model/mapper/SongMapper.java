@@ -5,6 +5,7 @@ import bg.softuni.mmusic.model.entities.Picture;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.repositories.PictureRepository;
+import bg.softuni.mmusic.repositories.StyleRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,6 +20,8 @@ public abstract class SongMapper {
     @Autowired
     protected PictureRepository pictureRepository;
 
+    @Autowired
+    protected StyleRepository styleRepository;
     public abstract Song addSongDtoToSong(AddSongDto addSongDto);
 
     @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
@@ -29,10 +32,13 @@ public abstract class SongMapper {
     @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
     public abstract FavouriteSongDto toFavouriteSongDto(Song song);
 
+    @Mapping(target = "style", expression = "java(songToUpdate.getStyle().getType())")
     public abstract UpdateSongDto toUpdateSongDto(Song songToUpdate);
 
+    @Mapping(target = "authorUuid", expression = "java(song.getAuthor().getUuid())")
     @Mapping(target = "authorUsername", expression = "java(userRepository.getUsernameByUuid(song.getAuthor().getUuid()))")
     @Mapping(target = "pictureUrl", expression = "java(pictureRepository.getUrlByUuid(song.getPicture().getUuid()))")
-    public abstract SearchSongDto toSearchSongDto(Song song);
+    @Mapping(target = "style", expression = "java(song.getStyle().getType().name())")
+    public abstract SongDto toSongDto(Song song);
 
 }
