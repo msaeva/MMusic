@@ -38,8 +38,8 @@ public class UserSeeder {
 
         User admin = User.builder()
                 .username("admin")
-                .firstName("admin")
-                .lastName("admin")
+                .firstName("Admin")
+                .lastName("Adminov")
                 .email("admin@abv.bg")
                 .password(passwordEncoder.encode("admin"))
                 .createdDate(LocalDate.now())
@@ -48,24 +48,85 @@ public class UserSeeder {
 
         User user = User.builder()
                 .username("mariyasaeva")
-                .firstName("mariya")
-                .lastName("saeva")
+                .firstName("Mariya")
+                .lastName("Saeva")
                 .email("mariya@abv.bg")
                 .password(passwordEncoder.encode("mariya"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(userRole))
                 .build();
 
-        User musician = User.builder()
+        User user2 = User.builder()
                 .username("ivana")
-                .firstName("ivana")
-                .lastName("petrova")
+                .firstName("Ivana")
+                .lastName("Petrova")
                 .email("ivana@abv.bg")
                 .password(passwordEncoder.encode("ivana"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
                 .build();
 
-        userRepository.saveAllAndFlush(List.of(admin, user, musician));
+        User pink = User.builder()
+                .username("pink_")
+                .firstName("Alecia")
+                .lastName("Moore")
+                .email("pink@abv.bg")
+                .password(passwordEncoder.encode("pink123"))
+                .createdDate(LocalDate.now())
+                .roles(Set.of(musicianRole))
+                .build();
+
+
+        User madonna = User.builder()
+                .username("madonna")
+                .firstName("Madonna")
+                .lastName("Ciccone")
+                .email("ciccone@abv.bg")
+                .password(passwordEncoder.encode("madonna"))
+                .createdDate(LocalDate.now())
+                .roles(Set.of(musicianRole))
+                .build();
+
+        User turner = User.builder()
+                .username("tinaturner")
+                .firstName("Tina")
+                .lastName("Turner")
+                .email("turner@gmail.com")
+                .password(passwordEncoder.encode("turner"))
+                .createdDate(LocalDate.now())
+                .roles(Set.of(musicianRole))
+                .build();
+
+        User beyonce = User.builder()
+                .username("beyonce")
+                .firstName("Beyonce")
+                .lastName("Giselle")
+                .email("beyonce@gmail.com")
+                .password(passwordEncoder.encode("beyonce"))
+                .createdDate(LocalDate.now())
+                .roles(Set.of(musicianRole))
+                .build();
+
+        User rihanna = User.builder()
+                .username("rihanna")
+                .firstName("Rihanna")
+                .lastName("Fenty")
+                .email("rihanna@gmail.com")
+                .password(passwordEncoder.encode("rihanna"))
+                .createdDate(LocalDate.now())
+                .roles(Set.of(musicianRole))
+                .build();
+
+        User eminem = User.builder()
+                .username("eminem")
+                .firstName("Marshall")
+                .lastName("Bruce")
+                .email("eminem@gmail.com")
+                .password(passwordEncoder.encode("eminem"))
+                .createdDate(LocalDate.now())
+                .roles(Set.of(musicianRole))
+                .build();
+
+        userRepository.saveAllAndFlush(List.of(admin, user, user2, pink, madonna, turner, beyonce, rihanna, eminem));
     }
 }

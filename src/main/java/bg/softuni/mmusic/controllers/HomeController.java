@@ -2,6 +2,7 @@ package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.model.dtos.song.SongDto;
+import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -43,7 +44,10 @@ public class HomeController {
 
         pageableDto.setData(songs.stream().map(songMapper::toSongDto).toList());
 
+        HashMap<Playlist, Integer> topPlaylists = playlistService.getTopPlaylists();
+
         modelAndView.setViewName("index");
+        modelAndView.addObject("topPlaylists", topPlaylists);
         modelAndView.addObject("pagination", pageableDto);
 
         return modelAndView;
