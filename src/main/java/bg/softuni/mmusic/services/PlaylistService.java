@@ -44,7 +44,6 @@ public class PlaylistService {
         authUser.getPlaylists().add(newPlaylist);
 
         playlistRepository.saveAndFlush(newPlaylist);
-        userRepository.saveAndFlush(authUser);
 
         return newPlaylist;
     }

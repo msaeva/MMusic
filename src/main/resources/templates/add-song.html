@@ -2,127 +2,138 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head::head}"></head>
-<body>
+<body style="background-color: #F9FBE7">
 
 <div class="content-wrapper">
     <div th:replace="~{fragments/navbar :: navbar}">
         Navbar
     </div>
 
-    <div class="container" style="margin-top: 7rem">
-        <h2 class="text-center text-black-50">Add Song</h2>
-        <form class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
-              th:method="POST" enctype="multipart/form-data"
-              th:action="@{/song/add}"
-              th:object="${addSongDto}">
-            <div class="row">
-                <div class="form-group col-md-6 mb-3">
-                    <label for="title" class="text-black-50 font-weight-bold">Title</label>
-                    <input
-                            th:field="*{title}"
-                            th:errorclass="is-invalid"
-                            id="title"
-                            name="title"
-                            type="text"
-                            class="form-control"
-                            placeholder="Title"/>
-                    <small class="invalid-feedback errors alert text-danger">
-                        Title length must be between 5 and 12 symbols </small>
-                </div>
+    <form class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
+          th:method="POST" enctype="multipart/form-data"
+          th:action="@{/song/add}"
+          th:object="${addSongDto}">
+        <section class="mt-2 mb-4">
+            <div class="container">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div class="col-lg-12 col-xl-11 mt-4">
+                        <div class="card text-black" style="border-radius: 25px;">
+                            <div class="card-body p-md-5">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                <div class="form-group col-md-6 mb-3">
-                    <label for="description" class="text-black-50 font-weight-bold">Write small description of yor
-                        song</label>
-                    <input
-                            id="description"
-                            name="description"
-                            type="text"
-                            class="form-control"
-                            placeholder="Description"
-                            th:field="*{description}"
-                            th:errorclass="is-invalid"/>
-                    <small class="invalid-feedback text-danger">
-                        Description length must be to 100 symbols </small>
-                </div>
+                                        <p class="text-center h1 fw-bold mb-2 mx-1 mx-md-4 mt-2">Add Song</p>
 
-                <div class="form-group col-md-6 mb-3">
-                    <label for="duration" class="text-black-50 font-weight-bold">Duration</label>
-                    <input id="duration"
-                           name="duration"
-                           type="number" class="form-control"
-                           placeholder="Duration"
-                           th:field="*{duration}"
-                           th:errorclass="is-invalid"/>
-                    <small class="invalid-feedback text-danger">
-                        Duration must be positive number </small>
-                </div>
-                <div class="form-group col-md-6 mb-3">
-                    <label for="style" class="text-black-50 font-weight-bold">Select Song Style</label>
-                    <select id="style" class="form-select" name="style">
-                        <option th:each="style : ${T(bg.softuni.mmusic.model.enums.StyleType).values()}"
-                                th:value="${style}"
-                                th:text="${style}">style
-                        </option>
-                    </select>
-                </div>
+                                        <form class="mx-1 mx-md-4">
+                                            <div class="d-flex flex-row align-items-center mb-2">
+                                                <div class="form-outline flex-fill mb-0">
+                                                    <label class="form-label" for="title">Title</label>
+                                                    <input type="text"
+                                                           th:field="*{title}"
+                                                           th:errorclass="is-invalid"
+                                                           id="title"
+                                                           name="username"
+                                                           class="form-control"/>
+                                                    <small class="invalid-feedback errors alert text-danger">
+                                                        Title length must be between 3 and 30 symbols </small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex row flex-row align-items-center mb-1">
+                                                <div class="col-md-6 form-outline flex-fill mb-0 ">
+                                                    <label class="form-label" for="description">Description</label>
+                                                    <input th:field="*{description}"
+                                                           th:errorclass="is-invalid"
+                                                           type="text"
+                                                           name="description"
+                                                           id="description"
+                                                           class="form-control"/>
+                                                    <small class="invalid-feedback text-danger">
+                                                        Description length must be to 500 symbols </small>
+                                                </div>
+                                            </div>
 
-                <div class="form-group col-md-6 mb-3">
-                    <label for="status" class="text-black-50 font-weight-bold">Select Song Status</label>
-                    <select id="status" class="form-select" name="status">
-                        <option th:each="status : ${T(bg.softuni.mmusic.model.enums.SongStatus).values()}"
-                                th:value="${status}"
-                                th:text="${status}">status
-                        </option>
-                    </select>
-                </div>
+                                            <div class="d-flex flex-row align-items-center mb-2">
+                                                <div class="col-md-6 form-outline flex-fill mb-0 ">
+                                                    <label for="style" class="form-label">Select Song
+                                                        Style</label>
+                                                    <select id="style" class="form-select" name="style">
+                                                        <option th:each="style : ${T(bg.softuni.mmusic.model.enums.StyleType).values()}"
+                                                                th:value="${style}"
+                                                                th:text="${style}">style
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                <div>
-                    <div class="form-group col-md-6">
-                        <label for="image" class="text-black-50 font-weight-bold">Cover image</label>
-                    </div>
-                    <div class="form-group mb-3">
-                        <input type="file" name="image"
-                               required
-                               id="image"
-                               class="form-control-file"
-                               aria-describedby="image"
-                               th:field="*{image}"
-                               th:errorclass="is-invalid"/>
-                        <small class="invalid-feedback text-danger">Must be valid image.</small>
-                    </div>
-                </div>
+                                            <div class="d-flex flex-row align-items-center mb-2">
+                                                <div class="col-md-6 form-outline flex-fill mb-0 ">
+                                                    <label for="status" class="form-label">Select Song
+                                                        Status</label>
+                                                    <select id="status" class="form-select" name="status">
+                                                        <option th:each="status : ${T(bg.softuni.mmusic.model.enums.SongStatus).values()}"
+                                                                th:value="${status}"
+                                                                th:text="${status}">status
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                <div>
-                    <div class="form-group col-md-6 mb-3">
-                        <label for="videoUrl">Video Url (only last eleven characters from Youtube)</label>
-                        <input id="videoUrl"
-                               type="text"
-                               class="form-control"
-                               placeholder="Video url"
-                               th:field="*{videoUrl}"
-                               th:errorclass="is-invalid">
-                        <small class="invalid-feedback text-danger">Must be valid YouTube video.</small>
-                    </div>
-                </div>
+                                            <div class="d-flex flex-row align-items-center mb-2">
+                                                <div class="col-md-6 form-outline flex-fill mb-0 ">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="image" class="form-label">Cover
+                                                            image</label>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <input type="file" name="image"
+                                                               required
+                                                               id="image"
+                                                               class="form-control-file"
+                                                               aria-describedby="image"
+                                                               th:field="*{image}"
+                                                               th:errorclass="is-invalid"/>
+                                                        <small class="invalid-feedback text-danger">Must be valid
+                                                            image.</small>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                <div>
-                    <div class="row">
-                        <div class="col col-md-4">
-                            <div class="button-holder d-flex">
-                                <input type="submit" class="btn btn-info btn-lg text-white"
-                                       style="background-color:green" value="Add Song"/>
+                                            <div class="d-flex flex-row align-items-center mb-2">
+                                                <div class="col-md-6 form-outline flex-fill mb-0 ">
+                                                    <label for="videoUrl">Video Url (only last eleven characters from
+                                                        Youtube)</label>
+                                                    <input id="videoUrl"
+                                                           type="text"
+                                                           class="form-control"
+                                                           placeholder="Video url"
+                                                           th:field="*{videoUrl}"
+                                                           th:errorclass="is-invalid">
+                                                    <small class="invalid-feedback text-danger">Must be valid YouTube
+                                                        video.</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex flex-row align-items-center mb-3">
+                                                <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+
+                                            </div>
+                                            <button type="submit" class="btn btn-info btn-lg w-100"
+                                                    style="background-color: #009970">Add Song
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                                        <img src="/images/add-song-img.jpg"
+                                             class="img-fluid" alt="Sample image">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
+        </section>
+    </form>
 </div>
-
-<div>
-    <footer></footer>
-</div>
-
 </body>
 </html>

@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/vendor/**").permitAll()
                 .requestMatchers("/", "/users/login", "/users/register", "/users/login-error",
-                        "/users/{userUuid}/verify-code/{code}").permitAll()
+                        "/users/{userUuid}/verify-code/{code}", "/user/{uuid}/profile").permitAll()
                 .requestMatchers("/user/change-password").authenticated()
                 .requestMatchers("/admin").hasRole(Role.ADMIN.name())
                 .requestMatchers("/song/{uuid}", "/song/search").permitAll()

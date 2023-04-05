@@ -146,7 +146,8 @@ public class SongService {
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount(), Sort.by(orders));
 
         if (validation.getStyle() != null) {
-            Style style = styleService.findByUuid(validation.getStyle());
+
+            Style style = styleService.findByStyle(validation.getStyle());
             return songRepository.findAllByStyleUuid(style.getUuid(), pageable);
         }
         return songRepository.findAll(pageable);

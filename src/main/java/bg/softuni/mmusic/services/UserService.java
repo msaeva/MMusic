@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -174,6 +175,10 @@ public class UserService {
         user.setPassword(encryptedPassword);
         userRepository.saveAndFlush(user);
         log.info("Changed password for User: {}", user);
+    }
+
+    public void deleteUnActivatedUsers(LocalDate period) {
+        userRepository.deleteAll(userRepository.getUnActivatedUsers(period));
     }
 }
 

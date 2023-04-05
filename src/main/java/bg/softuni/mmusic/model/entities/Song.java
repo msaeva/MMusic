@@ -27,9 +27,6 @@ public class Song extends BaseEntity {
     @Column()
     private String description;
 
-    @Column(nullable = false)
-    private Long duration;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
 

@@ -24,7 +24,7 @@ public class Playlist extends BaseEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "playlist")
     private Set<PlaylistSongs> playlistSongs;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User owner;
 
     @Enumerated(EnumType.STRING)

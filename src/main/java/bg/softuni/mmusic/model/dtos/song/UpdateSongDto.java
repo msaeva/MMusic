@@ -1,6 +1,5 @@
 package bg.softuni.mmusic.model.dtos.song;
 
-import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.enums.StyleType;
 import jakarta.validation.constraints.NotNull;

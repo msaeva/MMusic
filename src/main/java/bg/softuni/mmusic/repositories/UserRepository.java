@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +24,13 @@ public interface UserRepository extends JpaRepository<User, String> {
             "where u.uuid = :uuid")
     String getUsernameByUuid(@Param("uuid") String uuid);
 
-    @Query("select s from Song as s "+
+    @Query("select s from Song as s " +
             "join UserFavouriteSongs ufs on s.uuid = ufs.song_uuid " +
             "where ufs.user_uuid = :userUuid")
     List<Song> getUserFavouriteSongs(@Param("userUuid") String userUuid);
+
+
+    @Query("SELECT user FROM User user where user.isActivated = false and user.createdDate < :before")
+    List<User> getUnActivatedUsers(@Param("before") LocalDate before);
 }
 

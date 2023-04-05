@@ -2,59 +2,60 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head::head}"></head>
-<body>
+<body style="background-color: #F9FBE7">
 
 <div class="content-wrapper">
     <div th:replace="~{fragments/navbar :: navbar}">
         Navbar
     </div>
 
-    <div class="container" style="margin-top: 7rem">
-        <h2 class="text-center text-black-50">Create your playlist</h2>
-        <form class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
-              th:method="POST"
-              th:action="@{/playlist/create}"
-              th:object="${createPlaylistDto}">
-            <div class="row">
-                <div class="form-group col-md-6 mb-3">
-                    <label for="name" class="text-black-50 font-weight-bold"> Name </label>
-                    <input
-                            th:field="*{name}"
-                            th:errorclass="is-invalid"
-                            id="name"
-                            name="name"
-                            type="text"
-                            class="form-control"
-                            placeholder="name"/>
-                    <small class="invalid-feedback errors alert text-danger">
-                        Name length must be between 4 and 12 symbols </small>
-                </div>
-                <div class="form-group col-md-6 mb-3">
-                    <label for="status" class="text-black-50 font-weight-bold"> Select playlist visibility </label>
-                    <select id="status" class="form-select" name="status">
-                        <option th:each="status : ${T(bg.softuni.mmusic.model.enums.PlaylistStatus).values()}"
-                                th:value="${status}"
-                                th:text="${status}">
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-md-4">
-                    <div class="button-holder d-flex">
-                        <input type="submit"
-                               class="btn btn-info btn-lg text-white"
-                               style="background-color:green" value="Create playlist"/>
+    <form th:method="POST"
+          th:action="@{/playlist/create}"
+          th:object="${createPlaylistDto}">
+        <section class="vh-100 gradient-custom">
+            <div class="container py-5 h-100">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                        <div class="card text-white" style="background-color:#53BA98; border-radius: 1rem;">
+                            <div class="card-body p-5 text-center">
+
+                                <div class="mb-md-5 mt-md-4 pb-5">
+
+                                    <h2 class="fw-bold mb-2 text-uppercase">Create Playlist</h2>
+                                    <p class="text-white-50 mb-5">Please enter the information!</p>
+
+                                    <div class="form-outline form-white mb-4">
+                                        <label class="form-label" for="name">Name</label>
+                                        <input th:field="*{name}"
+                                               th:errorclass="is-invalid"
+                                               type="text"
+                                               id="name"
+                                               class="form-control form-control-lg"
+                                        />
+                                        <small class="invalid-feedback errors alert text-danger">
+                                            Name length must be between 4 and 12 symbols </small>
+                                    </div>
+
+                                    <div class="form-outline form-white mb-4">
+                                        <label for="status" class="form-label"> Select playlist
+                                            visibility </label>
+                                        <select id="status" class="form-select" name="status">
+                                            <option th:each="status : ${T(bg.softuni.mmusic.model.enums.PlaylistStatus).values()}"
+                                                    th:value="${status}"
+                                                    th:text="${status}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Create Playlist
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
+        </section>
+    </form>
 </div>
-
-<div>
-    <footer></footer>
-</div>
-
 </body>
 </html>
