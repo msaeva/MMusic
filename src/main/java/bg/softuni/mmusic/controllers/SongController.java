@@ -19,6 +19,7 @@ import bg.softuni.mmusic.services.Pagination;
 import bg.softuni.mmusic.services.SongService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -46,6 +47,7 @@ public class SongController {
 
     private final StyleRepository styleRepository;
 
+    @Autowired
     public SongController(SongService songService,
                           AuthService authService,
                           UserFavouriteSongsRepository favouriteSongsRepository,
@@ -165,11 +167,11 @@ public class SongController {
 
         boolean liked = false;
         boolean favourite = false;
-        boolean displayButtons = false;
+        boolean displayButtons = true;
         if (authUser != null) {
             if (authUser.getOwnSongs().stream().anyMatch(s -> s.getUuid().equals(song.getUuid())) ||
                     authUser.getRoles().stream().anyMatch(role -> role.getRole().equals(Role.ADMIN))) {
-                displayButtons = true;
+                displayButtons = false;
             }
             List<String> userLikedSongsUuids = userLikedSongsRepository.getUserLikedSongs(authUser.getUuid());
             if (userLikedSongsUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {

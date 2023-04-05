@@ -6,14 +6,13 @@ import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.SongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.User;
-import bg.softuni.mmusic.model.mapper.SongMapper;
-import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.PlaylistService;
 import bg.softuni.mmusic.services.PlaylistsSongService;
 import bg.softuni.mmusic.services.SongService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -35,6 +34,7 @@ public class PlaylistController {
     private final SongService songService;
     private final PlaylistsSongService playlistsSongService;
 
+    @Autowired
     public PlaylistController(PlaylistService playlistService,
                               AuthService authService,
                               SongService songService,

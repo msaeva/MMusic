@@ -11,6 +11,7 @@ import bg.softuni.mmusic.services.PlaylistService;
 import bg.softuni.mmusic.services.SongService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class HomeController {
     private final PlaylistService playlistService;
     private final PlaylistRepository playlistRepository;
 
+    @Autowired
     public HomeController(SongService songService, SongMapper songMapper, PlaylistService playlistService, PlaylistRepository playlistRepository) {
         this.songService = songService;
         this.songMapper = songMapper;

@@ -4,6 +4,7 @@ import bg.softuni.mmusic.model.dtos.comment.CommentDto;
 import bg.softuni.mmusic.model.dtos.comment.CreateCommentDto;
 import bg.softuni.mmusic.model.entities.Comment;
 import bg.softuni.mmusic.repositories.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class CommentService {
     private final AuthService authService;
     private final CommentRepository commentRepository;
 
+    @Autowired
     public CommentService(SongService songService, AuthService authService, CommentRepository commentRepository) {
         this.songService = songService;
         this.authService = authService;

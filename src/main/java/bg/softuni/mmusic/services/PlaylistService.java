@@ -10,6 +10,7 @@ import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,6 +25,7 @@ public class PlaylistService {
     private final SongMapper songMapper;
     private final UserRepository userRepository;
 
+    @Autowired
 
     public PlaylistService(AuthService authService, PlaylistRepository playlistRepository,
                            SongService songService, PlaylistSongsRepository playlistSongsRepository, SongMapper songMapper, UserRepository userRepository) {

@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div th:unless="${displayButtons}"
+                        <div th:if="${displayButtons}"
                              class="portfolio-info d-flex align-items-center mb-2">
                             <button th:if="${favourite}" type="button"
                                     id="remove-favourite-btn"

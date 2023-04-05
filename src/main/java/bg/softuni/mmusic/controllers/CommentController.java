@@ -8,6 +8,7 @@ import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.CommentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class CommentController {
     private final CommentService commentService;
     private final AuthService authService;
 
+    @Autowired
     public CommentController(CommentService commentService, AuthService authService) {
         this.commentService = commentService;
         this.authService = authService;

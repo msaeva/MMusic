@@ -3,10 +3,10 @@ package bg.softuni.mmusic.controllers;
 import bg.softuni.mmusic.model.dtos.UserLoginDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.services.AuthService;
-import bg.softuni.mmusic.services.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,12 +20,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserService userService;
 
-
-    public AuthController(AuthService authService, UserService userService) {
+    @Autowired
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userService = userService;
     }
 
     @ModelAttribute(name = "registerDto")
@@ -93,7 +91,7 @@ public class AuthController {
 
     @GetMapping("/{userUuid}/verify-code/{code}")
     public String verifyCode(@PathVariable(name = "code") String code,
-                                 @PathVariable(name = "userUuid") String userUuid) {
+                             @PathVariable(name = "userUuid") String userUuid) {
 
         authService.verify(code, userUuid);
         return "redirect:/users/login";
