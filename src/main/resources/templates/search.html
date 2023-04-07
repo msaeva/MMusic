@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head th:include="~{fragments/head::head}">
 
 </head>
 <header th:replace="~{fragments/navbar::navbar}"></header>
 <body class="d-flex flex-column align-items-center" style="padding-top: 7rem">
-
-<div th:object="${pagination}"
-     th:each="song : ${pagination.getData()}" class="card" style="width: 18rem;">
-    <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
-        <img th:src="${song.getPictureUrl()}" class="card-img-top" alt="...">
-    </a>
-    <div class="card-body">
-        <h5 class="card-title" th:text="'Title: ' + ${song.getTitle()}"></h5>
-        <p class="card-text" th:text="'Description: ' + ${song.getDescription()}"></p>
-        <p class="card-text" th:text="'Style: ' + ${song.getStyle()}"></p>
-        <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
-            <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
-        </a>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-lg-8 d-flex flex-wrap mx-auto justify-content-around">
+            <div th:object="${pagination}"
+                 th:each="song : ${pagination.getData()}" class="card" style="width: 18rem;">
+                <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
+                    <img th:src="${song.getPictureUrl()}" class="card-img-top" alt="...">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="'Title: ' + ${song.getTitle()}"></h5>
+                    <p class="card-text" th:text="'Description: ' + ${song.getDescription()}"></p>
+                    <p class="card-text" th:text="'Style: ' + ${song.getStyle()}"></p>
+                    <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
+                        <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 <nav aria-label="Page navigation example">
     <ul class="pagination">
         <li th:each="index: ${#numbers.sequence(1, T(java.lang.Math).ceil(pagination.getTotalRecords() / (pagination.count * 1.0)))}"
@@ -30,6 +33,5 @@
     </ul>
 </nav>
 </body>
-<footer th:include="~{fragments/footer}">
-</footer>
+<footer th:include="~{fragments/footer}"></footer>
 </html>

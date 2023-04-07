@@ -81,33 +81,30 @@ public class PlaylistController {
         PublicSimplePlaylistDto playlistDto = playlistService.publicSimplePlaylistDto(playlist);
         List<SongDto> songsToAddDto = songService.findAllPublicToAddToPlaylist(playlistUuid);
 
-        boolean isOwner = false;
-        if (playlist.getOwner().getUuid().equals(authUser.getUuid())) {
-            isOwner = true;
-        }
-
         modelAndView.setViewName("single-page-playlist");
-        modelAndView.addObject("isOwner", isOwner);
+        modelAndView.addObject("isOwner", playlistService.checkIsOwner(playlist, authUser));
         modelAndView.addObject("songsToAdd", songsToAddDto);
         modelAndView.addObject("playlist", playlistDto);
         return modelAndView;
     }
 
     @PostMapping("/{uuid}/add/{songUuid}")
-    public ModelAndView addSongToPlaylist(@PathVariable(name = "uuid") String playlistUuid,
-                                          @PathVariable(name = "songUuid") String songUuid,
-                                          ModelAndView modelAndView) {
-
-        playlistService.addSongToPlaylist(songUuid, playlistUuid);
-
-        modelAndView.setViewName("redirect:/user/profile");
-
-        return modelAndView;
+    @ResponseBody
+    public HttpStatus addSongToPlaylist(@PathVariable(name = "uuid") String playlistUuid,
+                                        @PathVariable(name = "songUuid") String songUuid) {
+        try {
+            playlistService.addSongToPlaylist(songUuid, playlistUuid);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/{uuid}/song/{songUuid}")
     @ResponseBody
-    public HttpStatus deleteSongFromPlaylist(@PathVariable(name = "uuid") String playlistUuid, @PathVariable(name = "songUuid") String songUuid) {
+    public HttpStatus deleteSongFromPlaylist(@PathVariable(name = "uuid") String playlistUuid,
+                                             @PathVariable(name = "songUuid") String songUuid) {
         try {
             playlistsSongService.removeSong(playlistUuid, songUuid);
         } catch (Exception exception) {

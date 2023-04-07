@@ -9,7 +9,6 @@ import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
-import bg.softuni.mmusic.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +22,20 @@ public class PlaylistService {
     private final SongService songService;
     private final PlaylistSongsRepository playlistSongsRepository;
     private final SongMapper songMapper;
-    private final UserRepository userRepository;
+
 
     @Autowired
 
-    public PlaylistService(AuthService authService, PlaylistRepository playlistRepository,
-                           SongService songService, PlaylistSongsRepository playlistSongsRepository, SongMapper songMapper, UserRepository userRepository) {
+    public PlaylistService(AuthService authService,
+                           PlaylistRepository playlistRepository,
+                           SongService songService,
+                           PlaylistSongsRepository playlistSongsRepository,
+                           SongMapper songMapper) {
         this.authService = authService;
         this.playlistRepository = playlistRepository;
         this.songService = songService;
         this.playlistSongsRepository = playlistSongsRepository;
         this.songMapper = songMapper;
-        this.userRepository = userRepository;
     }
 
     public Playlist create(CreatePlaylistDto createPlaylistDto) {
@@ -43,7 +44,6 @@ public class PlaylistService {
         newPlaylist.setName(createPlaylistDto.getName());
         newPlaylist.setOwner(authUser);
         newPlaylist.setStatus(createPlaylistDto.getStatus());
-        authUser.getPlaylists().add(newPlaylist);
 
         playlistRepository.saveAndFlush(newPlaylist);
 
@@ -96,5 +96,16 @@ public class PlaylistService {
 
         return hashMap;
     }
+
+    public boolean checkIsOwner(Playlist playlist, User user) {
+        boolean isOwner = false;
+        if (user != null) {
+            if (playlist.getOwner().getUuid().equals(user.getUuid())) {
+                isOwner = true;
+            }
+        }
+        return isOwner;
+    }
+
 
 }

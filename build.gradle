@@ -38,7 +38,11 @@ dependencies {
     implementation group: 'com.cloudinary', name: 'cloudinary-core', version: '1.33.0'
     implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.33.0'
 
+    // In memory db for testing
     testRuntimeOnly 'org.hsqldb:hsqldb'
+
+    //Testing mail sender
+    testImplementation 'com.icegreen:greenmail:2.0.0'
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 

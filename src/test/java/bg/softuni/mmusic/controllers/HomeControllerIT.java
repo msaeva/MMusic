@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,17 +11,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AdminControllerTest {
+public class HomeControllerIT {
+
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getAllUsersTest() throws Exception {
-        mockMvc.perform(get("/admin"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("allRoles"))
-                .andExpect(model().attributeExists("users"))
-                .andExpect(view().name("admin"));
+    public void testGetHome() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(model().attributeExists("topPlaylists"))
+                .andExpect(model().attributeExists("pagination"))
+                .andExpect(model().attributeExists("moreSongs"))
+                .andExpect(view().name("index"))
+                .andExpect(status().is2xxSuccessful());
     }
 }

@@ -26,31 +26,35 @@ public class HomeController {
     private final SongService songService;
     private final SongMapper songMapper;
     private final PlaylistService playlistService;
-    private final PlaylistRepository playlistRepository;
 
     @Autowired
-    public HomeController(SongService songService, SongMapper songMapper, PlaylistService playlistService, PlaylistRepository playlistRepository) {
+    public HomeController(SongService songService,
+                          SongMapper songMapper,
+                          PlaylistService playlistService) {
         this.songService = songService;
         this.songMapper = songMapper;
         this.playlistService = playlistService;
-        this.playlistRepository = playlistRepository;
     }
 
     @GetMapping("/")
     public ModelAndView getHome(ModelAndView modelAndView, @Valid PublicSongValidation validation) {
 
-        Page<Song> songs = songService.getMostLikedSongs(validation);
+        Page<Song> mostLikedSongs = songService.getMostLikedSongs(validation);
 
         Pagination<List<SongDto>> pageableDto =
-                new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
+                new Pagination<>(validation.getCount(), validation.getOffset(), mostLikedSongs.getTotalElements());
 
-        pageableDto.setData(songs.stream().map(songMapper::toSongDto).toList());
+        pageableDto.setData(mostLikedSongs.stream().map(songMapper::toSongDto).toList());
+
+
+        List<SongDto> moreSongsNotMostLiked = songService.findMoreSongsNotMostLiked(pageableDto);
 
         HashMap<Playlist, Integer> topPlaylists = playlistService.getTopPlaylists();
 
         modelAndView.setViewName("index");
         modelAndView.addObject("topPlaylists", topPlaylists);
         modelAndView.addObject("pagination", pageableDto);
+        modelAndView.addObject("moreSongs", moreSongsNotMostLiked);
 
         return modelAndView;
     }

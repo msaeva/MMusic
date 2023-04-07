@@ -39,7 +39,7 @@
                     <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
                         <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
                     </a>
-                    <button type="button"
+                    <button th:if="${isOwner}" type="button"
                             th:attr="data-song-uuid=${song.getUuid()}, data-playlist-uuid=${playlist.getUuid()}"
                             class="btn btn-dark remove-song-playlist-btn"> Remove Song from Playlist
                     </button>

@@ -1,7 +1,6 @@
 package bg.softuni.mmusic.repositories;
 
 import bg.softuni.mmusic.model.entities.Song;
-import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, String> {
@@ -34,6 +34,11 @@ public interface SongRepository extends JpaRepository<Song, String> {
     @Query("select s from Song as s " +
             "where s.Style.uuid = :styleUuid")
     Page<Song> findAllByStyleUuid(@Param(value = "styleUuid") String styleUuid, Pageable pageable);
+
+
+    @Query("select s from Song as s " +
+            "where s.uuid not in (:mostLikedSongsUuids)")
+    List<Song> findMoreSongsNotMostLiked(@Param("mostLikedSongsUuids") Set<String> mostLikedSongsUuids);
 }
 
 

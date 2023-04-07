@@ -9,6 +9,7 @@ import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.enums.Role;
+import bg.softuni.mmusic.model.error.SongNotFoundException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.StyleRepository;
@@ -102,7 +103,7 @@ public class SongController {
                 .getOwnSongs().stream()
                 .noneMatch(song -> song.getUuid().equals(songToUpdate.getUuid()))) {
 
-            // TODO return error
+            throw new SongNotFoundException(songToUpdate.getUuid());
         }
 
         UpdateSongDto songDto = songService.toUpdateSongDto(songToUpdate);
@@ -120,7 +121,7 @@ public class SongController {
                 .getOwnSongs().stream()
                 .noneMatch(song -> song.getUuid().equals(songToUpdate.getUuid()))) {
 
-            // TODO return error
+            throw new SongNotFoundException(songToUpdate.getUuid());
         }
         songService.update(songToUpdate, updateSongDto);
 
@@ -141,7 +142,6 @@ public class SongController {
 
     @GetMapping("/search")
     public ModelAndView searchSong(@Valid SearchSongValidation validation, ModelAndView modelAndView) {
-        User authUser = authService.getAuthenticatedUser();
         Page<Song> songs = songService.getAll(validation);
 
         Pagination<List<SongDto>> pageableDto =
@@ -167,11 +167,11 @@ public class SongController {
 
         boolean liked = false;
         boolean favourite = false;
-        boolean displayButtons = true;
+        boolean displayButtons = false;
         if (authUser != null) {
-            if (authUser.getOwnSongs().stream().anyMatch(s -> s.getUuid().equals(song.getUuid())) ||
-                    authUser.getRoles().stream().anyMatch(role -> role.getRole().equals(Role.ADMIN))) {
-                displayButtons = false;
+            if (authUser.getOwnSongs().stream().noneMatch(s -> s.getUuid().equals(song.getUuid())) &&
+                    authUser.getRoles().stream().noneMatch(role -> role.getRole().equals(Role.ADMIN))) {
+                displayButtons = true;
             }
             List<String> userLikedSongsUuids = userLikedSongsRepository.getUserLikedSongs(authUser.getUuid());
             if (userLikedSongsUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {

@@ -124,13 +124,6 @@ public class SongService {
         this.songRepository.delete(song);
     }
 
-    public Page<Song> getAllPublic(PublicSongValidation validation) {
-        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
-
-        return songRepository.findAllByStatus(SongStatus.PUBLIC, pageable);
-
-    }
-
     public UpdateSongDto toUpdateSongDto(Song songToUpdate) {
         return songMapper.toUpdateSongDto(songToUpdate);
     }
@@ -154,10 +147,6 @@ public class SongService {
         }
         return songRepository.findAll(pageable);
 
-    }
-
-    public Set<PublicSimpleSongDto> toPublicSimpleSongDto(Set<Song> songs) {
-        return songs.stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toSet());
     }
 
     public PublicDetailedSongDto toDetailedSongDto(Song song) {
@@ -245,6 +234,14 @@ public class SongService {
 
         return songRepository.getByStatusOrderByLikes(SongStatus.PUBLIC, pageable);
 
+    }
+
+    public List<SongDto> findMoreSongsNotMostLiked(Pagination<List<SongDto>> pageableDto) {
+
+        Set<String> mostLikedSongsUuids = pageableDto.getData().stream().map(SongDto::getUuid).collect(Collectors.toSet());
+
+        List<Song> moreSongsNotMostLiked = songRepository.findMoreSongsNotMostLiked(mostLikedSongsUuids);
+        return moreSongsNotMostLiked.stream().map(songMapper::toSongDto).collect(Collectors.toList());
     }
 }
 

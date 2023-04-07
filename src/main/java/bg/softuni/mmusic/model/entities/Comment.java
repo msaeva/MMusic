@@ -2,11 +2,15 @@ package bg.softuni.mmusic.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "comments")
 public class Comment extends BaseEntity {

@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
@@ -79,10 +78,6 @@ public class AuthService {
 
     public boolean checkIfUsernameExist(String username) {
         return userRepository.findByUsername(username).isPresent();
-    }
-
-    public User getUserByPrincipal(Principal principal) {
-        return userRepository.findByUsername(principal.getName()).orElseThrow(() -> new Error("User not found"));
     }
 
     public void verify(String code, String userUuid) {
