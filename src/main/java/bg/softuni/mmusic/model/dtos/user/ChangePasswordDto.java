@@ -1,4 +1,4 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.user;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -36,9 +36,10 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${song.getTitle()}"></h5>
                     <p class="card-text" th:text="${song.getDescription()}"></p>
-                    <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
-                        <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
-                    </a>
+                    <p class="card-text col-md-12">
+                        Author:
+                        <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" th:text="${song.getAuthorUsername()}"></a>
+                    </p>
                     <button th:if="${isOwner}" type="button"
                             th:attr="data-song-uuid=${song.getUuid()}, data-playlist-uuid=${playlist.getUuid()}"
                             class="btn btn-dark remove-song-playlist-btn"> Remove Song from Playlist

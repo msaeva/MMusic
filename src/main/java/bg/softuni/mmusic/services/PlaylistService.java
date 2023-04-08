@@ -85,6 +85,7 @@ public class PlaylistService {
     public HashMap<Playlist, Integer> getTopPlaylists() {
         HashMap<Playlist, Integer> hashMap = new HashMap<>();
         List<Playlist> topPlaylists = playlistRepository.getTopPlaylists(SongStatus.PUBLIC);
+
         for (Playlist playlist : topPlaylists) {
             int totalLikes = 0;
             for (Song song : playlist.getSongs()) {

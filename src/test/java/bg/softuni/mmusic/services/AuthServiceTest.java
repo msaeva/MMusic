@@ -1,6 +1,6 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.model.dtos.UserRegisterDto;
+import bg.softuni.mmusic.model.dtos.user.UserRegisterDto;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.entities.UserRole;
 import bg.softuni.mmusic.model.enums.Role;

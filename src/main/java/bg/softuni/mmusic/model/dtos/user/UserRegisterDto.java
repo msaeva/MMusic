@@ -1,4 +1,4 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.user;
 
 import bg.softuni.mmusic.model.enums.Role;
 import jakarta.validation.constraints.Email;

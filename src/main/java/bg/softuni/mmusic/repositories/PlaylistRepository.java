@@ -22,7 +22,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, String> {
     @Query("select p from Playlist as p " +
             " left join PlaylistSongs ps on ps.playlist.uuid = p.uuid " +
             " left join Song s on s.uuid = ps.song.uuid" +
-            " where s.status = :status "+
+            " where s.status = :status " +
             " group by p.uuid " +
             "order by sum(s.likes) desc")
     List<Playlist> getTopPlaylists(@Param("status") SongStatus status);

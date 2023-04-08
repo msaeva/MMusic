@@ -102,7 +102,10 @@ public class SongController {
 
         return modelAndView;
     }
-
+    /**
+     * { @code PUT /song }: update song by its uuid (specified in the request as params)
+     * @return redirect to single-page-song
+     * */
     @PutMapping("/{uuid}/update")
     public String putUpdate(@PathVariable(name = "uuid") String uuid, @Valid UpdateSongDto updateSongDto) {
 
@@ -195,7 +198,10 @@ public class SongController {
 
         return modelAndView;
     }
-
+    /**
+     * { @code POST / like song }: like song by its uuid (specified in the request as params)
+     * @return http status
+     * */
     @PostMapping("/{uuid}/like")
     @ResponseBody
     public HttpStatus likeSong(@PathVariable(name = "uuid") String uuid) {
@@ -208,7 +214,10 @@ public class SongController {
 
         return HttpStatus.OK;
     }
-
+    /**
+     * { @code DELETE / unlike song }: unlike song by its uuid (specified in the request as params)
+     * @return http status
+     * */
     @DeleteMapping("/{uuid}/unlike")
     @ResponseBody
     public HttpStatus unlikeSong(@PathVariable(name = "uuid") String uuid) {

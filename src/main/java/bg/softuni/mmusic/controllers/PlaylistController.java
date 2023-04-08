@@ -100,6 +100,11 @@ public class PlaylistController {
         return HttpStatus.OK;
     }
 
+    /**
+     * { @code DELETE / delete song }: delete song by its uuid from playlist by its uuid
+     * (specified in the request as params)
+     * @return http status
+     * */
     @DeleteMapping("/{uuid}/song/{songUuid}")
     @ResponseBody
     public HttpStatus deleteSongFromPlaylist(@PathVariable(name = "uuid") String playlistUuid,
