@@ -7,11 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class HomeControllerTest {
+public class HomeControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -19,6 +19,10 @@ public class HomeControllerTest {
     @Test
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/"))
+                .andExpect(model().attributeExists("topPlaylists"))
+                .andExpect(model().attributeExists("mostLikedSongs"))
+                .andExpect(model().attributeExists("moreSongs"))
+                .andExpect(view().name("index"))
                 .andExpect(status().is2xxSuccessful());
     }
 }

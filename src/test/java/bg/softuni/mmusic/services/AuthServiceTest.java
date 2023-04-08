@@ -7,6 +7,7 @@ import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,10 @@ public class AuthServiceTest {
     @Mock
     private UserRoleRepository mockUserRoleRepository;
 
+    @Mock
+    private UserService mockUserService;
+    @Mock
+    private EmailService emailService;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
     private AuthService toTest;
@@ -43,11 +48,11 @@ public class AuthServiceTest {
         toTest = new AuthService(mockUserRepository,
                 mockUserMapper,
                 mockUserRoleRepository,
-                mockPasswordEncoder);
+                mockPasswordEncoder, mockUserService, emailService);
     }
 
     @Test
-    void testRegistration_SaveInvoked() {
+    void testRegistration_SaveInvoked() throws MessagingException {
         String testPassword = "password";
         String encodedPassword = "encoded_password";
         String email = "test@example.com";

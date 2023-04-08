@@ -1,6 +1,5 @@
 package bg.softuni.mmusic.model.dtos.song;
 
-import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.enums.StyleType;
 import jakarta.validation.constraints.NotNull;
@@ -15,11 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateSongDto {
-    @Size(min = 5, max = 12)
+    @Size(min = 3, max = 30)
     @NotNull
     private String title;
 
-    @Size(max = 100)
+    @Size(max = 500)
     @NotNull
     private String description;
 

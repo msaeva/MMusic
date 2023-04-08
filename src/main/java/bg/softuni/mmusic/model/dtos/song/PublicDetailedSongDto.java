@@ -20,8 +20,6 @@ public class PublicDetailedSongDto {
 
     private String description;
 
-    private Long duration;
-
     private String videoUrl;
 
     private LocalDate createdDate;

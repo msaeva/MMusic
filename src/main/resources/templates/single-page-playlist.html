@@ -29,14 +29,17 @@
         <div class="d-flex flex-wrap justify-content-between">
             <div th:object="${playlist.getSongs()}"
                  th:each="song : ${playlist.getSongs()}" class="card" style="width: 18rem;">
-                <img th:src="${song.getPictureUrl()}" class="card-img-top" alt="...">
+                <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
+                    <img th:src="${song.getPictureUrl()}" class="card-img top"
+                         alt="">
+                </a>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${song.getTitle()}"></h5>
                     <p class="card-text" th:text="${song.getDescription()}"></p>
                     <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
                         <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
                     </a>
-                    <button type="button"
+                    <button th:if="${isOwner}" type="button"
                             th:attr="data-song-uuid=${song.getUuid()}, data-playlist-uuid=${playlist.getUuid()}"
                             class="btn btn-dark remove-song-playlist-btn"> Remove Song from Playlist
                     </button>
@@ -45,6 +48,9 @@
         </div>
     </div>
 </main>
-</body>
 
+</body>
+<footer th:include="~{fragments/footer}">
+</footer>
 <script src="/js/playlist.js"></script>
+</html>

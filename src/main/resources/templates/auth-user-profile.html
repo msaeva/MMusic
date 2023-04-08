@@ -78,7 +78,6 @@
                                     Change Password
                                 </button>
                             </li>
-
                         </ul>
                         <div class="tab-content pt-2">
 
@@ -95,11 +94,6 @@
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Username</div>
                                     <div class="col-lg-9 col-md-8" th:text="${user.getUsername()}"></div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Address</div>
-                                    <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
                                 </div>
 
                                 <div class="row">
@@ -154,8 +148,7 @@
                                                    class="form-control"
                                                    id="username"
                                                    value="username"
-                                                   readonly
-                                            >
+                                                   readonly>
                                         </div>
                                     </div>
 
@@ -196,11 +189,9 @@
                                                    class="form-control"
                                                    id="roles"
                                                    value="role"
-                                                   readonly
-                                            >
+                                                   readonly>
                                         </div>
                                     </div>
-
                                     <div class="text-center">
                                         <input type="submit" class="btn btn-primary" style="background-color:green"
                                                value="Update"/>
@@ -249,9 +240,9 @@
                                                    class="form-control"
                                                    id="reEnterPassword">
                                         </div>
-<!--                                        <small th:if="${#fields.hasErrors('differentPasswords')}"-->
-<!--                                               class="invalid-feedback text-danger">-->
-<!--                                        </small>-->
+                                        <!--                                        <small th:if="${#fields.hasErrors('differentPasswords')}"-->
+                                        <!--                                               class="invalid-feedback text-danger">-->
+                                        <!--                                        </small>-->
                                     </div>
 
                                     <div class="text-center">
@@ -262,26 +253,30 @@
                             </div>
 
                             <div class="tab-pane fade pt-3" id="own-song">
-                                <div class="d-flex flex-wrap mx-auto w-100">
-                                    <h3 th:if="${ownSongs.isEmpty()}">You have no playlists created yet!</h3>
+                                <div class="d-flex flex-wrap mx-auto w-100" style="gap: .8rem">
+                                    <h3 th:if="${ownSongs.isEmpty()}">You have no songs added yet!</h3>
                                     <div th:each="song : ${ownSongs}"
-                                         class="card" style="max-width: 540px;">
+                                         class="card" style="width: 320px;">
                                         <div class="row g-0">
-                                            <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
+                                            <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12"
+                                               style="height: 180px;">
                                                 <img th:src="${song.getPictureUrl()}"
-                                                     class="img-fluid rounded-start"
-                                                     alt="...">
+                                                     style="width: 100%; height: 100%; object-fit: cover"
+                                                     class="img-fluid rounded-start" alt="own song card">
                                             </a>
                                             <div class="card-body">
                                                 <h5 class="card-title" th:text="${song.getTitle()}"></h5>
-                                                <p class="card-text" th:text="${song.getDescription()}"></p>
-                                                <button type="button"
-                                                        th:attr="data-song-uuid=${song.getUuid()}"
-                                                        class="btn btn-danger delete-song-btn">Delete
-                                                </button>
-                                                <a class="btn btn-info" style="background-color:green"
-                                                   th:href="@{|/song/${song.getUuid()}/update|}"
-                                                   role="button">Update</a>
+                                                <p class="card-text" th:text="${song.getDescription()}"
+                                                   style="min-height: 5rem"></p>
+                                                <div class="row justify-content-evenly">
+                                                    <button type="button"
+                                                            th:attr="data-song-uuid=${song.getUuid()}"
+                                                            class="btn btn-danger col-5 delete-song-btn">Delete
+                                                    </button>
+                                                    <a class="btn btn-info col-5" style="background-color:green"
+                                                       th:href="@{|/song/${song.getUuid()}/update|}"
+                                                       role="button">Update</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -294,22 +289,20 @@
                                     <div th:each="playlist : ${ownPlaylists}"
                                          class="card mb-3" style="max-width: 540px;">
                                         <div class="row g-0">
-                                            <div class="col-md-4">
+                                            <div class="col-md-5">
                                                 <a th:href="@{|/playlist/${playlist.getUuid()}|}">
                                                     <img src="https://picsum.photos/200/240"
                                                          class="img-fluid rounded-start"
+                                                         style="height: 100%; object-fit:cover"
                                                          alt="...">
                                                 </a>
                                             </div>
-                                            <div class="col-md-8">
+                                            <div class="col-md-7">
                                                 <div class="card-body">
-                                                    <h5 class="card-title"
-                                                        th:text="'Name: ' + ${playlist.getName()}"></h5>
-                                                    <h5 class="card-title"
-                                                        th:text="'Songs count: ' + ${playlist.getSongsCount()}"></h5>
-                                                    <h5 class="card-title"
-                                                        th:text="'Status: ' + ${playlist.getStatus()}"></h5>
-
+                                                    <h4 class="card-title"
+                                                        th:text="'Name: ' + ${playlist.getName()}"></h4>
+                                                    <h5 th:text="'Songs count: ' + ${playlist.getSongsCount()}"></h5>
+                                                    <h6 th:text="'Status: ' + ${playlist.getStatus()}"></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -318,15 +311,16 @@
                             </div>
 
                             <div class="tab-pane fade pt-3" id="favourite">
-                                <div class="d-flex flex-wrap mx-auto w-100">
+                                <div class="d-flex flex-wrap mx-auto w-100" style="gap: .8rem">
                                     <h3 th:if="${favouriteSongs.isEmpty()}">You have no favourite songs!</h3>
                                     <div th:each="favourite : ${favouriteSongs}"
-                                         class="card" style="max-width: 540px;">
+                                         class="card" style="width: 320px;">
                                         <div class="row g-0">
-                                            <a th:href="@{|/song/${favourite.getUuid()}|}" class="col-md-12">
+                                            <a th:href="@{|/song/${favourite.getUuid()}|}"
+                                               class="col-md-12">
                                                 <img th:src="${favourite.getPictureUrl()}"
                                                      class="img-fluid rounded-start"
-                                                     alt="...">
+                                                     alt="..." style="width: 100%; object-fit: cover">
                                             </a>
                                             <div class="card-body">
                                                 <h5 class="card-title" th:text="${favourite.getTitle()}"></h5>
@@ -335,21 +329,19 @@
                                                    th:text="'Likes: ' + ${favourite.getLikes()}"></p>
                                                 <p class="card-text"
                                                    th:text="'Favourite count: ' + ${favourite.getFavouriteCount()}"></p>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 </main>
+<footer th:include="~{fragments/footer}">
+</footer>
 <script src="/js/events.js"></script>
 </html>

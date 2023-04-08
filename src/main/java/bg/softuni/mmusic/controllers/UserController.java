@@ -14,7 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -32,8 +35,6 @@ public class UserController {
 
     @GetMapping("/profile")
     public String getProfile(Model model) {
-//        User authUser = authService.getUserByPrincipal(principal);
-//
         User authUser = authService.getAuthenticatedUser();
         UserProfileDto userProfileInfo = userService.getUserProfileInfo(authUser.getUuid());
 
@@ -62,7 +63,6 @@ public class UserController {
         model.addAttribute("playlists", userPlaylists);
 
         return "user-profile";
-
     }
 
 
@@ -79,12 +79,14 @@ public class UserController {
     @PutMapping("/change-password")
     public String changePassword(@Valid ChangePasswordDto validation,
                                  BindingResult bindingResult) {
+
+        User authUser = authService.getAuthenticatedUser();
         if (!validation.getNewPassword().equals(validation.getReEnterPassword())) {
-             bindingResult.addError(new FieldError("differentPasswords",
+            bindingResult.addError(new FieldError("differentPasswords",
                     "reEnterPassword", "Passwords does not match!"));
         }
 
-        userService.changePassword(validation.getOldPassword(), validation.getNewPassword());
+        userService.changePassword(validation.getOldPassword(), validation.getNewPassword(), authUser);
         return "redirect:/user/profile";
     }
 }

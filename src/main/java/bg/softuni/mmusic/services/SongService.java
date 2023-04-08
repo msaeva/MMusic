@@ -1,8 +1,10 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.*;
+import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
+import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
@@ -16,6 +18,7 @@ import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
 import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,6 +40,7 @@ public class SongService {
     private final UserFavouriteSongsRepository favouriteSongsRepository;
     private final UserLikedSongsRepository likedSongsRepository;
 
+    @Autowired
     public SongService(SongMapper songMapper,
                        AuthService authService,
                        SongRepository songRepository,
@@ -64,6 +67,7 @@ public class SongService {
             throw new InvalidUserException("You should be authenticated to update song!");
         }
         if (authUser.getRoles().stream().noneMatch(user -> user.getRole().equals(Role.MUSICIAN))) {
+            log.info("Should have MUSICIAN role to add songs!");
             throw new InvalidUserException("You do not have permissions to add a song");
         }
 
@@ -96,6 +100,8 @@ public class SongService {
         songToUpdate.setStatus(songDto.getStatus());
 
         songRepository.saveAndFlush(songToUpdate);
+
+        log.info("Updated song: " + songToUpdate);
     }
 
     public void delete(String uuid) {
@@ -120,13 +126,8 @@ public class SongService {
         this.playlistSongsRepository.deleteAll(playlistsSongs);
         this.favouriteSongsRepository.deleteAll(favourite);
         this.songRepository.delete(song);
-    }
 
-    public Page<Song> getAllPublic(PublicSongValidation validation) {
-        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
-
-        return songRepository.findAllByStatus(SongStatus.PUBLIC, pageable);
-
+        log.info("Deleted song: " + song);
     }
 
     public UpdateSongDto toUpdateSongDto(Song songToUpdate) {
@@ -146,15 +147,12 @@ public class SongService {
         Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount(), Sort.by(orders));
 
         if (validation.getStyle() != null) {
-            Style style = styleService.findByUuid(validation.getStyle());
+
+            Style style = styleService.findByStyle(validation.getStyle());
             return songRepository.findAllByStyleUuid(style.getUuid(), pageable);
         }
         return songRepository.findAll(pageable);
 
-    }
-
-    public Set<PublicSimpleSongDto> toPublicSimpleSongDto(Set<Song> songs) {
-        return songs.stream().map(songMapper::toPublicSimpleSongDto).collect(Collectors.toSet());
     }
 
     public PublicDetailedSongDto toDetailedSongDto(Song song) {
@@ -185,7 +183,7 @@ public class SongService {
         songToLike.setLikes(songToLike.getLikes() + 1);
         songRepository.saveAndFlush(songToLike);
         likedSongsRepository.save(new UserLikedSongs(authUser.getUuid(), songUuid));
-
+        log.info("Liked song: " + songToLike);
     }
 
     public void unlike(String songUuid) {
@@ -204,6 +202,7 @@ public class SongService {
         songRepository.saveAndFlush(songToUnlike);
         UserLikedSongs toDelete = likedSongsRepository.getBySongAndUser(authUser.getUuid(), songUuid);
         likedSongsRepository.delete(toDelete);
+        log.info("Unliked song: " + songToUnlike);
     }
 
     public void addToFavourite(String songUuid, User user) {
@@ -220,6 +219,7 @@ public class SongService {
         songToAddToFav.setFavouriteCount(songToAddToFav.getFavouriteCount() + 1);
         songRepository.saveAndFlush(songToAddToFav);
         favouriteSongsRepository.save(new UserFavouriteSongs(user.getUuid(), songUuid));
+        log.info("Song added to favourite: " + songToAddToFav);
     }
 
     public void removeFromFavourite(String songUuid, User user) {
@@ -235,13 +235,12 @@ public class SongService {
         UserFavouriteSongs toDelete =
                 favouriteSongsRepository.getBySongAndUser(user.getUuid(), songUuid);
         favouriteSongsRepository.delete(toDelete);
+
+        log.info("Song removed from favourite: " + songToRemove);
     }
 
-    public Page<Song> getMostLikedSongs(PublicSongValidation validation) {
-        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
-
-        return songRepository.getByStatusOrderByLikes(SongStatus.PUBLIC, pageable);
-
+    public Page<Song> getMostLikedSongs(Pageable pageable) {
+        return songRepository.getByStatus(SongStatus.PUBLIC, pageable);
     }
 }
 

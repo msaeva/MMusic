@@ -4,69 +4,82 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <header th:fragment="navbar" id="header" class="fixed-top d-flex align-items-center">
-    <div class="container">
+    <div class="container  ml-3">
         <div class="header-container d-flex align-items-center justify-content-between">
             <div class="logo">
-                <h1 class="text-light"><a th:href="@{/index}"><span>Mmusic</span></a></h1>
+                <h1 class="text-light"><a th:href="@{/}"><span>Mmusic</span></a></h1>
             </div>
 
             <nav id="navbar" class="navbar">
                 <ul>
-                    <li><a class="nav-link scrollto active" th:href="@{/}">Home</a></li>
-                    <li sec:authorize="!isAuthenticated()">
-                        <a class="nav-link scrollto active" th:href="@{/users/login}">Login</a>
-                    </li>
-                    <li sec:authorize="!isAuthenticated()">
-                        <a class="nav-link scrollto active" th:href="@{/users/register}">Register</a>
-                    </li>
-                    <li sec:authorize="hasRole('MUSICIAN')">
-                        <a class="nav-link scrollto active" th:href="@{/playlist/create}">Create Playlist</a>
-                    </li>
-                    <li sec:authorize="hasRole('MUSICIAN')">
-                        <a class="nav-link scrollto active" th:href="@{/song/add}">Add Song</a>
-                    </li>
-                    <li sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link scrollto active" th:href="@{/admin}">Admin</a>
-                    </li>
-
-                    <li class="dropdown"><span class="nav-link scrollto active">STYLES</span>
-                        <!--                        <i class="bi bi-chevron-down"></i>-->
+                    <li class="dropdown"><span class="nav-link scrollto active"
+                                               th:text="#{navbar_styles}">STYLES</span>
                         <ul>
-                            <li class="dropdown"><a
-                                    href="/song/search?style=16509ba0-1ca6-407f-88be-9059d8043e2b">POP
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
+                            <li class="dropdown">
+                                <a href="/song/search?style=POP"
+                                   th:text="#{style_pop}">POP<i class="bi bi-chevron-right"></i></a>
                                 <ul>
-                                    <li><a
-                                            href="/song/search?style=e892a4e4-baae-4ff6-be99-ac123643bf44">DANCE POP</a>
+                                    <li><a href="/song/search?style=DANCE_POP"
+                                           th:text="#{style_dance_pop}">DANCE POP</a>
                                     </li>
                                 </ul>
                             </li>
 
-                            <li class="dropdown"><a
-                                    href="/song/search?style=dfce6394-e9ca-4384-a9ee-f8f369b5b6aa">ROCK
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
+                            <li class="dropdown"><a href="/song/search?style=ROCK"
+                                                    th:text="#{style_rock}">ROCK<i class="bi bi-chevron-right"></i></a>
                                 <ul>
-                                    <li><a href="/song/search?style=f6572acf-ce82-4157-8bb6-740f730d55cd"> MODERN
-                                        ROCK</a></li>
+                                    <li><a href="/song/search?style=MODERN_ROCK"
+                                           th:text="#{style_modern_rock}"> MODERN ROCK</a></li>
                                 </ul>
                             </li>
-
-
-                            <li class="dropdown"><a href="/song/search?style=e8f5e575-a40e-4e27-a0e8-ebc1feaa882f">HIP POP
+                            <li class="dropdown"><a href="/song/search?style=HIPHOP"
+                                                    th:text="#{style_hip_hop}">HIP POP
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                                 <ul>
-                                    <li><a href="/song/search?style=e621cc04-cbad-474b-9654-faf4eae09512"> MELODIC
-                                        RAP</a></li>
+                                    <li><a href="/song/search?style=MELODIC_RAP" th:text="#{style_melodic_rap}">
+                                        MELODIC RAP</a></li>
                                 </ul>
-
                             </li>
                         </ul>
                     </li>
+                    <li><a class="nav-link scrollto active"
+                           th:href="@{/}" th:text="#{navbar_home}"></a></li>
+                    <li sec:authorize="!isAuthenticated()">
+                        <a class="nav-link scrollto active"
+                           th:href="@{/users/login}" th:text="#{navbar_login}"></a>
+                    </li>
+                    <li sec:authorize="!isAuthenticated()">
+                        <a class="nav-link scrollto active" th:href="@{/users/register}"
+                           th:text="#{navbar_register}"></a>
+                    </li>
+                    <li sec:authorize="hasRole('MUSICIAN')">
+                        <a class="nav-link scrollto active"
+                           th:href="@{/playlist/create}" th:text="#{navbar_create_playlist}"></a>
+                    </li>
+                    <li sec:authorize="hasRole('MUSICIAN')">
+                        <a class="nav-link scrollto active"
+                           th:href="@{/song/add}" th:text="#{navbar_add_song}"></a>
+                    </li>
+                    <li sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link scrollto active"
+                           th:href="@{/admin}" th:text="#{navbar_admin}">Admin</a>
+                    </li>
+
                     <li sec:authorize="isAuthenticated()">
-                        <a class="getstarted scrollto" th:href="@{/user/profile}">Profile</a>
+                        <a class="getstarted scrollto"
+                           th:href="@{/user/profile}" th:text="#{navbar_profile}">Profile</a>
+                    </li>
+                    <li>
+                        <form th:method="get">
+                            <select class="getstarted scrollto"
+                                    onchange="this.form.submit()"
+                                    id="lang"
+                                    name="lang">
+                                <option value="en_US" th:selected="${#locale.toString()} == 'en_US'">English</option>
+                                <option value="bg_BG" th:selected="${#locale.toString()} == 'bg_BG'">Български</option>
+                            </select>
+                        </form>
                     </li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>

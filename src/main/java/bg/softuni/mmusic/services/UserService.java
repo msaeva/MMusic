@@ -24,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,8 +41,6 @@ public class UserService {
     private final PlaylistMapper playlistMapper;
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
-    private final AuthService authService;
-    //    private final PasswordEncoder passwordEncoder;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -51,7 +51,7 @@ public class UserService {
                        PlaylistMapper playlistMapper,
                        UserMapper userMapper,
                        UserRoleRepository roleRepository,
-                       AuthService authService, PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.playlistRepository = playlistRepository;
@@ -59,7 +59,6 @@ public class UserService {
         this.playlistMapper = playlistMapper;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
-        this.authService = authService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -133,10 +132,15 @@ public class UserService {
 
         userToUpdate.setFirstName(fullName[0]);
         userToUpdate.setLastName(fullName[1]);
-        if (!userToUpdate.getAbout().isEmpty()) {
+
+        if (userProfileDto.getAbout().isEmpty()) {
+            userToUpdate.setAbout(null);
+        } else {
             userToUpdate.setAbout(userProfileDto.getAbout());
         }
+
         userRepository.saveAndFlush(userToUpdate);
+        log.info("Update {}.", userToUpdate);
     }
 
     public List<User> getAllUsers() {
@@ -158,26 +162,25 @@ public class UserService {
             }
         }
 
-        for (UserRole role : user.getRoles()) {
-            if (!rolesToAdd.contains(role)) {
-                rolesToAdd.remove(role);
-            }
-        }
-
         user.setRoles(rolesToAdd);
         userRepository.saveAndFlush(user);
+        log.info("Change role to {}", user);
     }
 
-    public void changePassword(String oldPassword, String newPassword) {
-        User user = authService.getAuthenticatedUser();
+    @Transactional
+    public void changePassword(String oldPassword, String newPassword, User user) {
 
         if (passwordEncoder.matches(oldPassword, newPassword)) {
-            throw new RuntimeException("Old and new paswwords are the same");
+            throw new RuntimeException("Old and new passwords are the same");
         }
         String encryptedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encryptedPassword);
         userRepository.saveAndFlush(user);
         log.info("Changed password for User: {}", user);
+    }
+
+    public void deleteUnActivatedUsers(LocalDate period) {
+        userRepository.deleteAll(userRepository.getUnActivatedUsers(period));
     }
 }
 

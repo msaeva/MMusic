@@ -13,7 +13,6 @@ public interface PlaylistSongsRepository extends JpaRepository<PlaylistSongs, St
 
     PlaylistSongs getByPlaylistUuidAndSongUuid(String uuid, String uuid1);
 
-
     @Query("select ps from  PlaylistSongs as ps " +
             "where ps.song.uuid = :uuid")
     List<PlaylistSongs> findBySongUuid(@Param("uuid") String uuid);

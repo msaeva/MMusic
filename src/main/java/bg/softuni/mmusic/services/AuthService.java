@@ -7,14 +7,15 @@ import bg.softuni.mmusic.model.error.UserNotFoundException;
 import bg.softuni.mmusic.model.mapper.UserMapper;
 import bg.softuni.mmusic.repositories.UserRepository;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
@@ -27,20 +28,25 @@ public class AuthService {
     private final UserMapper userMapper;
     private final UserRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
+
+    private final EmailService emailService;
 
     @Autowired
     public AuthService(UserRepository userRepository,
                        UserMapper userMapper,
                        UserRoleRepository roleRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder, UserService userService, EmailService emailService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        this.emailService = emailService;
     }
 
 
-    public void register(UserRegisterDto registerDto) {
+    public void register(UserRegisterDto registerDto) throws MessagingException {
 
         Set<UserRole> userRoles = registerDto.getRoles().stream().map(roleRepository::findByRole)
                 .filter(Optional::isPresent)
@@ -51,8 +57,13 @@ public class AuthService {
         userToSave.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         userToSave.setRoles(userRoles);
         userToSave.setCreatedDate(LocalDate.now());
+        userToSave.setVerifyCode(RandomStringUtils.randomAlphabetic(6));
 
         userRepository.save(userToSave);
+        emailService.sendActivationEmail(userToSave.getEmail(),
+                userToSave.getUsername(), userToSave.getVerifyCode(), userToSave.getUuid());
+
+        log.info("Register user : " + userToSave);
     }
 
     public User getAuthenticatedUser() {
@@ -71,7 +82,13 @@ public class AuthService {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    public User getUserByPrincipal(Principal principal) {
-        return userRepository.findByUsername(principal.getName()).orElseThrow(() -> new Error("User not found"));
+    public void verify(String code, String userUuid) {
+        User user = userService.getUserByUuid(userUuid);
+
+        if (user.getVerifyCode().equals(code)) {
+            user.setActivated(true);
+            userRepository.saveAndFlush(user);
+            log.info("{} is activated", user);
+        }
     }
 }

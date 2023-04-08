@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PictureRepository extends JpaRepository<Picture, String> {
 
@@ -14,4 +16,5 @@ public interface PictureRepository extends JpaRepository<Picture, String> {
             "where uuid = :uuid")
     String getUrlByUuid(@Param("uuid") String uuid);
 
+    Optional<Picture> findByTitle(String picture);
 }

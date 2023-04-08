@@ -1,7 +1,6 @@
 package bg.softuni.mmusic.repositories;
 
 import bg.softuni.mmusic.model.entities.Song;
-import bg.softuni.mmusic.model.entities.Style;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +16,6 @@ import java.util.Optional;
 public interface SongRepository extends JpaRepository<Song, String> {
     Optional<Song> findByUuid(String songUuid);
 
-    Page<Song> findAllByStatus(SongStatus status, Pageable pageable);
-
     @Query(value = "select s from Song s where s.uuid not in (select song.uuid from Song song " +
             "join PlaylistSongs ps on song.uuid = ps.song.uuid " +
             "where ps.playlist.uuid = :playlistUuid " +
@@ -29,11 +26,12 @@ public interface SongRepository extends JpaRepository<Song, String> {
 
     Optional<List<Song>> findAllByAuthorUuidAndStatus(String uuid, SongStatus status);
 
-    Page<Song> getByStatusOrderByLikes(SongStatus status, Pageable pageable);
+    Page<Song> getByStatus(SongStatus status, Pageable pageable);
 
     @Query("select s from Song as s " +
             "where s.Style.uuid = :styleUuid")
     Page<Song> findAllByStyleUuid(@Param(value = "styleUuid") String styleUuid, Pageable pageable);
+
 }
 
 

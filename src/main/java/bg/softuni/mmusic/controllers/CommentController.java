@@ -8,6 +8,7 @@ import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.services.AuthService;
 import bg.softuni.mmusic.services.CommentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class CommentController {
     private final CommentService commentService;
     private final AuthService authService;
 
+    @Autowired
     public CommentController(CommentService commentService, AuthService authService) {
         this.commentService = commentService;
         this.authService = authService;
@@ -29,8 +31,8 @@ public class CommentController {
 
     @GetMapping("song/{songUuid}/comments")
     public ResponseEntity<List<CommentDto>> getSongComments(@PathVariable(name = "songUuid") String songUuid) {
-
         List<Comment> commentsBySong = commentService.getCommentsBySong(songUuid);
+
         List<CommentDto> comments =
                 commentsBySong.stream().map(commentService::toCommentDto).collect(Collectors.toList());
 
@@ -62,6 +64,7 @@ public class CommentController {
                 authUser.getRoles().stream().anyMatch(r -> r.getRole().equals(Role.ADMIN))) {
 
             commentService.deleteComment(comment);
+            log.info("Deleted comment {}.", comment);
             return HttpStatus.OK;
         }
         return HttpStatus.valueOf(403);

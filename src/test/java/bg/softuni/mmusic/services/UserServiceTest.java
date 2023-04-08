@@ -65,7 +65,7 @@ public class UserServiceTest {
                 mockSongMapper,
                 mockPlaylistMapper,
                 mockUserMapper,
-                mockRoleRepository, authService, passwordEncoder);
+                mockRoleRepository, passwordEncoder);
 
         String encodedPassword = "encoded_password";
         String email = "test@example.com";

@@ -33,7 +33,6 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-
     @Size(min = 5)
     @Column
     private String password;
@@ -48,6 +47,12 @@ public class User extends BaseEntity {
 
     @Column(name = "created_date")
     private LocalDate createdDate;
+
+    @Column
+    private String verifyCode;
+
+    @Column
+    private boolean isActivated = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new HashSet<>();
@@ -67,10 +72,6 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "song_uuid", referencedColumnName = "uuid")})
     private Set<Song> likedSongs;
 
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Playlist> playlists;
-
     public User(String username,
                 String firstName,
                 String lastName,
@@ -85,5 +86,14 @@ public class User extends BaseEntity {
         this.password = password;
         this.createdDate = createdDate;
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email;
     }
 }

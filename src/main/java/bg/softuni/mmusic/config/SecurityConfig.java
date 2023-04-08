@@ -30,10 +30,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/vendor/**").permitAll()
-                .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
+                .requestMatchers("/", "/users/login", "/users/register", "/users/login-error",
+                        "/users/{userUuid}/verify-code/{code}", "/user/{uuid}/profile").permitAll()
                 .requestMatchers("/user/change-password").authenticated()
                 .requestMatchers("/admin").hasRole(Role.ADMIN.name())
-                .requestMatchers("/song/{uuid}", "/song/search").permitAll()
+                .requestMatchers("/song/{uuid}", "/song/search", "/song/{songUuid}/comments", "/playlist/{uuid}").permitAll()
                 .requestMatchers("/song/add", "/playlist/create", "song/{uuid}/update").hasRole(Role.MUSICIAN.name())
                 .requestMatchers("/playlist/{uuid}/add").hasRole(Role.MUSICIAN.name())
                 // all any pages are available for logged users
@@ -43,7 +44,7 @@ public class SecurityConfig {
                 .loginPage("/users/login")
                 // the name in the username field
                 .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
-                .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
+                .passwordParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
                 // where to go when login is successful, use true argument if you
                 // always want to go there, otherwise go to previous page
                 .defaultSuccessUrl("/", true)

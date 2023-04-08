@@ -3,24 +3,25 @@ package bg.softuni.mmusic.controllers;
 import bg.softuni.mmusic.model.dtos.UserLoginDto;
 import bg.softuni.mmusic.model.dtos.UserRegisterDto;
 import bg.softuni.mmusic.services.AuthService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/users")
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
 
-
+    @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
@@ -60,7 +61,7 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@Valid UserRegisterDto registerDto,
                            BindingResult bindingResult,
-                           RedirectAttributes redirectAttributes) {
+                           RedirectAttributes redirectAttributes) throws MessagingException {
         if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
             bindingResult.addError(new FieldError("differentConfirmPassword",
                     "confirmPassword", "Passwords must be the same!"));
@@ -88,4 +89,11 @@ public class AuthController {
         return "redirect:/users/login";
     }
 
+    @GetMapping("/{userUuid}/verify-code/{code}")
+    public String verifyCode(@PathVariable(name = "code") String code,
+                             @PathVariable(name = "userUuid") String userUuid) {
+
+        authService.verify(code, userUuid);
+        return "redirect:/users/login";
+    }
 }

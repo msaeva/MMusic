@@ -7,6 +7,7 @@ import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.enums.StyleType;
 import bg.softuni.mmusic.model.error.InvalidUserException;
+import bg.softuni.mmusic.repositories.PictureRepository;
 import bg.softuni.mmusic.repositories.SongRepository;
 import bg.softuni.mmusic.repositories.StyleRepository;
 import bg.softuni.mmusic.repositories.UserRepository;
@@ -21,11 +22,13 @@ public class SongSeeder {
     private final SongRepository songRepository;
     private final UserRepository userRepository;
     private final StyleRepository styleRepository;
+    private final PictureRepository pictureRepository;
 
-    public SongSeeder(SongRepository songRepository, UserRepository userRepository, StyleRepository styleRepository) {
+    public SongSeeder(SongRepository songRepository, UserRepository userRepository, StyleRepository styleRepository, PictureRepository pictureRepository) {
         this.songRepository = songRepository;
         this.userRepository = userRepository;
         this.styleRepository = styleRepository;
+        this.pictureRepository = pictureRepository;
     }
 
     public void init() {
@@ -48,24 +51,6 @@ public class SongSeeder {
             User beyonce = userRepository.findByUsername("beyonce")
                     .orElseThrow(() -> new InvalidUserException("User with username beyonce not found!"));
 
-
-            Picture picture = Picture.builder()
-                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680273764/1390a228-ba3d-4c52-89e6-3817ae8f2c96.jpg")
-                    .build();
-
-            Picture picture2 = Picture.builder()
-                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680594483/3f00f24d-b8f9-4ec8-a9cb-71c82c515ffc.jpg")
-                    .build();
-
-            Picture picture3 = Picture.builder()
-                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1679753602/2ada82a0-dcc0-4033-9e17-6b620b227d49.png")
-                    .build();
-
-            Picture picture4 = Picture.builder()
-                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680273047/3dad0190-48c9-4ad4-b455-78701abfe4b5.jpg")
-                    .build();
-
-
             Style pop = styleRepository.findByType(StyleType.POP).orElseThrow(NoSuchElementException::new);
             Style rock = styleRepository.findByType(StyleType.ROCK).orElseThrow(NoSuchElementException::new);
             Style hiphop = styleRepository.findByType(StyleType.HIPHOP).orElseThrow(NoSuchElementException::new);
@@ -73,12 +58,21 @@ public class SongSeeder {
             Style melodicRap = styleRepository.findByType(StyleType.MELODIC_RAP).orElseThrow(NoSuchElementException::new);
             Style modernRock = styleRepository.findByType(StyleType.MODERN_ROCK).orElseThrow(NoSuchElementException::new);
 
+            Picture picture = pictureRepository.findByTitle("picture").orElseThrow(NoSuchElementException::new);
+            Picture picture2 = pictureRepository.findByTitle("picture2").orElseThrow(NoSuchElementException::new);
+            Picture picture3 = pictureRepository.findByTitle("picture3").orElseThrow(NoSuchElementException::new);
+            Picture picture4 = pictureRepository.findByTitle("picture4").orElseThrow(NoSuchElementException::new);
+            Picture picture5 = pictureRepository.findByTitle("picture5").orElseThrow(NoSuchElementException::new);
+            Picture picture6 = pictureRepository.findByTitle("picture6").orElseThrow(NoSuchElementException::new);
+            Picture picture7 = pictureRepository.findByTitle("picture7").orElseThrow(NoSuchElementException::new);
+            Picture picture8 = pictureRepository.findByTitle("picture8").orElseThrow(NoSuchElementException::new);
+            Picture picture9 = pictureRepository.findByTitle("picture9").orElseThrow(NoSuchElementException::new);
+
             Song song = Song.builder()
                     .title("Lose Yourself")
                     .description("\"Lose Yourself\" was a commercial success, becoming Eminem's first Billboard Hot 100 number-one single and remaining there for twelve consecutive weeks.")
                     .status(SongStatus.PUBLIC)
                     .picture(picture)
-                    .duration(5L)
                     .Style(hiphop)
                     .author(eminem)
                     .createdDate(LocalDate.now())
@@ -92,7 +86,6 @@ public class SongSeeder {
                     .description("\"Godzilla\" is a song by American rapper Eminem featuring fellow American rapper and singer Juice Wrld, released as a single on January 28, 2020")
                     .status(SongStatus.PUBLIC)
                     .picture(picture2)
-                    .duration(5L)
                     .Style(hiphop)
                     .author(eminem)
                     .createdDate(LocalDate.now())
@@ -105,8 +98,7 @@ public class SongSeeder {
                     .title("Russian Roulette")
                     .description("\"Russian Roulette\" is a pop and R&B ballad that contains dark, morbid, and tense atmospheric elements in its composition")
                     .status(SongStatus.PUBLIC)
-                    .picture(picture2)
-                    .duration(5L)
+                    .picture(picture3)
                     .Style(pop)
                     .author(rihanna)
                     .createdDate(LocalDate.now())
@@ -119,8 +111,7 @@ public class SongSeeder {
                     .title("Stay")
                     .description("The song's lyrics speak of temptation and the inability to resist true love. Music critics were generally positive in their opinion regarding the balladry and most described it as a standout track on the album.")
                     .status(SongStatus.PUBLIC)
-                    .picture(picture3)
-                    .duration(3L)
+                    .picture(picture4)
                     .Style(pop)
                     .author(rihanna)
                     .createdDate(LocalDate.now())
@@ -133,8 +124,7 @@ public class SongSeeder {
                     .title("Like A Player")
                     .description("\"Like a Prayer\" is a song by American singer Madonna from her 1989 fourth studio album of the same name")
                     .status(SongStatus.PUBLIC)
-                    .picture(picture3)
-                    .duration(3L)
+                    .picture(picture5)
                     .Style(dancePop)
                     .author(madonna)
                     .createdDate(LocalDate.now())
@@ -147,8 +137,7 @@ public class SongSeeder {
                     .title("The Best")
                     .description("In 1989, American singer Tina Turner released a cover version of \"The Best\" for her seventh studio album, Foreign Affair. ")
                     .status(SongStatus.PUBLIC)
-                    .picture(picture2)
-                    .duration(3L)
+                    .picture(picture6)
                     .Style(rock)
                     .author(tinaTurner)
                     .createdDate(LocalDate.now())
@@ -161,8 +150,7 @@ public class SongSeeder {
                     .title("Trustfall")
                     .description("Trustfall is the ninth studio album by American singer Pink. The album was released on February 17, 2023, through RCA Records.")
                     .status(SongStatus.PUBLIC)
-                    .picture(picture2)
-                    .duration(3L)
+                    .picture(picture7)
                     .Style(dancePop)
                     .author(pink)
                     .createdDate(LocalDate.now())
@@ -175,8 +163,7 @@ public class SongSeeder {
                     .title("Crazy In Love")
                     .description("\"Crazy in Love\" is a song recorded by American singer Beyoncé, featuring a rap verse and ad-libs from her future husband Jay-Z from her debut solo studio album Dangerously in Love (2003).")
                     .status(SongStatus.PUBLIC)
-                    .picture(picture)
-                    .duration(3L)
+                    .picture(picture8)
                     .Style(pop)
                     .author(beyonce)
                     .createdDate(LocalDate.now())
@@ -185,8 +172,21 @@ public class SongSeeder {
                     .favouriteCount(0)
                     .build();
 
-            songRepository.saveAllAndFlush(List.of(song, song2, song3, song4, song5, song6, song7, song8));
+            Song son9 = Song.builder()
+                    .title("Daddy Issues")
+                    .description("A sad but great song no doubt. The meaning is pretty straightforward." +
+                            "This song is about two destructive people in a destructive relationship through no fault of their own. ")
+                    .status(SongStatus.PUBLIC)
+                    .picture(picture9)
+                    .Style(modernRock)
+                    .author(pink)
+                    .createdDate(LocalDate.now())
+                    .videoUrl("_Yhyp-_hX2s")
+                    .likes(0)
+                    .favouriteCount(0)
+                    .build();
 
+            songRepository.saveAllAndFlush(List.of(song, song2, song3, song4, song5, song6, song7, song8, son9));
         }
     }
 }

@@ -44,6 +44,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("admin"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(adminRole))
+                .isActivated(true)
                 .build();
 
         User user = User.builder()
@@ -54,6 +55,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("mariya"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(userRole))
+                .isActivated(true)
                 .build();
 
         User user2 = User.builder()
@@ -64,6 +66,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("ivana"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
         User pink = User.builder()
@@ -74,6 +77,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("pink123"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
 
@@ -85,6 +89,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("madonna"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
         User turner = User.builder()
@@ -95,6 +100,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("turner"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
         User beyonce = User.builder()
@@ -105,6 +111,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("beyonce"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
         User rihanna = User.builder()
@@ -115,6 +122,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("rihanna"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
         User eminem = User.builder()
@@ -125,6 +133,7 @@ public class UserSeeder {
                 .password(passwordEncoder.encode("eminem"))
                 .createdDate(LocalDate.now())
                 .roles(Set.of(musicianRole))
+                .isActivated(true)
                 .build();
 
         userRepository.saveAllAndFlush(List.of(admin, user, user2, pink, madonna, turner, beyonce, rihanna, eminem));

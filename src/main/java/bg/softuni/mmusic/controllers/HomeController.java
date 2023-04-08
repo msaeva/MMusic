@@ -1,17 +1,14 @@
 package bg.softuni.mmusic.controllers;
 
-import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.model.dtos.song.SongDto;
 import bg.softuni.mmusic.model.entities.Playlist;
-import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.mapper.SongMapper;
-import bg.softuni.mmusic.repositories.PlaylistRepository;
-import bg.softuni.mmusic.services.Pagination;
 import bg.softuni.mmusic.services.PlaylistService;
 import bg.softuni.mmusic.services.SongService;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,30 +22,35 @@ public class HomeController {
     private final SongService songService;
     private final SongMapper songMapper;
     private final PlaylistService playlistService;
-    private final PlaylistRepository playlistRepository;
 
-    public HomeController(SongService songService, SongMapper songMapper, PlaylistService playlistService, PlaylistRepository playlistRepository) {
+    @Autowired
+    public HomeController(SongService songService,
+                          SongMapper songMapper,
+                          PlaylistService playlistService) {
         this.songService = songService;
         this.songMapper = songMapper;
         this.playlistService = playlistService;
-        this.playlistRepository = playlistRepository;
     }
 
+    /**
+     * { @code get /home }: get top playlists and most liked songs
+     */
     @GetMapping("/")
-    public ModelAndView getHome(ModelAndView modelAndView, @Valid PublicSongValidation validation) {
-
-        Page<Song> songs = songService.getMostLikedSongs(validation);
-
-        Pagination<List<SongDto>> pageableDto =
-                new Pagination<>(validation.getCount(), validation.getOffset(), songs.getTotalElements());
-
-        pageableDto.setData(songs.stream().map(songMapper::toSongDto).toList());
-
+    public ModelAndView getHome(ModelAndView modelAndView) {
         HashMap<Playlist, Integer> topPlaylists = playlistService.getTopPlaylists();
+
+        List<SongDto> mostLikedSongs = songService
+                .getMostLikedSongs(PageRequest.of(0, 5, Sort.Direction.DESC, "likes"))
+                .stream().map(songMapper::toSongDto).toList();
+
+        List<SongDto> secondBatchMostLikedSongs = songService
+                .getMostLikedSongs(PageRequest.of(1, 5, Sort.Direction.DESC, "likes"))
+                .stream().limit(3).map(songMapper::toSongDto).toList();
 
         modelAndView.setViewName("index");
         modelAndView.addObject("topPlaylists", topPlaylists);
-        modelAndView.addObject("pagination", pageableDto);
+        modelAndView.addObject("mostLikedSongs", mostLikedSongs);
+        modelAndView.addObject("moreSongs", secondBatchMostLikedSongs);
 
         return modelAndView;
     }
