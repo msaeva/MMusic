@@ -1,7 +1,7 @@
 package bg.softuni.mmusic.model.mapper;
 
-import bg.softuni.mmusic.model.dtos.UserProfileDto;
-import bg.softuni.mmusic.model.dtos.UserRegisterDto;
+import bg.softuni.mmusic.model.dtos.user.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.user.UserRegisterDto;
 import bg.softuni.mmusic.model.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

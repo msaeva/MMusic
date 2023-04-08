@@ -1,7 +1,7 @@
 package bg.softuni.mmusic.controllers;
 
-import bg.softuni.mmusic.model.dtos.UserLoginDto;
-import bg.softuni.mmusic.model.dtos.UserRegisterDto;
+import bg.softuni.mmusic.model.dtos.user.UserLoginDto;
+import bg.softuni.mmusic.model.dtos.user.UserRegisterDto;
 import bg.softuni.mmusic.services.AuthService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;

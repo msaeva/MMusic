@@ -1,4 +1,4 @@
-package bg.softuni.mmusic.model.dtos;
+package bg.softuni.mmusic.model.dtos.user;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

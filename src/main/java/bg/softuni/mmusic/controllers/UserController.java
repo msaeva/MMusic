@@ -1,7 +1,7 @@
 package bg.softuni.mmusic.controllers;
 
-import bg.softuni.mmusic.model.dtos.ChangePasswordDto;
-import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.user.ChangePasswordDto;
+import bg.softuni.mmusic.model.dtos.user.UserProfileDto;
 import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
@@ -65,7 +65,10 @@ public class UserController {
         return "user-profile";
     }
 
-
+    /**
+     * { @code PUT / update }: user can update its fields (specified in the request as params)
+     * @return redirect to user-profile
+     * */
     @PutMapping("/{uuid}/update")
     public String update(@PathVariable(name = "uuid") String uuid,
                          @Valid UserProfileDto userProfileDto) {
@@ -76,6 +79,10 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
+    /**
+     * { @code PUT / change password }: user can c change its password
+     * @return redirect to user-profile
+     * */
     @PutMapping("/change-password")
     public String changePassword(@Valid ChangePasswordDto validation,
                                  BindingResult bindingResult) {

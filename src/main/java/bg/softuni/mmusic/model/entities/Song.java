@@ -36,7 +36,7 @@ public class Song extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Style Style;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Picture picture;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL)

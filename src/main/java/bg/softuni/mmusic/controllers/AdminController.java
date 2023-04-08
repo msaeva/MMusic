@@ -1,7 +1,7 @@
 package bg.softuni.mmusic.controllers;
 
 import bg.softuni.mmusic.constants.Authorities;
-import bg.softuni.mmusic.model.dtos.ModifyRolesDto;
+import bg.softuni.mmusic.model.dtos.user.ModifyRolesDto;
 import bg.softuni.mmusic.repositories.UserRoleRepository;
 import bg.softuni.mmusic.services.UserRoleService;
 import bg.softuni.mmusic.services.UserService;
@@ -22,7 +22,6 @@ public class AdminController {
 
     @Autowired
     public AdminController(UserService userService,
-                           UserRoleRepository userRoleRepository,
                            UserRoleService userRoleService) {
         this.userService = userService;
         this.userRoleService = userRoleService;

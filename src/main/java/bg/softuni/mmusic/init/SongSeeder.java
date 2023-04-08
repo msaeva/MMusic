@@ -22,13 +22,13 @@ public class SongSeeder {
     private final SongRepository songRepository;
     private final UserRepository userRepository;
     private final StyleRepository styleRepository;
-    private final PictureRepository pictureRepository;
 
-    public SongSeeder(SongRepository songRepository, UserRepository userRepository, StyleRepository styleRepository, PictureRepository pictureRepository) {
+    public SongSeeder(SongRepository songRepository,
+                      UserRepository userRepository,
+                      StyleRepository styleRepository) {
         this.songRepository = songRepository;
         this.userRepository = userRepository;
         this.styleRepository = styleRepository;
-        this.pictureRepository = pictureRepository;
     }
 
     public void init() {
@@ -58,15 +58,51 @@ public class SongSeeder {
             Style melodicRap = styleRepository.findByType(StyleType.MELODIC_RAP).orElseThrow(NoSuchElementException::new);
             Style modernRock = styleRepository.findByType(StyleType.MODERN_ROCK).orElseThrow(NoSuchElementException::new);
 
-            Picture picture = pictureRepository.findByTitle("picture").orElseThrow(NoSuchElementException::new);
-            Picture picture2 = pictureRepository.findByTitle("picture2").orElseThrow(NoSuchElementException::new);
-            Picture picture3 = pictureRepository.findByTitle("picture3").orElseThrow(NoSuchElementException::new);
-            Picture picture4 = pictureRepository.findByTitle("picture4").orElseThrow(NoSuchElementException::new);
-            Picture picture5 = pictureRepository.findByTitle("picture5").orElseThrow(NoSuchElementException::new);
-            Picture picture6 = pictureRepository.findByTitle("picture6").orElseThrow(NoSuchElementException::new);
-            Picture picture7 = pictureRepository.findByTitle("picture7").orElseThrow(NoSuchElementException::new);
-            Picture picture8 = pictureRepository.findByTitle("picture8").orElseThrow(NoSuchElementException::new);
-            Picture picture9 = pictureRepository.findByTitle("picture9").orElseThrow(NoSuchElementException::new);
+            Picture picture = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680679626/6077b761-7c13-4a59-93a4-e7a07a8e6d00.jpg")
+                    .title("picture")
+                    .build();
+
+            Picture picture2 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680947214/b52f7fa5-715b-4f4c-b9b3-47d6090c039d.jpg")
+                    .title("picture2")
+                    .build();
+
+            Picture picture3 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680679268/f332560e-85b4-4bed-b1d4-dd66f6bd0889.png")
+                    .title("picture3")
+                    .build();
+
+            Picture picture4 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680947190/e5969259-bc23-4a49-97e3-b00ed8aa91ad.png")
+                    .title("picture4")
+                    .build();
+
+            Picture picture5 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680947167/60f8e449-c7a8-4260-ab90-9de8138cd3d8.jpg")
+                    .title("picture5")
+                    .build();
+
+            Picture picture6 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680947147/5915228a-9624-48e3-8f57-2702879df68d.jpg")
+                    .title("picture6")
+                    .build();
+
+            Picture picture7 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680947135/9c78fa12-6f32-4809-be9d-1d89030a7fd2.jpg")
+                    .title("picture7")
+                    .build();
+
+            Picture picture8 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680947135/9c78fa12-6f32-4809-be9d-1d89030a7fd2.jpg")
+                    .title("picture8")
+                    .build();
+
+            Picture picture9 = Picture.builder()
+                    .url("https://res.cloudinary.com/dfmavylku/image/upload/v1680941305/25699a2a-cb75-4a32-be4f-dbe830f016bb.jpg")
+                    .title("picture9")
+                    .build();
+
 
             Song song = Song.builder()
                     .title("Lose Yourself")

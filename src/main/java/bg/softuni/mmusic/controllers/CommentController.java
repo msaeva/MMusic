@@ -28,7 +28,10 @@ public class CommentController {
         this.commentService = commentService;
         this.authService = authService;
     }
-
+    /**
+     * { @code GET / comments}: retrieves all comments by song uuid (specified in the request as params)
+     * @return return ResponseEntity<List<CommentDto>>
+     * */
     @GetMapping("song/{songUuid}/comments")
     public ResponseEntity<List<CommentDto>> getSongComments(@PathVariable(name = "songUuid") String songUuid) {
         List<Comment> commentsBySong = commentService.getCommentsBySong(songUuid);

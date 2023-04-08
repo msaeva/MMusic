@@ -1,6 +1,6 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.user.UserProfileDto;
 import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.entities.UserRole;
 import bg.softuni.mmusic.model.enums.Role;
@@ -37,8 +37,6 @@ public class UserServiceTest {
     @Mock
     private SongRepository mockSongRepository;
 
-    @Mock
-    private AuthService authService;
     @Mock
     private PlaylistRepository mockPlaylistRepository;
     @Mock

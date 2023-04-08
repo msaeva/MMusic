@@ -1,7 +1,7 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.model.dtos.ModifyRolesDto;
-import bg.softuni.mmusic.model.dtos.UserProfileDto;
+import bg.softuni.mmusic.model.dtos.user.ModifyRolesDto;
+import bg.softuni.mmusic.model.dtos.user.UserProfileDto;
 import bg.softuni.mmusic.model.dtos.playlist.PublicSimplePlaylistDto;
 import bg.softuni.mmusic.model.dtos.song.FavouriteSongDto;
 import bg.softuni.mmusic.model.dtos.song.PublicSimpleSongDto;
