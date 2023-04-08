@@ -30,7 +30,6 @@ public class PlaylistController {
 
     private final PlaylistService playlistService;
     private final AuthService authService;
-
     private final SongService songService;
     private final PlaylistsSongService playlistsSongService;
 
@@ -44,7 +43,6 @@ public class PlaylistController {
         this.authService = authService;
         this.songService = songService;
         this.playlistsSongService = playlistsSongService;
-
     }
 
     @ModelAttribute(name = "createPlaylistDto")
@@ -69,6 +67,7 @@ public class PlaylistController {
         }
 
         Playlist playlist = playlistService.create(createPlaylistDto);
+        log.info("Created new playlist: " + playlist);
 
         return "redirect:/playlist/" + playlist.getUuid();
     }

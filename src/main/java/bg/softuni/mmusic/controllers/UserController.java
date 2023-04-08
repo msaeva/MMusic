@@ -35,7 +35,6 @@ public class UserController {
 
     @GetMapping("/profile")
     public String getProfile(Model model) {
-
         User authUser = authService.getAuthenticatedUser();
         UserProfileDto userProfileInfo = userService.getUserProfileInfo(authUser.getUuid());
 

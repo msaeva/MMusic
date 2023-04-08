@@ -11,13 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, String> {
     Optional<Song> findByUuid(String songUuid);
-
-    Page<Song> findAllByStatus(SongStatus status, Pageable pageable);
 
     @Query(value = "select s from Song s where s.uuid not in (select song.uuid from Song song " +
             "join PlaylistSongs ps on song.uuid = ps.song.uuid " +
@@ -29,16 +26,12 @@ public interface SongRepository extends JpaRepository<Song, String> {
 
     Optional<List<Song>> findAllByAuthorUuidAndStatus(String uuid, SongStatus status);
 
-    Page<Song> getByStatusOrderByLikes(SongStatus status, Pageable pageable);
+    Page<Song> getByStatus(SongStatus status, Pageable pageable);
 
     @Query("select s from Song as s " +
             "where s.Style.uuid = :styleUuid")
     Page<Song> findAllByStyleUuid(@Param(value = "styleUuid") String styleUuid, Pageable pageable);
 
-
-    @Query("select s from Song as s " +
-            "where s.uuid not in (:mostLikedSongsUuids)")
-    List<Song> findMoreSongsNotMostLiked(@Param("mostLikedSongsUuids") Set<String> mostLikedSongsUuids);
 }
 
 

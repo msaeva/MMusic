@@ -62,6 +62,8 @@ public class AuthService {
         userRepository.save(userToSave);
         emailService.sendActivationEmail(userToSave.getEmail(),
                 userToSave.getUsername(), userToSave.getVerifyCode(), userToSave.getUuid());
+
+        log.info("Register user : " + userToSave);
     }
 
     public User getAuthenticatedUser() {
@@ -86,6 +88,7 @@ public class AuthService {
         if (user.getVerifyCode().equals(code)) {
             user.setActivated(true);
             userRepository.saveAndFlush(user);
+            log.info("{} is activated", user);
         }
     }
 }

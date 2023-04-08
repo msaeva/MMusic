@@ -6,9 +6,11 @@ import bg.softuni.mmusic.model.entities.Playlist;
 import bg.softuni.mmusic.model.entities.PlaylistSongs;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.model.entities.User;
+import bg.softuni.mmusic.model.enums.SongStatus;
 import bg.softuni.mmusic.model.mapper.SongMapper;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +18,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PlaylistService {
     private final AuthService authService;
     private final PlaylistRepository playlistRepository;
     private final SongService songService;
     private final PlaylistSongsRepository playlistSongsRepository;
     private final SongMapper songMapper;
-
 
     @Autowired
 
@@ -57,6 +59,7 @@ public class PlaylistService {
         if (playlist.getSongs().stream().noneMatch(song -> song.getUuid().equals(songToAdd.getUuid()))) {
             playlistSongsRepository.saveAndFlush(new PlaylistSongs(playlist, songToAdd));
             playlist.getSongs().add(songToAdd);
+            log.info("Added {} to {}", songToAdd, playlist);
         }
     }
 
@@ -81,20 +84,19 @@ public class PlaylistService {
 
     public HashMap<Playlist, Integer> getTopPlaylists() {
         HashMap<Playlist, Integer> hashMap = new HashMap<>();
-        List<Playlist> all = playlistRepository.findAll();
-        for (Playlist playlist : all) {
+        List<Playlist> topPlaylists = playlistRepository.getTopPlaylists(SongStatus.PUBLIC);
+        for (Playlist playlist : topPlaylists) {
             int totalLikes = 0;
             for (Song song : playlist.getSongs()) {
                 totalLikes += song.getLikes();
             }
             hashMap.put(playlist, totalLikes);
         }
-        hashMap.entrySet().stream()
+        return hashMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .limit(3)
-                .forEachOrdered(entry -> hashMap.put(entry.getKey(), entry.getValue()));
+                .limit(3).
+                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        return hashMap;
     }
 
     public boolean checkIsOwner(Playlist playlist, User user) {

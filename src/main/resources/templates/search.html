@@ -6,8 +6,8 @@
 </head>
 <header th:replace="~{fragments/navbar::navbar}"></header>
 <body class="d-flex flex-column align-items-center" style="padding-top: 7rem">
-    <div class="row">
-        <div class="col-sm-12 col-md-10 col-lg-8 d-flex flex-wrap mx-auto justify-content-around">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-10 col-lg-10 d-flex flex-wrap justify-content-around">
             <div th:object="${pagination}"
                  th:each="song : ${pagination.getData()}" class="card" style="width: 18rem;">
                 <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">

@@ -20,7 +20,7 @@ public class HomeControllerIT {
     public void testGetHome() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(model().attributeExists("topPlaylists"))
-                .andExpect(model().attributeExists("pagination"))
+                .andExpect(model().attributeExists("mostLikedSongs"))
                 .andExpect(model().attributeExists("moreSongs"))
                 .andExpect(view().name("index"))
                 .andExpect(status().is2xxSuccessful());

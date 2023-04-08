@@ -36,7 +36,7 @@ public class Song extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Style Style;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Picture picture;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "song", cascade = CascadeType.ALL)
@@ -68,5 +68,14 @@ public class Song extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getUuid(), title);
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "title='" + title + '\'' +
+                ", createdDate=" + createdDate +
+                ", status=" + status +
+                '}';
     }
 }

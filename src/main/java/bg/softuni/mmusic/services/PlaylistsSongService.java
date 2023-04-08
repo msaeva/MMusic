@@ -5,12 +5,14 @@ import bg.softuni.mmusic.model.entities.PlaylistSongs;
 import bg.softuni.mmusic.model.entities.Song;
 import bg.softuni.mmusic.repositories.PlaylistRepository;
 import bg.softuni.mmusic.repositories.PlaylistSongsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
 @Service
+@Slf4j
 public class PlaylistsSongService {
     private final PlaylistSongsRepository playlistSongsRepository;
     private final PlaylistRepository playlistRepository;
@@ -33,5 +35,6 @@ public class PlaylistsSongService {
 
         playlist.getSongs().remove(songToRemove);
         playlistSongsRepository.delete(playlistSongs);
+        log.info("Removed {} form {}", songToRemove, playlist);
     }
 }

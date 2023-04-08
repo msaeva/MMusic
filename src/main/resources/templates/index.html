@@ -45,13 +45,11 @@
                 </div>
 
             </div>
-
         </div>
     </section>
 
     <section id="about" class="about">
         <div class="container">
-
             <div class="row content">
                 <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
                     <h2>Welcome to my app</h2>
@@ -62,16 +60,19 @@
                     <p>
                     <p>
                         Our app is designed to provide you with
-                        a seamless and personalized listening experience, with features that cater to your unique music preferences.
+                        a seamless and personalized listening experience, with features that cater to your unique music
+                        preferences.
                     </p>
                     <ul>
                         <li><i class="ri-check-double-line"></i> With our music app, you can create playlists,
                             browse genres, and explore popular artists from around the world. Our intuitive
-                            interface makes it easy for you to find the music you love and discover new tracks that fit your taste.
+                            interface makes it easy for you to find the music you love and discover new tracks that fit
+                            your taste.
                         </li>
                     </ul>
                     <p class="fst-italic">
-                        Whether you're in the mood for a relaxing melody, an upbeat tune, or a genre you've never explored before,
+                        Whether you're in the mood for a relaxing melody, an upbeat tune, or a genre you've never
+                        explored before,
                         our music app has something for everyone.
                         So, sit back, relax, and let us take you on a musical journey that you'll never forget.
                     </p>
@@ -123,7 +124,7 @@
         </div>
     </section>
 
-    <section th:object="${pagination}"
+    <section th:object="${mostLikedSongs}"
              id="testimonials" class="testimonials section-bg">
         <div class="container">
 
@@ -132,39 +133,37 @@
                     <div class="section-title" data-aos="fade-right">
                         <h2>Most liked songs</h2>
                         <p>In this section, you can find the most popular songs of all time, based on likes.
-                            These are the songs that have captured the hearts of music fans around the world, and continue to be loved
+                            These are the songs that have captured the hearts of music fans around the world, and
+                            continue to be loved
                             and celebrated for their timeless appeal.</p>
 
                     </div>
                 </div>
                 <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
-                    <div th:object="${pagination}" class="testimonials-slider swiper" data-aos="fade-up"
+                    <div th:object="${mostLikedSongs}" class="testimonials-slider swiper" data-aos="fade-up"
                          data-aos-delay="100">
                         <div class="swiper-wrapper">
 
-                            <div th:each="song : ${pagination.getData()}"
+                            <div th:each="song : ${mostLikedSongs}"
                                  class="swiper-slide">
                                 <div class="testimonial-item">
                                     <p>
                                         <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                                    <p th:text="${song.getDescription()}">
-                                        <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                                    </p>
-                                    <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
-                                        <img th:src="${song.getPictureUrl()}" class="testimonial-img"
-                                             alt="">
-                                    </a>
-                                    <h3 th:text="${song.getTitle()}"></h3>
-                                    <!--                                    <h4 th:text="${song.getAuthorUsername()}"></h4>-->
-                                    <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" class="col-md-12">
-                                        <p class="card-text" th:text="'Author: ' + ${song.getAuthorUsername()}"></p>
-                                    </a>
-                                    <p th:text="'Likes: ' + ${song.getLikes()}">
+                                        <p th:text="${song.getDescription()}">
+                                            <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+                                        </p>
+                                        <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12">
+                                            <img th:src="${song.getPictureUrl()}" class="testimonial-img" alt="">
+                                        </a>
+                                        <h3 th:text="${song.getTitle()}"></h3>
+                                        <p class="card-text col-md-12">
+                                            Author:
+                                            <a th:text="${song.getAuthorUsername()}" th:href="@{|/user/${song.getAuthorUuid()}/profile|}"></a>
+                                        </p>
+                                        <p th:text="'Likes: ' + ${song.getLikes()}">
                                     </p>
                                 </div>
-                            </div><!-- End testimonial item -->
-
-
+                            </div>
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
@@ -172,57 +171,49 @@
             </div>
 
         </div>
-    </section><!-- End Testimonials Section -->
+    </section>
 
-    <section id="services" class="services section-bg">
+
+    <section class="why-us">
         <div class="container">
 
             <div class="row">
-                <div class="col-lg-4">
-                    <div class="section-title" data-aos="fade-right">
-                        <h2>Find another songs</h2>
-                        <p>You can find the hottest and most popular songs of the moment.
-                            Whether you're looking for the latest hits or want to see what everyone else is listening to.</p>
+                <div class="col-lg-4 d-flex align-items-stretch" data-aos="fade-right">
+                    <div class="content">
+                        <h3>Find More Songs</h3>
+                        <p>
+                            You can find the hottest and most popular songs of the moment.
+                            Whether you're looking for the latest hits or want to see what everyone else is listening
+                            to.
+                        </p>
                     </div>
                 </div>
-                <div class="col-lg-8">
-                    <div class="row">
-                        <div class="col-md-6 d-flex align-items-stretch">
-                            <div class="icon-box" data-aos="zoom-in" data-aos-delay="100">
-                                <div class="icon"><i class="bx bxl-dribbble"></i></div>
-                                <h4><a href="">Lorem Ipsum</a></h4>
-                                <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
+                <div class="col-lg-8 d-flex align-items-stretch">
+                    <div class="icon-boxes d-flex flex-column justify-content-center">
+                        <div class="row">
+                            <div th:each="song : ${moreSongs}"
+                                 class="col-xl-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+                                <div class="icon-box mt-4 mt-xl-0">
+                                    <div class="row g-0 mb-3">
+                                        <a th:href="@{|/song/${song.getUuid()}|}" class="col-md-12" style="height: 240px;">
+                                            <img th:src="${song.getPictureUrl()}"
+                                                 style="object-fit: cover; height: 100%; width: 100%"
+                                                 class="img-fluid rounded-start" alt="card cover picture">
+                                        </a>
+                                    </div>
+                                    <i class="bx bx-receipt"></i>
+                                    <h4 th:text="${song.getTitle()}"></h4>
+                                    <p th:text="${song.getDescription()}"></p>
+                                    <p class="card-text col-md-12">
+                                        Author:
+                                        <a th:href="@{|/user/${song.getAuthorUuid()}/profile|}" th:text="${song.getAuthorUsername()}"></a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="col-md-6 d-flex align-items-stretch mt-4 mt-lg-0">
-                            <div class="icon-box" data-aos="zoom-in" data-aos-delay="200">
-                                <div class="icon"><i class="bx bx-file"></i></div>
-                                <h4><a href="">Sed ut perspiciatis</a></h4>
-                                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 d-flex align-items-stretch mt-4">
-                            <div class="icon-box" data-aos="zoom-in" data-aos-delay="300">
-                                <div class="icon"><i class="bx bx-tachometer"></i></div>
-                                <h4><a href="">Magni Dolores</a></h4>
-                                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 d-flex align-items-stretch mt-4">
-                            <div class="icon-box" data-aos="zoom-in" data-aos-delay="400">
-                                <div class="icon"><i class="bx bx-world"></i></div>
-                                <h4><a href="">Nemo Enim</a></h4>
-                                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 </main>

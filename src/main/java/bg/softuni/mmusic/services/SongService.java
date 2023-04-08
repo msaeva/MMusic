@@ -1,8 +1,10 @@
 package bg.softuni.mmusic.services;
 
-import bg.softuni.mmusic.controllers.validations.PublicSongValidation;
 import bg.softuni.mmusic.controllers.validations.SearchSongValidation;
-import bg.softuni.mmusic.model.dtos.song.*;
+import bg.softuni.mmusic.model.dtos.song.AddSongDto;
+import bg.softuni.mmusic.model.dtos.song.PublicDetailedSongDto;
+import bg.softuni.mmusic.model.dtos.song.SongDto;
+import bg.softuni.mmusic.model.dtos.song.UpdateSongDto;
 import bg.softuni.mmusic.model.entities.*;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.enums.SongStatus;
@@ -24,7 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -66,6 +67,7 @@ public class SongService {
             throw new InvalidUserException("You should be authenticated to update song!");
         }
         if (authUser.getRoles().stream().noneMatch(user -> user.getRole().equals(Role.MUSICIAN))) {
+            log.info("Should have MUSICIAN role to add songs!");
             throw new InvalidUserException("You do not have permissions to add a song");
         }
 
@@ -98,6 +100,8 @@ public class SongService {
         songToUpdate.setStatus(songDto.getStatus());
 
         songRepository.saveAndFlush(songToUpdate);
+
+        log.info("Updated song: " + songToUpdate);
     }
 
     public void delete(String uuid) {
@@ -122,6 +126,8 @@ public class SongService {
         this.playlistSongsRepository.deleteAll(playlistsSongs);
         this.favouriteSongsRepository.deleteAll(favourite);
         this.songRepository.delete(song);
+
+        log.info("Deleted song: " + song);
     }
 
     public UpdateSongDto toUpdateSongDto(Song songToUpdate) {
@@ -177,7 +183,7 @@ public class SongService {
         songToLike.setLikes(songToLike.getLikes() + 1);
         songRepository.saveAndFlush(songToLike);
         likedSongsRepository.save(new UserLikedSongs(authUser.getUuid(), songUuid));
-
+        log.info("Liked song: " + songToLike);
     }
 
     public void unlike(String songUuid) {
@@ -196,6 +202,7 @@ public class SongService {
         songRepository.saveAndFlush(songToUnlike);
         UserLikedSongs toDelete = likedSongsRepository.getBySongAndUser(authUser.getUuid(), songUuid);
         likedSongsRepository.delete(toDelete);
+        log.info("Unliked song: " + songToUnlike);
     }
 
     public void addToFavourite(String songUuid, User user) {
@@ -212,6 +219,7 @@ public class SongService {
         songToAddToFav.setFavouriteCount(songToAddToFav.getFavouriteCount() + 1);
         songRepository.saveAndFlush(songToAddToFav);
         favouriteSongsRepository.save(new UserFavouriteSongs(user.getUuid(), songUuid));
+        log.info("Song added to favourite: " + songToAddToFav);
     }
 
     public void removeFromFavourite(String songUuid, User user) {
@@ -227,21 +235,12 @@ public class SongService {
         UserFavouriteSongs toDelete =
                 favouriteSongsRepository.getBySongAndUser(user.getUuid(), songUuid);
         favouriteSongsRepository.delete(toDelete);
+
+        log.info("Song removed from favourite: " + songToRemove);
     }
 
-    public Page<Song> getMostLikedSongs(PublicSongValidation validation) {
-        Pageable pageable = PageRequest.of(validation.getOffset(), validation.getCount());
-
-        return songRepository.getByStatusOrderByLikes(SongStatus.PUBLIC, pageable);
-
-    }
-
-    public List<SongDto> findMoreSongsNotMostLiked(Pagination<List<SongDto>> pageableDto) {
-
-        Set<String> mostLikedSongsUuids = pageableDto.getData().stream().map(SongDto::getUuid).collect(Collectors.toSet());
-
-        List<Song> moreSongsNotMostLiked = songRepository.findMoreSongsNotMostLiked(mostLikedSongsUuids);
-        return moreSongsNotMostLiked.stream().map(songMapper::toSongDto).collect(Collectors.toList());
+    public Page<Song> getMostLikedSongs(Pageable pageable) {
+        return songRepository.getByStatus(SongStatus.PUBLIC, pageable);
     }
 }
 

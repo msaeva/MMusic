@@ -11,13 +11,7 @@ import bg.softuni.mmusic.model.entities.User;
 import bg.softuni.mmusic.model.enums.Role;
 import bg.softuni.mmusic.model.error.SongNotFoundException;
 import bg.softuni.mmusic.model.mapper.SongMapper;
-import bg.softuni.mmusic.repositories.SongRepository;
-import bg.softuni.mmusic.repositories.StyleRepository;
-import bg.softuni.mmusic.repositories.UserFavouriteSongsRepository;
-import bg.softuni.mmusic.repositories.UserLikedSongsRepository;
-import bg.softuni.mmusic.services.AuthService;
-import bg.softuni.mmusic.services.Pagination;
-import bg.softuni.mmusic.services.SongService;
+import bg.softuni.mmusic.services.*;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,27 +34,23 @@ public class SongController {
 
     private final SongService songService;
     private final AuthService authService;
-    private final UserFavouriteSongsRepository favouriteSongsRepository;
-    private final UserLikedSongsRepository userLikedSongsRepository;
+    private final UserFavouriteSongsService userFavouriteSongsService;
+    private final UserLikedSongsService userLikedSongsService;
 
     private final SongMapper songMapper;
-    private final SongRepository songRepository;
-
-    private final StyleRepository styleRepository;
 
     @Autowired
     public SongController(SongService songService,
                           AuthService authService,
-                          UserFavouriteSongsRepository favouriteSongsRepository,
-                          UserLikedSongsRepository userLikedSongsRepository,
-                          SongMapper songMapper, SongRepository songRepository, StyleRepository styleRepository) {
+                          UserFavouriteSongsService userFavouriteSongsService,
+                          UserLikedSongsService userLikedSongsService,
+                          SongMapper songMapper) {
         this.songService = songService;
         this.authService = authService;
-        this.favouriteSongsRepository = favouriteSongsRepository;
-        this.userLikedSongsRepository = userLikedSongsRepository;
+        this.userFavouriteSongsService = userFavouriteSongsService;
+        this.userLikedSongsService = userLikedSongsService;
         this.songMapper = songMapper;
-        this.songRepository = songRepository;
-        this.styleRepository = styleRepository;
+
     }
 
     @ModelAttribute(name = "addSongDto")
@@ -89,6 +79,7 @@ public class SongController {
         }
 
         Song song = songService.addSong(addSongDto);
+        log.info("Added new song : " + song);
 
         return "redirect:/song/" + song.getUuid();
     }
@@ -128,6 +119,10 @@ public class SongController {
         return "redirect:/song/" + uuid;
     }
 
+    /**
+     * { @code DELETE /song }: delete song by its uuid (specified in the request as params)
+     *
+     */
     @DeleteMapping("/{uuid}/delete")
     @ResponseBody
     public HttpStatus deleteSong(@PathVariable(name = "uuid") String uuid) {
@@ -158,26 +153,33 @@ public class SongController {
         return modelAndView;
 
     }
-
+    /**
+     * { @code GET /song }: retrieves song by its uuid (specified in the request as params)
+     * @return single-page-song
+     * */
     @GetMapping("/{uuid}")
     public ModelAndView getSong(@PathVariable(name = "uuid") String uuid, ModelAndView modelAndView) {
         User authUser = authService.getAuthenticatedUser();
 
         Song song = songService.findSongByUuid(uuid);
 
-        boolean liked = false;
+        boolean isLikedByAuthUser = false;
         boolean favourite = false;
         boolean displayButtons = false;
+
+
         if (authUser != null) {
+            // user cannot like its own songs and admin also
             if (authUser.getOwnSongs().stream().noneMatch(s -> s.getUuid().equals(song.getUuid())) &&
                     authUser.getRoles().stream().noneMatch(role -> role.getRole().equals(Role.ADMIN))) {
                 displayButtons = true;
             }
-            List<String> userLikedSongsUuids = userLikedSongsRepository.getUserLikedSongs(authUser.getUuid());
+
+            List<String> userLikedSongsUuids = userLikedSongsService.getUserLikedSongs(authUser.getUuid());
             if (userLikedSongsUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {
-                liked = true;
+                isLikedByAuthUser = true;
             }
-            List<String> userFavouriteSongUuids = favouriteSongsRepository.getUserFavouriteSongs(authUser.getUuid());
+            List<String> userFavouriteSongUuids = userFavouriteSongsService.getUserFavouriteSongs(authUser.getUuid());
             if (userFavouriteSongUuids.stream().anyMatch(songUuid -> songUuid.equals(song.getUuid()))) {
                 favourite = true;
             }
@@ -187,7 +189,7 @@ public class SongController {
 
         modelAndView.setViewName("single-page-song");
         modelAndView.addObject("displayButtons", displayButtons);
-        modelAndView.addObject("liked", liked);
+        modelAndView.addObject("liked", isLikedByAuthUser);
         modelAndView.addObject("favourite", favourite);
         modelAndView.addObject("song", publicDetailedSongDto);
 

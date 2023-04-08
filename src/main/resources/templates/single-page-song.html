@@ -95,13 +95,12 @@
                     </div>
 
                 </div>
-
             </div>
         </section>
 
         <section id="comments" class="comments">
             <h1>Comments</h1>
-            <div>
+            <div sec:authorize="isAuthenticated()">
                 <!-- Comments submission -->
                 <form id="commentForm" method="POST" style="max-width: 560px">
                     <div class="form-group">
@@ -122,13 +121,14 @@
 
                     <div class="form-group">
                         <div class="button-holder d-flex">
-                            <input type="submit" class="btn btn-primary btn-lg"  value="Post Comment"/>
+                            <input type="submit" class="btn btn-primary btn-lg" value="Post Comment"/>
                         </div>
                     </div>
                 </form>
             </div>
             <div>
-                <span id="commentSection" class="comments"><!-- Comments section, filled in by script --></span>
+                <span class="comments d-flex flex-column align-items-center"
+                      id="commentSection"><!-- Comments section, filled in by script --></span>
             </div>
         </section>
 

@@ -132,10 +132,15 @@ public class UserService {
 
         userToUpdate.setFirstName(fullName[0]);
         userToUpdate.setLastName(fullName[1]);
-        if (!userToUpdate.getAbout().isEmpty()) {
+
+        if (userProfileDto.getAbout().isEmpty()) {
+            userToUpdate.setAbout(null);
+        } else {
             userToUpdate.setAbout(userProfileDto.getAbout());
         }
+
         userRepository.saveAndFlush(userToUpdate);
+        log.info("Update {}.", userToUpdate);
     }
 
     public List<User> getAllUsers() {
@@ -157,21 +162,16 @@ public class UserService {
             }
         }
 
-        for (UserRole role : user.getRoles()) {
-            if (!rolesToAdd.contains(role)) {
-                rolesToAdd.remove(role);
-            }
-        }
-
         user.setRoles(rolesToAdd);
         userRepository.saveAndFlush(user);
+        log.info("Change role to {}", user);
     }
 
     @Transactional
     public void changePassword(String oldPassword, String newPassword, User user) {
 
         if (passwordEncoder.matches(oldPassword, newPassword)) {
-            throw new RuntimeException("Old and new paswwords are the same");
+            throw new RuntimeException("Old and new passwords are the same");
         }
         String encryptedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encryptedPassword);

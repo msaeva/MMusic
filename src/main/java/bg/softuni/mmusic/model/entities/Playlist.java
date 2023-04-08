@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,5 +34,27 @@ public class Playlist extends BaseEntity {
 
     public Set<Song> getSongs() {
         return this.getPlaylistSongs().stream().map(PlaylistSongs::getSong).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "name='" + name + '\'' +
+                ", owner=" + owner +
+                ", status=" + status +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Playlist playlist = (Playlist) o;
+        return name.equals(playlist.name) && status == playlist.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, status);
     }
 }
